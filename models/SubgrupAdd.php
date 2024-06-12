@@ -511,6 +511,9 @@ class SubgrupAdd extends Subgrup
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->grup_id);
+
         // Load default values for add
         $this->loadDefaultValues();
 
@@ -673,7 +676,7 @@ class SubgrupAdd extends Subgrup
             if (IsApi() && $val === null) {
                 $this->grup_id->Visible = false; // Disable update for API request
             } else {
-                $this->grup_id->setFormValue($val, true, $validate);
+                $this->grup_id->setFormValue($val);
             }
         }
 
@@ -814,8 +817,27 @@ class SubgrupAdd extends Subgrup
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // grup_id
-            $this->grup_id->ViewValue = $this->grup_id->CurrentValue;
-            $this->grup_id->ViewValue = FormatNumber($this->grup_id->ViewValue, $this->grup_id->formatPattern());
+            $curVal = strval($this->grup_id->CurrentValue);
+            if ($curVal != "") {
+                $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+                if ($this->grup_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->grup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->grup_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->grup_id->ViewValue = $this->grup_id->displayValue($arwrk);
+                    } else {
+                        $this->grup_id->ViewValue = FormatNumber($this->grup_id->CurrentValue, $this->grup_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->grup_id->ViewValue = null;
+            }
 
             // kode
             $this->kode->ViewValue = $this->kode->CurrentValue;
@@ -834,11 +856,30 @@ class SubgrupAdd extends Subgrup
         } elseif ($this->RowType == RowType::ADD) {
             // grup_id
             $this->grup_id->setupEditAttributes();
-            $this->grup_id->EditValue = $this->grup_id->CurrentValue;
-            $this->grup_id->PlaceHolder = RemoveHtml($this->grup_id->caption());
-            if (strval($this->grup_id->EditValue) != "" && is_numeric($this->grup_id->EditValue)) {
-                $this->grup_id->EditValue = FormatNumber($this->grup_id->EditValue, null);
+            $curVal = trim(strval($this->grup_id->CurrentValue));
+            if ($curVal != "") {
+                $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+            } else {
+                $this->grup_id->ViewValue = $this->grup_id->Lookup !== null && is_array($this->grup_id->lookupOptions()) && count($this->grup_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->grup_id->ViewValue !== null) { // Load from cache
+                $this->grup_id->EditValue = array_values($this->grup_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->grup_id->CurrentValue, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->grup_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->grup_id->EditValue = $arwrk;
+            }
+            $this->grup_id->PlaceHolder = RemoveHtml($this->grup_id->caption());
 
             // kode
             $this->kode->setupEditAttributes();
@@ -891,9 +932,6 @@ class SubgrupAdd extends Subgrup
                 if (!$this->grup_id->IsDetailKey && EmptyValue($this->grup_id->FormValue)) {
                     $this->grup_id->addErrorMessage(str_replace("%s", $this->grup_id->caption(), $this->grup_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->grup_id->FormValue)) {
-                $this->grup_id->addErrorMessage($this->grup_id->getErrorMessage(false));
             }
             if ($this->kode->Visible && $this->kode->Required) {
                 if (!$this->kode->IsDetailKey && EmptyValue($this->kode->FormValue)) {
@@ -1028,6 +1066,8 @@ class SubgrupAdd extends Subgrup
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_grup_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

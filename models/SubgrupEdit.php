@@ -129,7 +129,7 @@ class SubgrupEdit extends Subgrup
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->grup_id->setVisibility();
         $this->kode->setVisibility();
         $this->nama->setVisibility();
@@ -517,6 +517,9 @@ class SubgrupEdit extends Subgrup
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->grup_id);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -695,19 +698,13 @@ class SubgrupEdit extends Subgrup
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
 
-        // Check field name 'id' first before field var 'x_id'
-        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
-        if (!$this->id->IsDetailKey) {
-            $this->id->setFormValue($val);
-        }
-
         // Check field name 'grup_id' first before field var 'x_grup_id'
         $val = $CurrentForm->hasValue("grup_id") ? $CurrentForm->getValue("grup_id") : $CurrentForm->getValue("x_grup_id");
         if (!$this->grup_id->IsDetailKey) {
             if (IsApi() && $val === null) {
                 $this->grup_id->Visible = false; // Disable update for API request
             } else {
-                $this->grup_id->setFormValue($val, true, $validate);
+                $this->grup_id->setFormValue($val);
             }
         }
 
@@ -729,6 +726,12 @@ class SubgrupEdit extends Subgrup
             } else {
                 $this->nama->setFormValue($val);
             }
+        }
+
+        // Check field name 'id' first before field var 'x_id'
+        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
+        if (!$this->id->IsDetailKey) {
+            $this->id->setFormValue($val);
         }
     }
 
@@ -846,17 +849,33 @@ class SubgrupEdit extends Subgrup
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // grup_id
-            $this->grup_id->ViewValue = $this->grup_id->CurrentValue;
-            $this->grup_id->ViewValue = FormatNumber($this->grup_id->ViewValue, $this->grup_id->formatPattern());
+            $curVal = strval($this->grup_id->CurrentValue);
+            if ($curVal != "") {
+                $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+                if ($this->grup_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->grup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->grup_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->grup_id->ViewValue = $this->grup_id->displayValue($arwrk);
+                    } else {
+                        $this->grup_id->ViewValue = FormatNumber($this->grup_id->CurrentValue, $this->grup_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->grup_id->ViewValue = null;
+            }
 
             // kode
             $this->kode->ViewValue = $this->kode->CurrentValue;
 
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
-
-            // id
-            $this->id->HrefValue = "";
 
             // grup_id
             $this->grup_id->HrefValue = "";
@@ -867,17 +886,32 @@ class SubgrupEdit extends Subgrup
             // nama
             $this->nama->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
-            // id
-            $this->id->setupEditAttributes();
-            $this->id->EditValue = $this->id->CurrentValue;
-
             // grup_id
             $this->grup_id->setupEditAttributes();
-            $this->grup_id->EditValue = $this->grup_id->CurrentValue;
-            $this->grup_id->PlaceHolder = RemoveHtml($this->grup_id->caption());
-            if (strval($this->grup_id->EditValue) != "" && is_numeric($this->grup_id->EditValue)) {
-                $this->grup_id->EditValue = FormatNumber($this->grup_id->EditValue, null);
+            $curVal = trim(strval($this->grup_id->CurrentValue));
+            if ($curVal != "") {
+                $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+            } else {
+                $this->grup_id->ViewValue = $this->grup_id->Lookup !== null && is_array($this->grup_id->lookupOptions()) && count($this->grup_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->grup_id->ViewValue !== null) { // Load from cache
+                $this->grup_id->EditValue = array_values($this->grup_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->grup_id->CurrentValue, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->grup_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->grup_id->EditValue = $arwrk;
+            }
+            $this->grup_id->PlaceHolder = RemoveHtml($this->grup_id->caption());
 
             // kode
             $this->kode->setupEditAttributes();
@@ -896,9 +930,6 @@ class SubgrupEdit extends Subgrup
             $this->nama->PlaceHolder = RemoveHtml($this->nama->caption());
 
             // Edit refer script
-
-            // id
-            $this->id->HrefValue = "";
 
             // grup_id
             $this->grup_id->HrefValue = "";
@@ -929,18 +960,10 @@ class SubgrupEdit extends Subgrup
             return true;
         }
         $validateForm = true;
-            if ($this->id->Visible && $this->id->Required) {
-                if (!$this->id->IsDetailKey && EmptyValue($this->id->FormValue)) {
-                    $this->id->addErrorMessage(str_replace("%s", $this->id->caption(), $this->id->RequiredErrorMessage));
-                }
-            }
             if ($this->grup_id->Visible && $this->grup_id->Required) {
                 if (!$this->grup_id->IsDetailKey && EmptyValue($this->grup_id->FormValue)) {
                     $this->grup_id->addErrorMessage(str_replace("%s", $this->grup_id->caption(), $this->grup_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->grup_id->FormValue)) {
-                $this->grup_id->addErrorMessage($this->grup_id->getErrorMessage(false));
             }
             if ($this->kode->Visible && $this->kode->Required) {
                 if (!$this->kode->IsDetailKey && EmptyValue($this->kode->FormValue)) {
@@ -1093,6 +1116,8 @@ class SubgrupEdit extends Subgrup
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_grup_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

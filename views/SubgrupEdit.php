@@ -28,8 +28,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
-            ["grup_id", [fields.grup_id.visible && fields.grup_id.required ? ew.Validators.required(fields.grup_id.caption) : null, ew.Validators.integer], fields.grup_id.isInvalid],
+            ["grup_id", [fields.grup_id.visible && fields.grup_id.required ? ew.Validators.required(fields.grup_id.caption) : null], fields.grup_id.isInvalid],
             ["kode", [fields.kode.visible && fields.kode.required ? ew.Validators.required(fields.kode.caption) : null], fields.kode.isInvalid],
             ["nama", [fields.nama.visible && fields.nama.required ? ew.Validators.required(fields.nama.caption) : null], fields.nama.isInvalid]
         ])
@@ -47,6 +46,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "grup_id": <?= $Page->grup_id->toClientList($Page) ?>,
         })
         .build();
     window[form.id] = form;
@@ -71,26 +71,48 @@ loadjs.ready("head", function () {
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
 <div class="ew-edit-div"><!-- page* -->
-<?php if ($Page->id->Visible) { // id ?>
-    <div id="r_id"<?= $Page->id->rowAttributes() ?>>
-        <label id="elh_subgrup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->id->cellAttributes() ?>>
-<span id="el_subgrup_id">
-<span<?= $Page->id->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id->getDisplayValue($Page->id->EditValue))) ?>"></span>
-<input type="hidden" data-table="subgrup" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
-</span>
-</div></div>
-    </div>
-<?php } ?>
 <?php if ($Page->grup_id->Visible) { // grup_id ?>
     <div id="r_grup_id"<?= $Page->grup_id->rowAttributes() ?>>
         <label id="elh_subgrup_grup_id" for="x_grup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->grup_id->caption() ?><?= $Page->grup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->grup_id->cellAttributes() ?>>
 <span id="el_subgrup_grup_id">
-<input type="<?= $Page->grup_id->getInputTextType() ?>" name="x_grup_id" id="x_grup_id" data-table="subgrup" data-field="x_grup_id" value="<?= $Page->grup_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->grup_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->grup_id->formatPattern()) ?>"<?= $Page->grup_id->editAttributes() ?> aria-describedby="x_grup_id_help">
-<?= $Page->grup_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->grup_id->getErrorMessage() ?></div>
+    <select
+        id="x_grup_id"
+        name="x_grup_id"
+        class="form-select ew-select<?= $Page->grup_id->isInvalidClass() ?>"
+        <?php if (!$Page->grup_id->IsNativeSelect) { ?>
+        data-select2-id="fsubgrupedit_x_grup_id"
+        <?php } ?>
+        data-table="subgrup"
+        data-field="x_grup_id"
+        data-value-separator="<?= $Page->grup_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->grup_id->getPlaceHolder()) ?>"
+        <?= $Page->grup_id->editAttributes() ?>>
+        <?= $Page->grup_id->selectOptionListHtml("x_grup_id") ?>
+    </select>
+    <?= $Page->grup_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->grup_id->getErrorMessage() ?></div>
+<?= $Page->grup_id->Lookup->getParamTag($Page, "p_x_grup_id") ?>
+<?php if (!$Page->grup_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fsubgrupedit", function() {
+    var options = { name: "x_grup_id", selectId: "fsubgrupedit_x_grup_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fsubgrupedit.lists.grup_id?.lookupOptions.length) {
+        options.data = { id: "x_grup_id", form: "fsubgrupedit" };
+    } else {
+        options.ajax = { id: "x_grup_id", form: "fsubgrupedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.subgrup.fields.grup_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 </div></div>
     </div>
@@ -120,6 +142,7 @@ loadjs.ready("head", function () {
     </div>
 <?php } ?>
 </div><!-- /page* -->
+    <input type="hidden" data-table="subgrup" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fsubgrupedit"><?= $Language->phrase("SaveBtn") ?></button>

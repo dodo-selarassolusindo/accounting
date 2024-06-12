@@ -147,12 +147,16 @@ class Subgrup extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->grup_id->InputTextType = "text";
         $this->grup_id->Raw = true;
+        $this->grup_id->setSelectMultiple(false); // Select one
+        $this->grup_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->grup_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->grup_id->Lookup = new Lookup($this->grup_id, 'grup', false, 'id', ["id","name","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->grup_id) . "',COALESCE(`name`,''))");
         $this->grup_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->grup_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->grup_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['grup_id'] = &$this->grup_id;
 
         // kode
@@ -1140,8 +1144,27 @@ class Subgrup extends DbTable
         $this->id->ViewValue = $this->id->CurrentValue;
 
         // grup_id
-        $this->grup_id->ViewValue = $this->grup_id->CurrentValue;
-        $this->grup_id->ViewValue = FormatNumber($this->grup_id->ViewValue, $this->grup_id->formatPattern());
+        $curVal = strval($this->grup_id->CurrentValue);
+        if ($curVal != "") {
+            $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+            if ($this->grup_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                $sqlWrk = $this->grup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->grup_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->grup_id->ViewValue = $this->grup_id->displayValue($arwrk);
+                } else {
+                    $this->grup_id->ViewValue = FormatNumber($this->grup_id->CurrentValue, $this->grup_id->formatPattern());
+                }
+            }
+        } else {
+            $this->grup_id->ViewValue = null;
+        }
 
         // kode
         $this->kode->ViewValue = $this->kode->CurrentValue;
@@ -1186,11 +1209,7 @@ class Subgrup extends DbTable
 
         // grup_id
         $this->grup_id->setupEditAttributes();
-        $this->grup_id->EditValue = $this->grup_id->CurrentValue;
         $this->grup_id->PlaceHolder = RemoveHtml($this->grup_id->caption());
-        if (strval($this->grup_id->EditValue) != "" && is_numeric($this->grup_id->EditValue)) {
-            $this->grup_id->EditValue = FormatNumber($this->grup_id->EditValue, null);
-        }
 
         // kode
         $this->kode->setupEditAttributes();
@@ -1236,7 +1255,6 @@ class Subgrup extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->id);
                     $doc->exportCaption($this->grup_id);
                     $doc->exportCaption($this->kode);
                     $doc->exportCaption($this->nama);
@@ -1271,7 +1289,6 @@ class Subgrup extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->id);
                         $doc->exportField($this->grup_id);
                         $doc->exportField($this->kode);
                         $doc->exportField($this->nama);

@@ -129,7 +129,7 @@ class SubgrupDelete extends Subgrup
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->grup_id->setVisibility();
         $this->kode->setVisibility();
         $this->nama->setVisibility();
@@ -406,6 +406,9 @@ class SubgrupDelete extends Subgrup
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->grup_id);
+
         // Set up Breadcrumb
         $this->setupBreadcrumb();
 
@@ -628,18 +631,33 @@ class SubgrupDelete extends Subgrup
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // grup_id
-            $this->grup_id->ViewValue = $this->grup_id->CurrentValue;
-            $this->grup_id->ViewValue = FormatNumber($this->grup_id->ViewValue, $this->grup_id->formatPattern());
+            $curVal = strval($this->grup_id->CurrentValue);
+            if ($curVal != "") {
+                $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+                if ($this->grup_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->grup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->grup_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->grup_id->ViewValue = $this->grup_id->displayValue($arwrk);
+                    } else {
+                        $this->grup_id->ViewValue = FormatNumber($this->grup_id->CurrentValue, $this->grup_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->grup_id->ViewValue = null;
+            }
 
             // kode
             $this->kode->ViewValue = $this->kode->CurrentValue;
 
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
-
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
 
             // grup_id
             $this->grup_id->HrefValue = "";
@@ -788,6 +806,8 @@ class SubgrupDelete extends Subgrup
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_grup_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

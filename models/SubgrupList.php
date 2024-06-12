@@ -153,7 +153,7 @@ class SubgrupList extends Subgrup
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->grup_id->setVisibility();
         $this->kode->setVisibility();
         $this->nama->setVisibility();
@@ -694,6 +694,9 @@ class SubgrupList extends Subgrup
         // Setup other options
         $this->setupOtherOptions();
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->grup_id);
+
         // Update form name to avoid conflict
         if ($this->IsModal) {
             $this->FormName = "fsubgrupgrid";
@@ -1218,7 +1221,6 @@ class SubgrupList extends Subgrup
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
             $this->updateSort($this->grup_id); // grup_id
             $this->updateSort($this->kode); // kode
             $this->updateSort($this->nama); // nama
@@ -1312,6 +1314,14 @@ class SubgrupList extends Subgrup
         $item->ShowInDropDown = false;
         $item->ShowInButtonGroup = false;
 
+        // "sequence"
+        $item = &$this->ListOptions->add("sequence");
+        $item->CssClass = "text-nowrap";
+        $item->Visible = true;
+        $item->OnLeft = true; // Always on left
+        $item->ShowInDropDown = false;
+        $item->ShowInButtonGroup = false;
+
         // Drop down button for ListOptions
         $this->ListOptions->UseDropDownButton = false;
         $this->ListOptions->DropDownButtonPhrase = $Language->phrase("ButtonListOptions");
@@ -1349,6 +1359,10 @@ class SubgrupList extends Subgrup
 
         // Call ListOptions_Rendering event
         $this->listOptionsRendering();
+
+        // "sequence"
+        $opt = $this->ListOptions["sequence"];
+        $opt->Body = FormatSequenceNumber($this->RecordCount);
         $pageUrl = $this->pageUrl(false);
         if ($this->CurrentMode == "view") {
             // "view"
@@ -1487,7 +1501,6 @@ class SubgrupList extends Subgrup
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "id");
             $this->createColumnOption($option, "grup_id");
             $this->createColumnOption($option, "kode");
             $this->createColumnOption($option, "nama");
@@ -1997,18 +2010,33 @@ class SubgrupList extends Subgrup
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // grup_id
-            $this->grup_id->ViewValue = $this->grup_id->CurrentValue;
-            $this->grup_id->ViewValue = FormatNumber($this->grup_id->ViewValue, $this->grup_id->formatPattern());
+            $curVal = strval($this->grup_id->CurrentValue);
+            if ($curVal != "") {
+                $this->grup_id->ViewValue = $this->grup_id->lookupCacheOption($curVal);
+                if ($this->grup_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->grup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->grup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->grup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->grup_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->grup_id->ViewValue = $this->grup_id->displayValue($arwrk);
+                    } else {
+                        $this->grup_id->ViewValue = FormatNumber($this->grup_id->CurrentValue, $this->grup_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->grup_id->ViewValue = null;
+            }
 
             // kode
             $this->kode->ViewValue = $this->kode->CurrentValue;
 
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
-
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
 
             // grup_id
             $this->grup_id->HrefValue = "";
@@ -2104,6 +2132,8 @@ class SubgrupList extends Subgrup
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_grup_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
