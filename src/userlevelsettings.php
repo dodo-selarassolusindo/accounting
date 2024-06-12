@@ -56,9 +56,9 @@ $USER_LEVEL_PRIVS = [["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}akun","-2","0"],
  * [4] string Project ID
  * [5] string URL (for OthersController::index)
  */
-$USER_LEVEL_TABLES = [["akun","akun","akun",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","akunlist"],
+$USER_LEVEL_TABLES = [["akun","akun","Akun",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","akunlist"],
     ["audittrail","audittrail","audittrail",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","audittraillist"],
-    ["grup","grup","grup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gruplist"],
+    ["grup","grup","Grup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gruplist"],
     ["gudang","gudang","gudang",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gudanglist"],
     ["jurnal","jurnal","jurnal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","jurnallist"],
     ["jurnald","jurnald","jurnald",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","jurnaldlist"],
@@ -74,7 +74,7 @@ $USER_LEVEL_TABLES = [["akun","akun","akun",true,"{BF72DE82-CB59-461F-848A-24CDF
     ["produk","produk","produk",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","produklist"],
     ["saldoawal","saldoawal","saldoawal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","saldoawallist"],
     ["satuan","satuan","satuan",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","satuanlist"],
-    ["subgrup","subgrup","subgrup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","subgruplist"],
+    ["subgrup","subgrup","Sub Grup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","subgruplist"],
     ["tipejurnal","tipejurnal","tipejurnal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","tipejurnallist"],
     ["top","top","top",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","toplist"],
     ["tos","tos","tos",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","toslist"],

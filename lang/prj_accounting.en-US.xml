@@ -2,17 +2,27 @@
   <project>
     <phrase id="bodytitle" value="SELUSIN | Accounting" />
     <phrase id="footertext" value="&amp;copy;2024 Selaras Solusindo. All rights reserved." />
-    <menu id="1">
-      <phrase id="menutext" value="akun" />
-    </menu>
-    <menu id="2">
-      <phrase id="menutext" value="audittrail" />
+    <menu id="24">
+      <phrase id="menutext" value="Master" />
     </menu>
     <menu id="3">
-      <phrase id="menutext" value="grup" />
+      <phrase id="menutext" value="Grup" />
     </menu>
-    <menu id="4">
+    <menu id="19">
+      <phrase id="menutext" value="Sub Grup" />
+    </menu>
+    <menu id="1">
+      <phrase id="menutext" value="Akun" />
+    </menu>
+    <menu id="17">
+      <phrase id="menutext" value="saldoawal" />
+    </menu>
+    <menu id="14">
+      <phrase id="menutext" value="periode" />
+    </menu>
       <phrase id="menutext" value="gudang" />
+    <menu id="26">
+      <phrase id="menutext" value="Transaksi" />
     </menu>
     <menu id="5">
       <phrase id="menutext" value="jurnal" />
@@ -20,14 +30,14 @@
     <menu id="6">
       <phrase id="menutext" value="jurnald" />
     </menu>
-    <menu id="7">
-      <phrase id="menutext" value="kelompok" />
+    <menu id="27">
+      <phrase id="menutext" value="Setting" />
     </menu>
-    <menu id="8">
-      <phrase id="menutext" value="klasifikasi" />
+    <menu id="12">
+      <phrase id="menutext" value="pajak" />
     </menu>
-    <menu id="9">
-      <phrase id="menutext" value="konversi" />
+    <menu id="20">
+      <phrase id="menutext" value="tipejurnal" />
     </menu>
     <menu id="10">
       <phrase id="menutext" value="kurs" />
@@ -35,44 +45,47 @@
     <menu id="11">
       <phrase id="menutext" value="matauang" />
     </menu>
-    <menu id="12">
-      <phrase id="menutext" value="pajak" />
+    <menu id="25">
+      <phrase id="menutext" value="Others" />
     </menu>
-    <menu id="13">
-      <phrase id="menutext" value="pengiriman" />
+    <menu id="2">
+      <phrase id="menutext" value="audittrail" />
     </menu>
-    <menu id="14">
-      <phrase id="menutext" value="periode" />
-    </menu>
-    <menu id="15">
-      <phrase id="menutext" value="person" />
-    </menu>
-    <menu id="16">
-      <phrase id="menutext" value="produk" />
-    </menu>
-    <menu id="17">
-      <phrase id="menutext" value="saldoawal" />
-    </menu>
-    <menu id="18">
-      <phrase id="menutext" value="satuan" />
-    </menu>
-    <menu id="19">
-      <phrase id="menutext" value="subgrup" />
-    </menu>
-    <menu id="20">
-      <phrase id="menutext" value="tipejurnal" />
-    </menu>
-    <menu id="21">
-      <phrase id="menutext" value="top" />
-    </menu>
-    <menu id="22">
-      <phrase id="menutext" value="tos" />
+    <menu id="4">
+      <phrase id="menutext" value="gudang" />
     </menu>
     <menu id="23">
       <phrase id="menutext" value="type" />
     </menu>
+    <menu id="22">
+      <phrase id="menutext" value="tos" />
+    </menu>
+    <menu id="21">
+      <phrase id="menutext" value="top" />
+    </menu>
+    <menu id="18">
+      <phrase id="menutext" value="satuan" />
+    </menu>
+    <menu id="16">
+      <phrase id="menutext" value="produk" />
+    </menu>
+    <menu id="15">
+      <phrase id="menutext" value="person" />
+    </menu>
+    <menu id="13">
+      <phrase id="menutext" value="pengiriman" />
+    </menu>
+    <menu id="9">
+      <phrase id="menutext" value="konversi" />
+    </menu>
+    <menu id="8">
+      <phrase id="menutext" value="klasifikasi" />
+    </menu>
+    <menu id="7">
+      <phrase id="menutext" value="kelompok" />
+    </menu>
     <table id="akun">
-      <phrase id="tblcaption" value="akun" />
+      <phrase id="tblcaption" value="Akun" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -126,7 +139,7 @@
       </field>
     </table>
     <table id="grup">
-      <phrase id="tblcaption" value="grup" />
+      <phrase id="tblcaption" value="Grup" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -499,7 +512,7 @@
       </field>
     </table>
     <table id="subgrup">
-      <phrase id="tblcaption" value="subgrup" />
+      <phrase id="tblcaption" value="Sub Grup" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
