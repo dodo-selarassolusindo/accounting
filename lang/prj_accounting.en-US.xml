@@ -8,6 +8,12 @@
     <menu id="24">
       <phrase id="menutext" value="Master" />
     </menu>
+    <menu id="14">
+      <phrase id="menutext" value="Periode" />
+    </menu>
+    <menu id="57">
+      <phrase id="menutext" value="Akun" />
+    </menu>
     <menu id="3">
       <phrase id="menutext" value="Grup" />
     </menu>
@@ -15,10 +21,13 @@
       <phrase id="menutext" value="Sub Grup" />
     </menu>
     <menu id="1">
-      <phrase id="menutext" value="Akun" />
+      <phrase id="menutext" value="Detail" />
     </menu>
     <menu id="17">
       <phrase id="menutext" value="Saldo Awal" />
+    </menu>
+    <menu id="20">
+      <phrase id="menutext" value="Tipe Jurnal" />
     </menu>
     <menu id="26">
       <phrase id="menutext" value="Transaksi" />
@@ -31,12 +40,6 @@
     </menu>
     <menu id="27">
       <phrase id="menutext" value="Setting" />
-    </menu>
-    <menu id="14">
-      <phrase id="menutext" value="Periode" />
-    </menu>
-    <menu id="20">
-      <phrase id="menutext" value="Tipe Jurnal" />
     </menu>
     <menu id="12">
       <phrase id="menutext" value="pajak" />
@@ -87,7 +90,7 @@
       <phrase id="menutext" value="kelompok" />
     </menu>
     <table id="akun">
-      <phrase id="tblcaption" value="Akun" />
+      <phrase id="tblcaption" value="Detail" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>

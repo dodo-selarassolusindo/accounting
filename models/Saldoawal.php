@@ -157,7 +157,7 @@ class Saldoawal extends DbTable
         $this->periode_id->setSelectMultiple(false); // Select one
         $this->periode_id->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->periode_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->periode_id->Lookup = new Lookup($this->periode_id, 'periode', false, 'id', ["start","end","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(" . CastDateFieldForLike("`start`", 0, "DB") . ", ''),'" . ValueSeparator(1, $this->periode_id) . "',COALESCE(" . CastDateFieldForLike("`end`", 0, "DB") . ",''))");
+        $this->periode_id->Lookup = new Lookup($this->periode_id, 'periode', false, 'id', ["start","end","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(" . CastDateFieldForLike("`start`", 7, "DB") . ", ''),'" . ValueSeparator(1, $this->periode_id) . "',COALESCE(" . CastDateFieldForLike("`end`", 7, "DB") . ",''))");
         $this->periode_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->periode_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['periode_id'] = &$this->periode_id;
@@ -1307,9 +1307,11 @@ class Saldoawal extends DbTable
         // debet
         $this->debet->ViewValue = $this->debet->CurrentValue;
         $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+        $this->debet->CellCssStyle .= "text-align: right;";
 
         // kredit
         $this->kredit->ViewValue = $this->kredit->CurrentValue;
+        $this->kredit->CellCssStyle .= "text-align: right;";
 
         // user_id
         $this->user_id->ViewValue = $this->user_id->CurrentValue;
@@ -1318,6 +1320,7 @@ class Saldoawal extends DbTable
         // saldo
         $this->saldo->ViewValue = $this->saldo->CurrentValue;
         $this->saldo->ViewValue = FormatNumber($this->saldo->ViewValue, $this->saldo->formatPattern());
+        $this->saldo->CellCssStyle .= "text-align: right;";
 
         // id
         $this->id->HrefValue = "";

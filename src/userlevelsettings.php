@@ -57,7 +57,7 @@ $USER_LEVEL_PRIVS = [["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}akun","-2","0"],
  * [4] string Project ID
  * [5] string URL (for OthersController::index)
  */
-$USER_LEVEL_TABLES = [["akun","akun","Akun",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","akunlist"],
+$USER_LEVEL_TABLES = [["akun","akun","Detail",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","akunlist"],
     ["audittrail","audittrail","audittrail",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","audittraillist"],
     ["grup","grup","Grup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gruplist"],
     ["gudang","gudang","gudang",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gudanglist"],
