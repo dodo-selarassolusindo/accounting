@@ -153,12 +153,12 @@ class SaldoawalList extends Saldoawal
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->periode_id->setVisibility();
         $this->akun_id->setVisibility();
         $this->debet->setVisibility();
         $this->kredit->setVisibility();
-        $this->user_id->setVisibility();
+        $this->user_id->Visible = false;
         $this->saldo->setVisibility();
     }
 
@@ -696,6 +696,9 @@ class SaldoawalList extends Saldoawal
 
         // Setup other options
         $this->setupOtherOptions();
+
+        // Set up lookup cache
+        $this->setupLookupOptions($this->akun_id);
 
         // Update form name to avoid conflict
         if ($this->IsModal) {
@@ -1250,12 +1253,10 @@ class SaldoawalList extends Saldoawal
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id, $ctrl); // id
             $this->updateSort($this->periode_id, $ctrl); // periode_id
             $this->updateSort($this->akun_id, $ctrl); // akun_id
             $this->updateSort($this->debet, $ctrl); // debet
             $this->updateSort($this->kredit, $ctrl); // kredit
-            $this->updateSort($this->user_id, $ctrl); // user_id
             $this->updateSort($this->saldo, $ctrl); // saldo
             $this->setStartRecordNumber(1); // Reset start position
         }
@@ -1537,12 +1538,10 @@ class SaldoawalList extends Saldoawal
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "id");
             $this->createColumnOption($option, "periode_id");
             $this->createColumnOption($option, "akun_id");
             $this->createColumnOption($option, "debet");
             $this->createColumnOption($option, "kredit");
-            $this->createColumnOption($option, "user_id");
             $this->createColumnOption($option, "saldo");
         }
 
@@ -2066,8 +2065,27 @@ class SaldoawalList extends Saldoawal
             $this->periode_id->ViewValue = FormatNumber($this->periode_id->ViewValue, $this->periode_id->formatPattern());
 
             // akun_id
-            $this->akun_id->ViewValue = $this->akun_id->CurrentValue;
-            $this->akun_id->ViewValue = FormatNumber($this->akun_id->ViewValue, $this->akun_id->formatPattern());
+            $curVal = strval($this->akun_id->CurrentValue);
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+                if ($this->akun_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->akun_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                    } else {
+                        $this->akun_id->ViewValue = FormatNumber($this->akun_id->CurrentValue, $this->akun_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->akun_id->ViewValue = null;
+            }
 
             // debet
             $this->debet->ViewValue = $this->debet->CurrentValue;
@@ -2084,10 +2102,6 @@ class SaldoawalList extends Saldoawal
             $this->saldo->ViewValue = $this->saldo->CurrentValue;
             $this->saldo->ViewValue = FormatNumber($this->saldo->ViewValue, $this->saldo->formatPattern());
 
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
-
             // periode_id
             $this->periode_id->HrefValue = "";
             $this->periode_id->TooltipValue = "";
@@ -2103,10 +2117,6 @@ class SaldoawalList extends Saldoawal
             // kredit
             $this->kredit->HrefValue = "";
             $this->kredit->TooltipValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
-            $this->user_id->TooltipValue = "";
 
             // saldo
             $this->saldo->HrefValue = "";
@@ -2194,6 +2204,8 @@ class SaldoawalList extends Saldoawal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_akun_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

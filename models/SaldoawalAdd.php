@@ -134,7 +134,7 @@ class SaldoawalAdd extends Saldoawal
         $this->akun_id->setVisibility();
         $this->debet->setVisibility();
         $this->kredit->setVisibility();
-        $this->user_id->setVisibility();
+        $this->user_id->Visible = false;
         $this->saldo->setVisibility();
     }
 
@@ -514,6 +514,9 @@ class SaldoawalAdd extends Saldoawal
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->akun_id);
+
         // Load default values for add
         $this->loadDefaultValues();
 
@@ -688,7 +691,7 @@ class SaldoawalAdd extends Saldoawal
             if (IsApi() && $val === null) {
                 $this->akun_id->Visible = false; // Disable update for API request
             } else {
-                $this->akun_id->setFormValue($val, true, $validate);
+                $this->akun_id->setFormValue($val);
             }
         }
 
@@ -709,16 +712,6 @@ class SaldoawalAdd extends Saldoawal
                 $this->kredit->Visible = false; // Disable update for API request
             } else {
                 $this->kredit->setFormValue($val);
-            }
-        }
-
-        // Check field name 'user_id' first before field var 'x_user_id'
-        $val = $CurrentForm->hasValue("user_id") ? $CurrentForm->getValue("user_id") : $CurrentForm->getValue("x_user_id");
-        if (!$this->user_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->user_id->Visible = false; // Disable update for API request
-            } else {
-                $this->user_id->setFormValue($val, true, $validate);
             }
         }
 
@@ -744,7 +737,6 @@ class SaldoawalAdd extends Saldoawal
         $this->akun_id->CurrentValue = $this->akun_id->FormValue;
         $this->debet->CurrentValue = $this->debet->FormValue;
         $this->kredit->CurrentValue = $this->kredit->FormValue;
-        $this->user_id->CurrentValue = $this->user_id->FormValue;
         $this->saldo->CurrentValue = $this->saldo->FormValue;
     }
 
@@ -871,8 +863,27 @@ class SaldoawalAdd extends Saldoawal
             $this->periode_id->ViewValue = FormatNumber($this->periode_id->ViewValue, $this->periode_id->formatPattern());
 
             // akun_id
-            $this->akun_id->ViewValue = $this->akun_id->CurrentValue;
-            $this->akun_id->ViewValue = FormatNumber($this->akun_id->ViewValue, $this->akun_id->formatPattern());
+            $curVal = strval($this->akun_id->CurrentValue);
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+                if ($this->akun_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->akun_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                    } else {
+                        $this->akun_id->ViewValue = FormatNumber($this->akun_id->CurrentValue, $this->akun_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->akun_id->ViewValue = null;
+            }
 
             // debet
             $this->debet->ViewValue = $this->debet->CurrentValue;
@@ -901,9 +912,6 @@ class SaldoawalAdd extends Saldoawal
             // kredit
             $this->kredit->HrefValue = "";
 
-            // user_id
-            $this->user_id->HrefValue = "";
-
             // saldo
             $this->saldo->HrefValue = "";
         } elseif ($this->RowType == RowType::ADD) {
@@ -917,11 +925,30 @@ class SaldoawalAdd extends Saldoawal
 
             // akun_id
             $this->akun_id->setupEditAttributes();
-            $this->akun_id->EditValue = $this->akun_id->CurrentValue;
-            $this->akun_id->PlaceHolder = RemoveHtml($this->akun_id->caption());
-            if (strval($this->akun_id->EditValue) != "" && is_numeric($this->akun_id->EditValue)) {
-                $this->akun_id->EditValue = FormatNumber($this->akun_id->EditValue, null);
+            $curVal = trim(strval($this->akun_id->CurrentValue));
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+            } else {
+                $this->akun_id->ViewValue = $this->akun_id->Lookup !== null && is_array($this->akun_id->lookupOptions()) && count($this->akun_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->akun_id->ViewValue !== null) { // Load from cache
+                $this->akun_id->EditValue = array_values($this->akun_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->akun_id->CurrentValue, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->akun_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->akun_id->EditValue = $arwrk;
+            }
+            $this->akun_id->PlaceHolder = RemoveHtml($this->akun_id->caption());
 
             // debet
             $this->debet->setupEditAttributes();
@@ -938,14 +965,6 @@ class SaldoawalAdd extends Saldoawal
             }
             $this->kredit->EditValue = HtmlEncode($this->kredit->CurrentValue);
             $this->kredit->PlaceHolder = RemoveHtml($this->kredit->caption());
-
-            // user_id
-            $this->user_id->setupEditAttributes();
-            $this->user_id->EditValue = $this->user_id->CurrentValue;
-            $this->user_id->PlaceHolder = RemoveHtml($this->user_id->caption());
-            if (strval($this->user_id->EditValue) != "" && is_numeric($this->user_id->EditValue)) {
-                $this->user_id->EditValue = FormatNumber($this->user_id->EditValue, null);
-            }
 
             // saldo
             $this->saldo->setupEditAttributes();
@@ -968,9 +987,6 @@ class SaldoawalAdd extends Saldoawal
 
             // kredit
             $this->kredit->HrefValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
 
             // saldo
             $this->saldo->HrefValue = "";
@@ -1008,9 +1024,6 @@ class SaldoawalAdd extends Saldoawal
                     $this->akun_id->addErrorMessage(str_replace("%s", $this->akun_id->caption(), $this->akun_id->RequiredErrorMessage));
                 }
             }
-            if (!CheckInteger($this->akun_id->FormValue)) {
-                $this->akun_id->addErrorMessage($this->akun_id->getErrorMessage(false));
-            }
             if ($this->debet->Visible && $this->debet->Required) {
                 if (!$this->debet->IsDetailKey && EmptyValue($this->debet->FormValue)) {
                     $this->debet->addErrorMessage(str_replace("%s", $this->debet->caption(), $this->debet->RequiredErrorMessage));
@@ -1023,14 +1036,6 @@ class SaldoawalAdd extends Saldoawal
                 if (!$this->kredit->IsDetailKey && EmptyValue($this->kredit->FormValue)) {
                     $this->kredit->addErrorMessage(str_replace("%s", $this->kredit->caption(), $this->kredit->RequiredErrorMessage));
                 }
-            }
-            if ($this->user_id->Visible && $this->user_id->Required) {
-                if (!$this->user_id->IsDetailKey && EmptyValue($this->user_id->FormValue)) {
-                    $this->user_id->addErrorMessage(str_replace("%s", $this->user_id->caption(), $this->user_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->user_id->FormValue)) {
-                $this->user_id->addErrorMessage($this->user_id->getErrorMessage(false));
             }
             if ($this->saldo->Visible && $this->saldo->Required) {
                 if (!$this->saldo->IsDetailKey && EmptyValue($this->saldo->FormValue)) {
@@ -1123,9 +1128,6 @@ class SaldoawalAdd extends Saldoawal
         // kredit
         $this->kredit->setDbValueDef($rsnew, $this->kredit->CurrentValue, false);
 
-        // user_id
-        $this->user_id->setDbValueDef($rsnew, $this->user_id->CurrentValue, false);
-
         // saldo
         $this->saldo->setDbValueDef($rsnew, $this->saldo->CurrentValue, strval($this->saldo->CurrentValue) == "");
         return $rsnew;
@@ -1148,9 +1150,6 @@ class SaldoawalAdd extends Saldoawal
         }
         if (isset($row['kredit'])) { // kredit
             $this->kredit->setFormValue($row['kredit']);
-        }
-        if (isset($row['user_id'])) { // user_id
-            $this->user_id->setFormValue($row['user_id']);
         }
         if (isset($row['saldo'])) { // saldo
             $this->saldo->setFormValue($row['saldo']);
@@ -1181,6 +1180,8 @@ class SaldoawalAdd extends Saldoawal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_akun_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

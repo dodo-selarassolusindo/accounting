@@ -74,7 +74,7 @@ $USER_LEVEL_TABLES = [["akun","akun","Akun",true,"{BF72DE82-CB59-461F-848A-24CDF
     ["periode","periode","Periode",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","periodelist"],
     ["person","person","person",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","personlist"],
     ["produk","produk","produk",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","produklist"],
-    ["saldoawal","saldoawal","saldoawal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","saldoawallist"],
+    ["saldoawal","saldoawal","Saldo Awal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","saldoawallist"],
     ["satuan","satuan","satuan",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","satuanlist"],
     ["subgrup","subgrup","Sub Grup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","subgruplist"],
     ["tipejurnal","tipejurnal","Tipe Jurnal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","tipejurnallist"],
