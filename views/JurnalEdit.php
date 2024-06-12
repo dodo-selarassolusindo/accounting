@@ -188,6 +188,14 @@ loadjs.ready(["fjurnaledit", "datetimepicker"], function () {
     </div>
 <?php } ?>
 </div><!-- /page* -->
+<?php
+    if (in_array("jurnald", explode(",", $Page->getCurrentDetailTable())) && $jurnald->DetailEdit) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("jurnald", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "JurnaldGrid.php" ?>
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fjurnaledit"><?= $Language->phrase("SaveBtn") ?></button>

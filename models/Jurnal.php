@@ -129,6 +129,7 @@ class Jurnal extends DbTable
         $this->id->Raw = true;
         $this->id->IsAutoIncrement = true; // Autoincrement field
         $this->id->IsPrimaryKey = true; // Primary key field
+        $this->id->IsForeignKey = true; // Foreign key field
         $this->id->Nullable = false; // NOT NULL field
         $this->id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
@@ -351,6 +352,32 @@ class Jurnal extends DbTable
             }
             $field->setSort($fldSort);
         }
+    }
+
+    // Current detail table name
+    public function getCurrentDetailTable()
+    {
+        return Session(PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")) ?? "";
+    }
+
+    public function setCurrentDetailTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")] = $v;
+    }
+
+    // Get detail url
+    public function getDetailUrl()
+    {
+        // Detail url
+        $detailUrl = "";
+        if ($this->getCurrentDetailTable() == "jurnald") {
+            $detailUrl = Container("jurnald")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
+            $detailUrl .= "&" . GetForeignKeyUrl("fk_id", $this->id->CurrentValue);
+        }
+        if ($detailUrl == "") {
+            $detailUrl = "jurnallist";
+        }
+        return $detailUrl;
     }
 
     // Render X Axis for chart
@@ -750,6 +777,33 @@ class Jurnal extends DbTable
     // Update
     public function update(&$rs, $where = "", $rsold = null, $curfilter = true)
     {
+        // Cascade Update detail table 'jurnald'
+        $cascadeUpdate = false;
+        $rscascade = [];
+        if ($rsold && (isset($rs['id']) && $rsold['id'] != $rs['id'])) { // Update detail field 'jurnal_id'
+            $cascadeUpdate = true;
+            $rscascade['jurnal_id'] = $rs['id'];
+        }
+        if ($cascadeUpdate) {
+            $rswrk = Container("jurnald")->loadRs("`jurnal_id` = " . QuotedValue($rsold['id'], DataType::NUMBER, 'DB'))->fetchAllAssociative();
+            foreach ($rswrk as $rsdtlold) {
+                $rskey = [];
+                $fldname = 'id';
+                $rskey[$fldname] = $rsdtlold[$fldname];
+                $rsdtlnew = array_merge($rsdtlold, $rscascade);
+                // Call Row_Updating event
+                $success = Container("jurnald")->rowUpdating($rsdtlold, $rsdtlnew);
+                if ($success) {
+                    $success = Container("jurnald")->update($rscascade, $rskey, $rsdtlold);
+                }
+                if (!$success) {
+                    return false;
+                }
+                // Call Row_Updated event
+                Container("jurnald")->rowUpdated($rsdtlold, $rsdtlnew);
+            }
+        }
+
         // If no field is updated, execute may return 0. Treat as success
         try {
             $success = $this->updateSql($rs, $where, $curfilter)->executeStatement();
@@ -806,6 +860,30 @@ class Jurnal extends DbTable
     public function delete(&$rs, $where = "", $curfilter = false)
     {
         $success = true;
+
+        // Cascade delete detail table 'jurnald'
+        $dtlrows = Container("jurnald")->loadRs("`jurnal_id` = " . QuotedValue($rs['id'], DataType::NUMBER, "DB"))->fetchAllAssociative();
+        // Call Row Deleting event
+        foreach ($dtlrows as $dtlrow) {
+            $success = Container("jurnald")->rowDeleting($dtlrow);
+            if (!$success) {
+                break;
+            }
+        }
+        if ($success) {
+            foreach ($dtlrows as $dtlrow) {
+                $success = Container("jurnald")->delete($dtlrow); // Delete
+                if (!$success) {
+                    break;
+                }
+            }
+        }
+        // Call Row Deleted event
+        if ($success) {
+            foreach ($dtlrows as $dtlrow) {
+                Container("jurnald")->rowDeleted($dtlrow);
+            }
+        }
         if ($success) {
             try {
                 $success = $this->deleteSql($rs, $where, $curfilter)->executeStatement();
@@ -990,7 +1068,11 @@ class Jurnal extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        $url = $this->keyUrl("jurnaledit", $parm);
+        if ($parm != "") {
+            $url = $this->keyUrl("jurnaledit", $parm);
+        } else {
+            $url = $this->keyUrl("jurnaledit", Config("TABLE_SHOW_DETAIL") . "=");
+        }
         return $this->addMasterUrl($url);
     }
 
@@ -1004,7 +1086,11 @@ class Jurnal extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        $url = $this->keyUrl("jurnaladd", $parm);
+        if ($parm != "") {
+            $url = $this->keyUrl("jurnaladd", $parm);
+        } else {
+            $url = $this->keyUrl("jurnaladd", Config("TABLE_SHOW_DETAIL") . "=");
+        }
         return $this->addMasterUrl($url);
     }
 

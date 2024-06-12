@@ -129,6 +129,14 @@ loadjs.ready("head", function () {
     </tr>
 <?php } ?>
 </table>
+<?php
+    if (in_array("jurnald", explode(",", $Page->getCurrentDetailTable())) && $jurnald->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("jurnald", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "JurnaldGrid.php" ?>
+<?php } ?>
 </form>
 </main>
 <?php

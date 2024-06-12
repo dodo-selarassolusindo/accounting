@@ -587,6 +587,9 @@ class JurnalEdit extends Jurnal
         // Process form if post back
         if ($postBack) {
             $this->loadFormValues(); // Get form values
+
+            // Set up detail parameters
+            $this->setupDetailParms();
         }
 
         // Validate form if post back
@@ -613,9 +616,16 @@ class JurnalEdit extends Jurnal
                         $this->terminate("jurnallist"); // No matching record, return to list
                         return;
                     }
+
+                // Set up detail parameters
+                $this->setupDetailParms();
                 break;
             case "update": // Update
-                $returnUrl = $this->getReturnUrl();
+                if ($this->getCurrentDetailTable() != "") { // Master/detail edit
+                    $returnUrl = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $this->getCurrentDetailTable()); // Master/Detail view page
+                } else {
+                    $returnUrl = $this->getReturnUrl();
+                }
                 if (GetPageName($returnUrl) == "jurnallist") {
                     $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
                 }
@@ -654,6 +664,9 @@ class JurnalEdit extends Jurnal
                 } else {
                     $this->EventCancelled = true; // Event cancelled
                     $this->restoreFormValues(); // Restore form values if update failed
+
+                    // Set up detail parameters
+                    $this->setupDetailParms();
                 }
         }
 
@@ -1081,6 +1094,14 @@ class JurnalEdit extends Jurnal
                 }
             }
 
+        // Validate detail grid
+        $detailTblVar = explode(",", $this->getCurrentDetailTable());
+        $detailPage = Container("JurnaldGrid");
+        if (in_array("jurnald", $detailTblVar) && $detailPage->DetailEdit) {
+            $detailPage->run();
+            $validateForm = $validateForm && $detailPage->validateGridForm();
+        }
+
         // Return validate result
         $validateForm = $validateForm && !$this->hasInvalidFields();
 
@@ -1119,6 +1140,11 @@ class JurnalEdit extends Jurnal
         // Update current values
         $this->setCurrentValues($rsnew);
 
+        // Begin transaction
+        if ($this->getCurrentDetailTable() != "" && $this->UseTransaction) {
+            $conn->beginTransaction();
+        }
+
         // Call Row Updating event
         $updateRow = $this->rowUpdating($rsold, $rsnew);
         if ($updateRow) {
@@ -1132,6 +1158,30 @@ class JurnalEdit extends Jurnal
                 $editRow = true; // No field to update
             }
             if ($editRow) {
+            }
+
+            // Update detail records
+            $detailTblVar = explode(",", $this->getCurrentDetailTable());
+            $detailPage = Container("JurnaldGrid");
+            if (in_array("jurnald", $detailTblVar) && $detailPage->DetailEdit && $editRow) {
+                $editRow = $detailPage->gridUpdate();
+            }
+
+            // Commit/Rollback transaction
+            if ($this->getCurrentDetailTable() != "") {
+                if ($editRow) {
+                    if ($this->UseTransaction) { // Commit transaction
+                        if ($conn->isTransactionActive()) {
+                            $conn->commit();
+                        }
+                    }
+                } else {
+                    if ($this->UseTransaction) { // Rollback transaction
+                        if ($conn->isTransactionActive()) {
+                            $conn->rollback();
+                        }
+                    }
+                }
             }
         } else {
             if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
@@ -1212,6 +1262,36 @@ class JurnalEdit extends Jurnal
         }
         if (isset($row['nomer'])) { // nomer
             $this->nomer->CurrentValue = $row['nomer'];
+        }
+    }
+
+    // Set up detail parms based on QueryString
+    protected function setupDetailParms()
+    {
+        // Get the keys for master table
+        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
+        if ($detailTblVar !== null) {
+            $this->setCurrentDetailTable($detailTblVar);
+        } else {
+            $detailTblVar = $this->getCurrentDetailTable();
+        }
+        if ($detailTblVar != "") {
+            $detailTblVar = explode(",", $detailTblVar);
+            if (in_array("jurnald", $detailTblVar)) {
+                $detailPageObj = Container("JurnaldGrid");
+                if ($detailPageObj->DetailEdit) {
+                    $detailPageObj->EventCancelled = $this->EventCancelled;
+                    $detailPageObj->CurrentMode = "edit";
+                    $detailPageObj->CurrentAction = "gridedit";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->jurnal_id->IsDetailKey = true;
+                    $detailPageObj->jurnal_id->CurrentValue = $this->id->CurrentValue;
+                    $detailPageObj->jurnal_id->setSessionValue($detailPageObj->jurnal_id->CurrentValue);
+                }
+            }
         }
     }
 

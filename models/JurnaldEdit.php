@@ -574,6 +574,9 @@ class JurnaldEdit extends Jurnald
                 }
             }
 
+            // Set up master detail parameters
+            $this->setupMasterParms();
+
             // Load result set
             if ($this->isShow()) {
                     // Load current record
@@ -624,7 +627,7 @@ class JurnaldEdit extends Jurnald
                     }
 
                     // Handle UseAjaxActions with return page
-                    if ($this->IsModal && $this->UseAjaxActions) {
+                    if ($this->IsModal && $this->UseAjaxActions && !$this->getCurrentMasterTable()) {
                         $this->IsModal = false;
                         if (GetPageName($returnUrl) != "jurnaldlist") {
                             Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL
@@ -899,10 +902,16 @@ class JurnaldEdit extends Jurnald
 
             // jurnal_id
             $this->jurnal_id->setupEditAttributes();
-            $this->jurnal_id->EditValue = $this->jurnal_id->CurrentValue;
-            $this->jurnal_id->PlaceHolder = RemoveHtml($this->jurnal_id->caption());
-            if (strval($this->jurnal_id->EditValue) != "" && is_numeric($this->jurnal_id->EditValue)) {
-                $this->jurnal_id->EditValue = FormatNumber($this->jurnal_id->EditValue, null);
+            if ($this->jurnal_id->getSessionValue() != "") {
+                $this->jurnal_id->CurrentValue = GetForeignKeyValue($this->jurnal_id->getSessionValue());
+                $this->jurnal_id->ViewValue = $this->jurnal_id->CurrentValue;
+                $this->jurnal_id->ViewValue = FormatNumber($this->jurnal_id->ViewValue, $this->jurnal_id->formatPattern());
+            } else {
+                $this->jurnal_id->EditValue = $this->jurnal_id->CurrentValue;
+                $this->jurnal_id->PlaceHolder = RemoveHtml($this->jurnal_id->caption());
+                if (strval($this->jurnal_id->EditValue) != "" && is_numeric($this->jurnal_id->EditValue)) {
+                    $this->jurnal_id->EditValue = FormatNumber($this->jurnal_id->EditValue, null);
+                }
             }
 
             // akun_id
@@ -1042,6 +1051,24 @@ class JurnaldEdit extends Jurnald
         // Update current values
         $this->setCurrentValues($rsnew);
 
+        // Check referential integrity for master table 'jurnal'
+        $detailKeys = [];
+        $keyValue = $rsnew['jurnal_id'] ?? $rsold['jurnal_id'];
+        $detailKeys['jurnal_id'] = $keyValue;
+        $masterTable = Container("jurnal");
+        $masterFilter = $this->getMasterFilter($masterTable, $detailKeys);
+        if (!EmptyValue($masterFilter)) {
+            $rsmaster = $masterTable->loadRs($masterFilter)->fetch();
+            $validMasterRecord = $rsmaster !== false;
+        } else { // Allow null value if not required field
+            $validMasterRecord = $masterFilter === null;
+        }
+        if (!$validMasterRecord) {
+            $relatedRecordMsg = str_replace("%t", "jurnal", $Language->phrase("RelatedRecordRequired"));
+            $this->setFailureMessage($relatedRecordMsg);
+            return false;
+        }
+
         // Call Row Updating event
         $updateRow = $this->rowUpdating($rsold, $rsnew);
         if ($updateRow) {
@@ -1093,6 +1120,9 @@ class JurnaldEdit extends Jurnald
         $rsnew = [];
 
         // jurnal_id
+        if ($this->jurnal_id->getSessionValue() != "") {
+            $this->jurnal_id->ReadOnly = true;
+        }
         $this->jurnal_id->setDbValueDef($rsnew, $this->jurnal_id->CurrentValue, $this->jurnal_id->ReadOnly);
 
         // akun_id
@@ -1124,6 +1154,79 @@ class JurnaldEdit extends Jurnald
         if (isset($row['kredit'])) { // kredit
             $this->kredit->CurrentValue = $row['kredit'];
         }
+    }
+
+    // Set up master/detail based on QueryString
+    protected function setupMasterParms()
+    {
+        $validMaster = false;
+        $foreignKeys = [];
+        // Get the keys for master table
+        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                $validMaster = true;
+                $this->DbMasterFilter = "";
+                $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "jurnal") {
+                $validMaster = true;
+                $masterTbl = Container("jurnal");
+                if (($parm = Get("fk_id", Get("jurnal_id"))) !== null) {
+                    $masterTbl->id->setQueryStringValue($parm);
+                    $this->jurnal_id->QueryStringValue = $masterTbl->id->QueryStringValue; // DO NOT change, master/detail key data type can be different
+                    $this->jurnal_id->setSessionValue($this->jurnal_id->QueryStringValue);
+                    $foreignKeys["jurnal_id"] = $this->jurnal_id->QueryStringValue;
+                    if (!is_numeric($masterTbl->id->QueryStringValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                    $validMaster = true;
+                    $this->DbMasterFilter = "";
+                    $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "jurnal") {
+                $validMaster = true;
+                $masterTbl = Container("jurnal");
+                if (($parm = Post("fk_id", Post("jurnal_id"))) !== null) {
+                    $masterTbl->id->setFormValue($parm);
+                    $this->jurnal_id->FormValue = $masterTbl->id->FormValue;
+                    $this->jurnal_id->setSessionValue($this->jurnal_id->FormValue);
+                    $foreignKeys["jurnal_id"] = $this->jurnal_id->FormValue;
+                    if (!is_numeric($masterTbl->id->FormValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        }
+        if ($validMaster) {
+            // Save current master table
+            $this->setCurrentMasterTable($masterTblVar);
+            $this->setSessionWhere($this->getDetailFilterFromSession());
+
+            // Reset start record counter (new master key)
+            if (!$this->isAddOrEdit() && !$this->isGridUpdate()) {
+                $this->StartRecord = 1;
+                $this->setStartRecordNumber($this->StartRecord);
+            }
+
+            // Clear previous master key from Session
+            if ($masterTblVar != "jurnal") {
+                if (!array_key_exists("jurnal_id", $foreignKeys)) { // Not current foreign key
+                    $this->jurnal_id->setSessionValue("");
+                }
+            }
+        }
+        $this->DbMasterFilter = $this->getMasterFilterFromSession(); // Get master filter from session
+        $this->DbDetailFilter = $this->getDetailFilterFromSession(); // Get detail filter from session
     }
 
     // Set up Breadcrumb

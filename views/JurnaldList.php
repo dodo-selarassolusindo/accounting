@@ -44,6 +44,15 @@ loadjs.ready("head", function () {
 <?php } ?>
 </div>
 <?php } ?>
+<?php if (!$Page->isExport() || Config("EXPORT_MASTER_RECORD") && $Page->isExport("print")) { ?>
+<?php
+if ($Page->DbMasterFilter != "" && $Page->getCurrentMasterTable() == "jurnal") {
+    if ($Page->MasterRecordExists) {
+        include_once "views/JurnalMaster.php";
+    }
+}
+?>
+<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <?php } ?>
 <?php $Page->showPageHeader(); ?>
@@ -65,6 +74,10 @@ $Page->showMessage();
 <input type="hidden" name="t" value="jurnald">
 <?php if ($Page->IsModal) { ?>
 <input type="hidden" name="modal" value="1">
+<?php } ?>
+<?php if ($Page->getCurrentMasterTable() == "jurnal" && $Page->CurrentAction) { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="jurnal">
+<input type="hidden" name="fk_id" value="<?= HtmlEncode($Page->jurnal_id->getSessionValue()) ?>">
 <?php } ?>
 <div id="gmp_jurnald" class="card-body ew-grid-middle-panel <?= $Page->TableContainerClass ?>" style="<?= $Page->TableContainerStyle ?>">
 <?php if ($Page->TotalRecords > 0 || $Page->isGridEdit() || $Page->isMultiEdit()) { ?>

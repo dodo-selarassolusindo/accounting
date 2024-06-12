@@ -27,10 +27,10 @@
       <phrase id="menutext" value="Transaksi" />
     </menu>
     <menu id="5">
-      <phrase id="menutext" value="jurnal" />
+      <phrase id="menutext" value="Jurnal" />
     </menu>
     <menu id="6">
-      <phrase id="menutext" value="jurnald" />
+      <phrase id="menutext" value="Detail" />
     </menu>
     <menu id="27">
       <phrase id="menutext" value="Setting" />
@@ -48,7 +48,7 @@
       <phrase id="menutext" value="matauang" />
     </menu>
     <menu id="25">
-      <phrase id="menutext" value="Others" />
+      <phrase id="menutext" value="Lain-Lain" />
     </menu>
     <menu id="2">
       <phrase id="menutext" value="audittrail" />
@@ -168,7 +168,7 @@
       <phrase id="tblcaption" value="Home" />
     </table>
     <table id="jurnal">
-      <phrase id="tblcaption" value="jurnal" />
+      <phrase id="tblcaption" value="Jurnal" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>
@@ -192,7 +192,7 @@
       </field>
     </table>
     <table id="jurnald">
-      <phrase id="tblcaption" value="jurnald" />
+      <phrase id="tblcaption" value="Detail" />
       <field id="id">
         <phrase id="fldcaption" value="id" />
       </field>

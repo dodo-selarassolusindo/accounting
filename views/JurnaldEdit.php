@@ -71,6 +71,10 @@ loadjs.ready("head", function () {
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if ($Page->getCurrentMasterTable() == "jurnal") { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="jurnal">
+<input type="hidden" name="fk_id" value="<?= HtmlEncode($Page->jurnal_id->getSessionValue()) ?>">
+<?php } ?>
 <div class="ew-edit-div"><!-- page* -->
 <?php if ($Page->id->Visible) { // id ?>
     <div id="r_id"<?= $Page->id->rowAttributes() ?>>
@@ -88,11 +92,17 @@ loadjs.ready("head", function () {
     <div id="r_jurnal_id"<?= $Page->jurnal_id->rowAttributes() ?>>
         <label id="elh_jurnald_jurnal_id" for="x_jurnal_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->jurnal_id->caption() ?><?= $Page->jurnal_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->jurnal_id->cellAttributes() ?>>
+<?php if ($Page->jurnal_id->getSessionValue() != "") { ?>
+<span<?= $Page->jurnal_id->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->jurnal_id->getDisplayValue($Page->jurnal_id->ViewValue))) ?>"></span>
+<input type="hidden" id="x_jurnal_id" name="x_jurnal_id" value="<?= HtmlEncode($Page->jurnal_id->CurrentValue) ?>" data-hidden="1">
+<?php } else { ?>
 <span id="el_jurnald_jurnal_id">
 <input type="<?= $Page->jurnal_id->getInputTextType() ?>" name="x_jurnal_id" id="x_jurnal_id" data-table="jurnald" data-field="x_jurnal_id" value="<?= $Page->jurnal_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->jurnal_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->jurnal_id->formatPattern()) ?>"<?= $Page->jurnal_id->editAttributes() ?> aria-describedby="x_jurnal_id_help">
 <?= $Page->jurnal_id->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->jurnal_id->getErrorMessage() ?></div>
 </span>
+<?php } ?>
 </div></div>
     </div>
 <?php } ?>

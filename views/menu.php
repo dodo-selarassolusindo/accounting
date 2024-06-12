@@ -18,7 +18,7 @@ $topMenu->addMenuItem(12, "mi_pajak", $Language->menuPhrase("12", "MenuText"), "
 $topMenu->addMenuItem(20, "mi_tipejurnal", $Language->menuPhrase("20", "MenuText"), "tipejurnallist", 27, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(10, "mi_kurs", $Language->menuPhrase("10", "MenuText"), "kurslist", 27, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(11, "mi_matauang", $Language->menuPhrase("11", "MenuText"), "matauanglist", 27, "", true, false, false, "", "", true, false);
-$topMenu->addMenuItem(25, "mci_Others", $Language->menuPhrase("25", "MenuText"), "", -1, "", true, false, true, "", "", true, false);
+$topMenu->addMenuItem(25, "mci_Lain-Lain", $Language->menuPhrase("25", "MenuText"), "", -1, "", true, false, true, "", "", true, false);
 $topMenu->addMenuItem(2, "mi_audittrail", $Language->menuPhrase("2", "MenuText"), "audittraillist", 25, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(4, "mi_gudang", $Language->menuPhrase("4", "MenuText"), "gudanglist", 25, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(23, "mi_type", $Language->menuPhrase("23", "MenuText"), "typelist", 25, "", true, false, false, "", "", true, false);
@@ -49,7 +49,7 @@ $sideMenu->addMenuItem(12, "mi_pajak", $Language->menuPhrase("12", "MenuText"), 
 $sideMenu->addMenuItem(20, "mi_tipejurnal", $Language->menuPhrase("20", "MenuText"), "tipejurnallist", 27, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(10, "mi_kurs", $Language->menuPhrase("10", "MenuText"), "kurslist", 27, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(11, "mi_matauang", $Language->menuPhrase("11", "MenuText"), "matauanglist", 27, "", true, false, false, "", "", true, true);
-$sideMenu->addMenuItem(25, "mci_Others", $Language->menuPhrase("25", "MenuText"), "", -1, "", true, false, true, "", "", true, true);
+$sideMenu->addMenuItem(25, "mci_Lain-Lain", $Language->menuPhrase("25", "MenuText"), "", -1, "", true, false, true, "", "", true, true);
 $sideMenu->addMenuItem(2, "mi_audittrail", $Language->menuPhrase("2", "MenuText"), "audittraillist", 25, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(4, "mi_gudang", $Language->menuPhrase("4", "MenuText"), "gudanglist", 25, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(23, "mi_type", $Language->menuPhrase("23", "MenuText"), "typelist", 25, "", true, false, false, "", "", true, true);
