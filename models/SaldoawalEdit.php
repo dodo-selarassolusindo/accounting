@@ -521,6 +521,7 @@ class SaldoawalEdit extends Saldoawal
         }
 
         // Set up lookup cache
+        $this->setupLookupOptions($this->periode_id);
         $this->setupLookupOptions($this->akun_id);
 
         // Check modal
@@ -707,7 +708,7 @@ class SaldoawalEdit extends Saldoawal
             if (IsApi() && $val === null) {
                 $this->periode_id->Visible = false; // Disable update for API request
             } else {
-                $this->periode_id->setFormValue($val, true, $validate);
+                $this->periode_id->setFormValue($val);
             }
         }
 
@@ -889,8 +890,27 @@ class SaldoawalEdit extends Saldoawal
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // periode_id
-            $this->periode_id->ViewValue = $this->periode_id->CurrentValue;
-            $this->periode_id->ViewValue = FormatNumber($this->periode_id->ViewValue, $this->periode_id->formatPattern());
+            $curVal = strval($this->periode_id->CurrentValue);
+            if ($curVal != "") {
+                $this->periode_id->ViewValue = $this->periode_id->lookupCacheOption($curVal);
+                if ($this->periode_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->periode_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->periode_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->periode_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->periode_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->periode_id->ViewValue = $this->periode_id->displayValue($arwrk);
+                    } else {
+                        $this->periode_id->ViewValue = FormatNumber($this->periode_id->CurrentValue, $this->periode_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->periode_id->ViewValue = null;
+            }
 
             // akun_id
             $curVal = strval($this->akun_id->CurrentValue);
@@ -947,11 +967,33 @@ class SaldoawalEdit extends Saldoawal
         } elseif ($this->RowType == RowType::EDIT) {
             // periode_id
             $this->periode_id->setupEditAttributes();
-            $this->periode_id->EditValue = $this->periode_id->CurrentValue;
-            $this->periode_id->PlaceHolder = RemoveHtml($this->periode_id->caption());
-            if (strval($this->periode_id->EditValue) != "" && is_numeric($this->periode_id->EditValue)) {
-                $this->periode_id->EditValue = FormatNumber($this->periode_id->EditValue, null);
+            $curVal = trim(strval($this->periode_id->CurrentValue));
+            if ($curVal != "") {
+                $this->periode_id->ViewValue = $this->periode_id->lookupCacheOption($curVal);
+            } else {
+                $this->periode_id->ViewValue = $this->periode_id->Lookup !== null && is_array($this->periode_id->lookupOptions()) && count($this->periode_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->periode_id->ViewValue !== null) { // Load from cache
+                $this->periode_id->EditValue = array_values($this->periode_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->periode_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->periode_id->CurrentValue, $this->periode_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->periode_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                foreach ($arwrk as &$row) {
+                    $row = $this->periode_id->Lookup->renderViewRow($row);
+                }
+                $this->periode_id->EditValue = $arwrk;
+            }
+            $this->periode_id->PlaceHolder = RemoveHtml($this->periode_id->caption());
 
             // akun_id
             $this->akun_id->setupEditAttributes();
@@ -1045,9 +1087,6 @@ class SaldoawalEdit extends Saldoawal
                 if (!$this->periode_id->IsDetailKey && EmptyValue($this->periode_id->FormValue)) {
                     $this->periode_id->addErrorMessage(str_replace("%s", $this->periode_id->caption(), $this->periode_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->periode_id->FormValue)) {
-                $this->periode_id->addErrorMessage($this->periode_id->getErrorMessage(false));
             }
             if ($this->akun_id->Visible && $this->akun_id->Required) {
                 if (!$this->akun_id->IsDetailKey && EmptyValue($this->akun_id->FormValue)) {
@@ -1228,6 +1267,8 @@ class SaldoawalEdit extends Saldoawal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_periode_id":
+                    break;
                 case "x_akun_id":
                     break;
                 default:
