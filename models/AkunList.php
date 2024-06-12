@@ -2374,7 +2374,7 @@ class AkunList extends Akun
     public function pageLoad()
     {
         //Log("Page Load");
-        $this->subgrup_id->DisplayValueSeparator = "-"; // Use hyphen as separator
+        $this->subgrup_id->DisplayValueSeparator = " - "; // Use hyphen as separator
     }
 
     // Page Unload event
