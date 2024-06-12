@@ -545,13 +545,13 @@ label.form-check-label {
 }
 
 [data-bs-theme=light] .ew-grid {
-  border-color: #467B99;
+  border-color: #0A98B4;
 }
 [data-bs-theme=light] .ew-grid.ew-loading {
-  border-color: rgba(70, 123, 153, 0.25);
+  border-color: rgba(10, 152, 180, 0.25);
 }
 [data-bs-theme=light] .ew-grid .ew-grid-upper-panel {
-  border-bottom: var(--bs-border-width) solid #508BAD;
+  border-bottom: var(--bs-border-width) solid #0BACCC;
 }
 [data-bs-theme=light] .ew-grid .ew-table tbody,
 [data-bs-theme=light] .ew-grid .ew-table tfoot,
@@ -562,7 +562,7 @@ label.form-check-label {
 }
 [data-bs-theme=light] .ew-grid .ew-table > thead > *,
 [data-bs-theme=light] .ew-grid .ew-table > thead > * > * {
-  border-bottom-color: #508BAD !important;
+  border-bottom-color: #0BACCC !important;
 }
 [data-bs-theme=light] .ew-grid .ew-table > :not(:last-child):not(thead) > :last-child > * {
   border-bottom-color: #DEE2E6;
@@ -712,7 +712,7 @@ a.ew-btn {
   --bs-table-color: var(--bs-emphasis-color) ;
   --bs-table-hover-color: var(--bs-emphasis-color);
   --bs-table-striped-color: var(--bs-emphasis-color);
-  --bs-table-active-bg: #DFEDF5;
+  --bs-table-active-bg: #CFF4FC;
 }
 [data-bs-theme=light] .ew-grid .ew-table > tbody:last-child > tr:last-child > td.ew-table-border-bottom,
 [data-bs-theme=light] .ew-grid .ew-table > tfoot > tr:last-child > td.ew-table-border-bottom,
@@ -723,17 +723,17 @@ a.ew-btn {
 [data-bs-theme=light] .ew-grid .ew-table > thead > tr > th,
 [data-bs-theme=light] .ew-grid .ew-table > thead > tr > td {
   font-weight: normal;
-  border-color: #508BAD;
+  border-color: #0BACCC;
 }
 [data-bs-theme=light] .ew-grid .ew-table .ew-table-header > th,
 [data-bs-theme=light] .ew-grid .ew-table .ew-table-header > td,
 [data-bs-theme=light] .ew-grid .ew-table .ew-rpt-col-summary,
 [data-bs-theme=light] .ew-grid .ew-table .ew-rpt-col-header {
-  --bs-table-bg: #5797BC;
+  --bs-table-bg: #0CBBDE;
   --bs-table-color-state: #000000;
 }
 [data-bs-theme=light] .ew-grid .ew-table .ew-table-footer > td {
-  --bs-table-bg: #E7F1F7;
+  --bs-table-bg: #DBF7FD;
 }
 [data-bs-theme=light] .ew-grid .ew-table > tbody > .ew-table-alt-row > *,
 [data-bs-theme=light] .ew-grid .ew-table > tbody > * > .ew-table-alt-row {
@@ -884,7 +884,7 @@ a.ew-btn {
   border-color: var(--bs-border-color);
 }
 .ew-export-table .ew-table-header, .ew-export-table .ew-rpt-col-summary, .ew-export-table .ew-rpt-col-header, .ew-export-table .ew-export-table-header td {
-  background-color: #5797BC;
+  background-color: #0CBBDE;
   color: #212529;
 }
 .ew-export-table .ew-export-table-row > td {
@@ -896,7 +896,7 @@ a.ew-btn {
   color: #212529;
 }
 .ew-export-table .ew-export-table-footer {
-  background-color: #E7F1F7;
+  background-color: #DBF7FD;
   color: #212529;
 }
 
@@ -965,10 +965,10 @@ a.ew-btn {
 }
 
 [data-bs-theme=light] .ew-rpt-grp-field-1 {
-  --bs-table-bg-state: #E7F1F7;
+  --bs-table-bg-state: #DBF7FD;
 }
 [data-bs-theme=light] .ew-rpt-grp-summary-1 {
-  --bs-table-bg-state: #E7F1F7;
+  --bs-table-bg-state: #DBF7FD;
 }
 
 [data-bs-theme=dark] .ew-rpt-grp-field-1 {
@@ -994,10 +994,10 @@ a.ew-btn {
 }
 
 [data-bs-theme=light] .ew-rpt-grp-field-3 {
-  --bs-table-bg-state: #E7F1F7;
+  --bs-table-bg-state: #DBF7FD;
 }
 [data-bs-theme=light] .ew-rpt-grp-summary-3 {
-  --bs-table-bg-state: #E7F1F7;
+  --bs-table-bg-state: #DBF7FD;
 }
 
 [data-bs-theme=dark] .ew-rpt-grp-field-3 {
@@ -1023,10 +1023,10 @@ a.ew-btn {
 }
 
 [data-bs-theme=light] .ew-rpt-grp-field-5 {
-  --bs-table-bg-state: #E7F1F7;
+  --bs-table-bg-state: #DBF7FD;
 }
 [data-bs-theme=light] .ew-rpt-grp-summary-5 {
-  --bs-table-bg-state: #E7F1F7;
+  --bs-table-bg-state: #DBF7FD;
 }
 
 [data-bs-theme=dark] .ew-rpt-grp-field-5 {
@@ -1072,10 +1072,10 @@ tr[data-group] .ew-group-toggle :not(.ew-rpt-grp-hide) {
 }
 
 [data-bs-theme=light] .ew-rpt-page-summary > td {
-  --bs-table-bg-state: #E3EFF6;
+  --bs-table-bg-state: #D5F6FC;
 }
 [data-bs-theme=light] .ew-rpt-grand-summary > td {
-  --bs-table-bg-state: #DFEDF5;
+  --bs-table-bg-state: #CFF4FC;
 }
 
 .ew-crosstab-values {
@@ -1692,9 +1692,9 @@ html[dir=rtl] .ew-crosstab-values {
 }
 
 [data-bs-theme=light] .table.ew-table.table-head-fixed thead tr:nth-child(1) th {
-  background-color: #5797BC;
+  background-color: #0CBBDE;
   box-shadow: none;
-  outline: var(--bs-border-width) solid #508BAD;
+  outline: var(--bs-border-width) solid #0BACCC;
   outline-offset: -1px;
 }
 
@@ -2718,7 +2718,7 @@ mark.ew-mark:not(.mark) {
   user-select: none;
 }
 .pace .pace-progress {
-  background-color: #367FA9;
+  background-color: #0A97B4;
   position: fixed;
   z-index: 2000;
   top: 0;
