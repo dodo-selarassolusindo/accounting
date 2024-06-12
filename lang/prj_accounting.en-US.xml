@@ -143,10 +143,10 @@
     <table id="grup">
       <phrase id="tblcaption" value="Grup" />
       <field id="id">
-        <phrase id="fldcaption" value="id" />
+        <phrase id="fldcaption" value="Kode" />
       </field>
       <field id="name">
-        <phrase id="fldcaption" value="name" />
+        <phrase id="fldcaption" value="Nama" />
       </field>
     </table>
     <table id="gudang">
@@ -163,6 +163,9 @@
       <field id="lokasi">
         <phrase id="fldcaption" value="lokasi" />
       </field>
+    </table>
+    <table id="home">
+      <phrase id="tblcaption" value="Home" />
     </table>
     <table id="jurnal">
       <phrase id="tblcaption" value="jurnal" />
@@ -581,9 +584,6 @@
       <field id="nama">
         <phrase id="fldcaption" value="nama" />
       </field>
-    </table>
-    <table id="home">
-      <phrase id="tblcaption" value="Home" />
     </table>
   </project>
 </ew-language>

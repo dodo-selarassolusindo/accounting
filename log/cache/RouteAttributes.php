@@ -53,9 +53,6 @@
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
-        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
-        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
-        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone ($p['PHPMaker2024\\prj_accounting\\Attributes\\Get'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('PHPMaker2024\\prj_accounting\\Attributes\\Get')),
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Get'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
@@ -123,21 +120,6 @@
     [
         'PHPMaker2024\\prj_accounting\\Attributes\\Map' => [
             'methods' => [
-                [
-                    'GET',
-                    'POST',
-                    'OPTIONS',
-                ],
-                [
-                    'GET',
-                    'POST',
-                    'OPTIONS',
-                ],
-                [
-                    'GET',
-                    'POST',
-                    'OPTIONS',
-                ],
                 [
                     'GET',
                     'POST',
@@ -722,10 +704,7 @@
                 '/audittrailedit[/{Id}]',
                 '/audittraildelete[/{Id}]',
                 '/gruplist[/{id}]',
-                '/grupadd[/{id}]',
-                '/grupview[/{id}]',
                 '/grupedit[/{id}]',
-                '/grupdelete[/{id}]',
                 '/gudanglist[/{id}]',
                 '/gudangadd[/{id}]',
                 '/gudangview[/{id}]',
@@ -842,10 +821,7 @@
                 'PHPMaker2024\\prj_accounting\\AudittrailController:edit',
                 'PHPMaker2024\\prj_accounting\\AudittrailController:delete',
                 'PHPMaker2024\\prj_accounting\\GrupController:list',
-                'PHPMaker2024\\prj_accounting\\GrupController:add',
-                'PHPMaker2024\\prj_accounting\\GrupController:view',
                 'PHPMaker2024\\prj_accounting\\GrupController:edit',
-                'PHPMaker2024\\prj_accounting\\GrupController:delete',
                 'PHPMaker2024\\prj_accounting\\GudangController:list',
                 'PHPMaker2024\\prj_accounting\\GudangController:add',
                 'PHPMaker2024\\prj_accounting\\GudangController:view',
@@ -951,15 +927,6 @@
                 'PHPMaker2024\\prj_accounting\\TypeController:delete',
             ],
             'middleware' => [
-                [
-                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
-                ],
-                [
-                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
-                ],
-                [
-                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
-                ],
                 [
                     'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
                 ],
@@ -1316,10 +1283,7 @@
                 'edit.audittrail',
                 'delete.audittrail',
                 'list.grup',
-                'add.grup',
-                'view.grup',
                 'edit.grup',
-                'delete.grup',
                 'list.gudang',
                 'add.gudang',
                 'view.gudang',
@@ -1425,9 +1389,6 @@
                 'delete.type',
             ],
             'options' => [
-                [],
-                [],
-                [],
                 [],
                 [],
                 [],
@@ -1662,9 +1623,6 @@
         $o[112],
         $o[113],
         $o[114],
-        $o[115],
-        $o[116],
-        $o[117],
     ],
     []
 );

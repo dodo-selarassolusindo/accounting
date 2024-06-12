@@ -25,6 +25,7 @@ $USER_LEVEL_PRIVS = [["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}akun","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}audittrail","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}grup","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}gudang","-2","0"],
+    ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}home.php","-2","72"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}jurnal","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}jurnald","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}kelompok","-2","0"],
@@ -43,8 +44,7 @@ $USER_LEVEL_PRIVS = [["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}akun","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}tipejurnal","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}top","-2","0"],
     ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}tos","-2","0"],
-    ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}type","-2","0"],
-    ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}home.php","-2","72"]];
+    ["{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}type","-2","0"]];
 
 /**
  * Tables
@@ -61,6 +61,7 @@ $USER_LEVEL_TABLES = [["akun","akun","Akun",true,"{BF72DE82-CB59-461F-848A-24CDF
     ["audittrail","audittrail","audittrail",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","audittraillist"],
     ["grup","grup","Grup",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gruplist"],
     ["gudang","gudang","gudang",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","gudanglist"],
+    ["home.php","home","Home",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","home"],
     ["jurnal","jurnal","jurnal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","jurnallist"],
     ["jurnald","jurnald","jurnald",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","jurnaldlist"],
     ["kelompok","kelompok","kelompok",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","kelompoklist"],
@@ -79,5 +80,4 @@ $USER_LEVEL_TABLES = [["akun","akun","Akun",true,"{BF72DE82-CB59-461F-848A-24CDF
     ["tipejurnal","tipejurnal","tipejurnal",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","tipejurnallist"],
     ["top","top","top",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","toplist"],
     ["tos","tos","tos",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","toslist"],
-    ["type","type","type",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","typelist"],
-    ["home.php","home","Home",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","home"]];
+    ["type","type","type",true,"{BF72DE82-CB59-461F-848A-24CDFE0DCFE4}","typelist"]];

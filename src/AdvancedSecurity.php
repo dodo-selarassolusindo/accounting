@@ -499,6 +499,9 @@ class AdvancedSecurity
                 }
             }
         }
+        if ($valid) {
+            WriteAuditLog($usr, $GLOBALS["Language"]->phrase("AuditTrailAutoLogin"), CurrentUserIP());
+        }
         return $valid;
     }
 

@@ -83,6 +83,7 @@ return [
     "audittrail" => \DI\create(Audittrail::class),
     "grup" => \DI\create(Grup::class),
     "gudang" => \DI\create(Gudang::class),
+    "home" => \DI\create(Home::class),
     "jurnal" => \DI\create(Jurnal::class),
     "jurnald" => \DI\create(Jurnald::class),
     "kelompok" => \DI\create(Kelompok::class),
@@ -102,5 +103,4 @@ return [
     "top" => \DI\create(Top::class),
     "tos" => \DI\create(Tos::class),
     "type" => \DI\create(Type::class),
-    "home" => \DI\create(Home::class),
 ] + $definitions;
