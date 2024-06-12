@@ -153,7 +153,7 @@ class TipejurnalList extends Tipejurnal
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->kode->setVisibility();
         $this->nama->setVisibility();
     }
@@ -1211,7 +1211,6 @@ class TipejurnalList extends Tipejurnal
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id, $ctrl); // id
             $this->updateSort($this->kode, $ctrl); // kode
             $this->updateSort($this->nama, $ctrl); // nama
             $this->setStartRecordNumber(1); // Reset start position
@@ -1490,7 +1489,6 @@ class TipejurnalList extends Tipejurnal
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "id");
             $this->createColumnOption($option, "kode");
             $this->createColumnOption($option, "nama");
         }
@@ -1999,10 +1997,6 @@ class TipejurnalList extends Tipejurnal
 
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
-
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
 
             // kode
             $this->kode->HrefValue = "";

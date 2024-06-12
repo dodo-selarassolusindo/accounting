@@ -800,18 +800,14 @@ class PeriodeView extends Periode
 
             // isaktif
             if (ConvertToBool($this->isaktif->CurrentValue)) {
-                $this->isaktif->ViewValue = $this->isaktif->tagCaption(1) != "" ? $this->isaktif->tagCaption(1) : "Yes";
+                $this->isaktif->ViewValue = $this->isaktif->tagCaption(1) != "" ? $this->isaktif->tagCaption(1) : "Aktif";
             } else {
-                $this->isaktif->ViewValue = $this->isaktif->tagCaption(2) != "" ? $this->isaktif->tagCaption(2) : "No";
+                $this->isaktif->ViewValue = $this->isaktif->tagCaption(2) != "" ? $this->isaktif->tagCaption(2) : "Non-Aktif";
             }
 
             // user_id
             $this->user_id->ViewValue = $this->user_id->CurrentValue;
             $this->user_id->ViewValue = FormatNumber($this->user_id->ViewValue, $this->user_id->formatPattern());
-
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
 
             // start
             $this->start->HrefValue = "";
@@ -824,10 +820,6 @@ class PeriodeView extends Periode
             // isaktif
             $this->isaktif->HrefValue = "";
             $this->isaktif->TooltipValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
-            $this->user_id->TooltipValue = "";
         }
 
         // Call Row Rendered event

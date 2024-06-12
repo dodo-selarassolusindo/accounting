@@ -133,7 +133,7 @@ class PeriodeAdd extends Periode
         $this->start->setVisibility();
         $this->end->setVisibility();
         $this->isaktif->setVisibility();
-        $this->user_id->setVisibility();
+        $this->user_id->Visible = false;
     }
 
     // Constructor
@@ -703,16 +703,6 @@ class PeriodeAdd extends Periode
             }
         }
 
-        // Check field name 'user_id' first before field var 'x_user_id'
-        $val = $CurrentForm->hasValue("user_id") ? $CurrentForm->getValue("user_id") : $CurrentForm->getValue("x_user_id");
-        if (!$this->user_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->user_id->Visible = false; // Disable update for API request
-            } else {
-                $this->user_id->setFormValue($val, true, $validate);
-            }
-        }
-
         // Check field name 'id' first before field var 'x_id'
         $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
     }
@@ -726,7 +716,6 @@ class PeriodeAdd extends Periode
         $this->end->CurrentValue = $this->end->FormValue;
         $this->end->CurrentValue = UnFormatDateTime($this->end->CurrentValue, $this->end->formatPattern());
         $this->isaktif->CurrentValue = $this->isaktif->FormValue;
-        $this->user_id->CurrentValue = $this->user_id->FormValue;
     }
 
     /**
@@ -847,9 +836,9 @@ class PeriodeAdd extends Periode
 
             // isaktif
             if (ConvertToBool($this->isaktif->CurrentValue)) {
-                $this->isaktif->ViewValue = $this->isaktif->tagCaption(1) != "" ? $this->isaktif->tagCaption(1) : "Yes";
+                $this->isaktif->ViewValue = $this->isaktif->tagCaption(1) != "" ? $this->isaktif->tagCaption(1) : "Aktif";
             } else {
-                $this->isaktif->ViewValue = $this->isaktif->tagCaption(2) != "" ? $this->isaktif->tagCaption(2) : "No";
+                $this->isaktif->ViewValue = $this->isaktif->tagCaption(2) != "" ? $this->isaktif->tagCaption(2) : "Non-Aktif";
             }
 
             // user_id
@@ -864,9 +853,6 @@ class PeriodeAdd extends Periode
 
             // isaktif
             $this->isaktif->HrefValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
         } elseif ($this->RowType == RowType::ADD) {
             // start
             $this->start->setupEditAttributes();
@@ -882,14 +868,6 @@ class PeriodeAdd extends Periode
             $this->isaktif->EditValue = $this->isaktif->options(false);
             $this->isaktif->PlaceHolder = RemoveHtml($this->isaktif->caption());
 
-            // user_id
-            $this->user_id->setupEditAttributes();
-            $this->user_id->EditValue = $this->user_id->CurrentValue;
-            $this->user_id->PlaceHolder = RemoveHtml($this->user_id->caption());
-            if (strval($this->user_id->EditValue) != "" && is_numeric($this->user_id->EditValue)) {
-                $this->user_id->EditValue = FormatNumber($this->user_id->EditValue, null);
-            }
-
             // Add refer script
 
             // start
@@ -900,9 +878,6 @@ class PeriodeAdd extends Periode
 
             // isaktif
             $this->isaktif->HrefValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -944,14 +919,6 @@ class PeriodeAdd extends Periode
                 if ($this->isaktif->FormValue == "") {
                     $this->isaktif->addErrorMessage(str_replace("%s", $this->isaktif->caption(), $this->isaktif->RequiredErrorMessage));
                 }
-            }
-            if ($this->user_id->Visible && $this->user_id->Required) {
-                if (!$this->user_id->IsDetailKey && EmptyValue($this->user_id->FormValue)) {
-                    $this->user_id->addErrorMessage(str_replace("%s", $this->user_id->caption(), $this->user_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->user_id->FormValue)) {
-                $this->user_id->addErrorMessage($this->user_id->getErrorMessage(false));
             }
 
         // Return validate result
@@ -1036,9 +1003,6 @@ class PeriodeAdd extends Periode
             $tmpBool = !empty($tmpBool) ? "1" : "0";
         }
         $this->isaktif->setDbValueDef($rsnew, $tmpBool, false);
-
-        // user_id
-        $this->user_id->setDbValueDef($rsnew, $this->user_id->CurrentValue, false);
         return $rsnew;
     }
 
@@ -1056,9 +1020,6 @@ class PeriodeAdd extends Periode
         }
         if (isset($row['isaktif'])) { // isaktif
             $this->isaktif->setFormValue($row['isaktif']);
-        }
-        if (isset($row['user_id'])) { // user_id
-            $this->user_id->setFormValue($row['user_id']);
         }
     }
 

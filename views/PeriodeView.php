@@ -51,17 +51,6 @@ loadjs.ready("head", function () {
 <input type="hidden" name="t" value="periode">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
 <table class="<?= $Page->TableClass ?>">
-<?php if ($Page->id->Visible) { // id ?>
-    <tr id="r_id"<?= $Page->id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_periode_id"><?= $Page->id->caption() ?></span></td>
-        <td data-name="id"<?= $Page->id->cellAttributes() ?>>
-<span id="el_periode_id">
-<span<?= $Page->id->viewAttributes() ?>>
-<?= $Page->id->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->start->Visible) { // start ?>
     <tr id="r_start"<?= $Page->start->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_periode_start"><?= $Page->start->caption() ?></span></td>
@@ -92,17 +81,6 @@ loadjs.ready("head", function () {
 <span<?= $Page->isaktif->viewAttributes() ?>>
 <i class="fa-regular fa-square<?php if (ConvertToBool($Page->isaktif->CurrentValue)) { ?>-check<?php } ?> ew-icon ew-boolean"></i>
 </span>
-</span>
-</td>
-    </tr>
-<?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-    <tr id="r_user_id"<?= $Page->user_id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_periode_user_id"><?= $Page->user_id->caption() ?></span></td>
-        <td data-name="user_id"<?= $Page->user_id->cellAttributes() ?>>
-<span id="el_periode_user_id">
-<span<?= $Page->user_id->viewAttributes() ?>>
-<?= $Page->user_id->getViewValue() ?></span>
 </span>
 </td>
     </tr>

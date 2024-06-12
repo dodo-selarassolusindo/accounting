@@ -1205,9 +1205,9 @@ class Periode extends DbTable
 
         // isaktif
         if (ConvertToBool($this->isaktif->CurrentValue)) {
-            $this->isaktif->ViewValue = $this->isaktif->tagCaption(1) != "" ? $this->isaktif->tagCaption(1) : "Yes";
+            $this->isaktif->ViewValue = $this->isaktif->tagCaption(1) != "" ? $this->isaktif->tagCaption(1) : "Aktif";
         } else {
-            $this->isaktif->ViewValue = $this->isaktif->tagCaption(2) != "" ? $this->isaktif->tagCaption(2) : "No";
+            $this->isaktif->ViewValue = $this->isaktif->tagCaption(2) != "" ? $this->isaktif->tagCaption(2) : "Non-Aktif";
         }
 
         // user_id
@@ -1303,11 +1303,9 @@ class Periode extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->id);
                     $doc->exportCaption($this->start);
                     $doc->exportCaption($this->end);
                     $doc->exportCaption($this->isaktif);
-                    $doc->exportCaption($this->user_id);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->start);
@@ -1340,11 +1338,9 @@ class Periode extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->id);
                         $doc->exportField($this->start);
                         $doc->exportField($this->end);
                         $doc->exportField($this->isaktif);
-                        $doc->exportField($this->user_id);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->start);
