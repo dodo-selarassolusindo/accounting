@@ -1259,7 +1259,7 @@ class SaldoawalAdd extends Saldoawal
     public function pageLoad()
     {
         //Log("Page Load");
-        $this->periode_id->DisplayValueSeparator = "-"; // Use hyphen as separator
+        $this->periode_id->DisplayValueSeparator = " - "; // Use hyphen as separator
     }
 
     // Page Unload event
