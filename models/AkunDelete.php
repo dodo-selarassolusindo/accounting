@@ -129,11 +129,11 @@ class AkunDelete extends Akun
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
+        $this->subgrup_id->setVisibility();
         $this->kode->setVisibility();
         $this->nama->setVisibility();
-        $this->subgrup_id->setVisibility();
-        $this->user_id->setVisibility();
+        $this->user_id->Visible = false;
         $this->matauang_id->setVisibility();
     }
 
@@ -408,6 +408,10 @@ class AkunDelete extends Akun
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->subgrup_id);
+        $this->setupLookupOptions($this->matauang_id);
+
         // Set up Breadcrumb
         $this->setupBreadcrumb();
 
@@ -588,9 +592,9 @@ class AkunDelete extends Akun
         // Call Row Selected event
         $this->rowSelected($row);
         $this->id->setDbValue($row['id']);
+        $this->subgrup_id->setDbValue($row['subgrup_id']);
         $this->kode->setDbValue($row['kode']);
         $this->nama->setDbValue($row['nama']);
-        $this->subgrup_id->setDbValue($row['subgrup_id']);
         $this->user_id->setDbValue($row['user_id']);
         $this->matauang_id->setDbValue($row['matauang_id']);
     }
@@ -600,9 +604,9 @@ class AkunDelete extends Akun
     {
         $row = [];
         $row['id'] = $this->id->DefaultValue;
+        $row['subgrup_id'] = $this->subgrup_id->DefaultValue;
         $row['kode'] = $this->kode->DefaultValue;
         $row['nama'] = $this->nama->DefaultValue;
-        $row['subgrup_id'] = $this->subgrup_id->DefaultValue;
         $row['user_id'] = $this->user_id->DefaultValue;
         $row['matauang_id'] = $this->matauang_id->DefaultValue;
         return $row;
@@ -622,11 +626,11 @@ class AkunDelete extends Akun
 
         // id
 
+        // subgrup_id
+
         // kode
 
         // nama
-
-        // subgrup_id
 
         // user_id
 
@@ -637,27 +641,65 @@ class AkunDelete extends Akun
             // id
             $this->id->ViewValue = $this->id->CurrentValue;
 
+            // subgrup_id
+            $curVal = strval($this->subgrup_id->CurrentValue);
+            if ($curVal != "") {
+                $this->subgrup_id->ViewValue = $this->subgrup_id->lookupCacheOption($curVal);
+                if ($this->subgrup_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->subgrup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->subgrup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->subgrup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->subgrup_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->subgrup_id->ViewValue = $this->subgrup_id->displayValue($arwrk);
+                    } else {
+                        $this->subgrup_id->ViewValue = FormatNumber($this->subgrup_id->CurrentValue, $this->subgrup_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->subgrup_id->ViewValue = null;
+            }
+
             // kode
             $this->kode->ViewValue = $this->kode->CurrentValue;
 
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
 
-            // subgrup_id
-            $this->subgrup_id->ViewValue = $this->subgrup_id->CurrentValue;
-            $this->subgrup_id->ViewValue = FormatNumber($this->subgrup_id->ViewValue, $this->subgrup_id->formatPattern());
-
             // user_id
             $this->user_id->ViewValue = $this->user_id->CurrentValue;
             $this->user_id->ViewValue = FormatNumber($this->user_id->ViewValue, $this->user_id->formatPattern());
 
             // matauang_id
-            $this->matauang_id->ViewValue = $this->matauang_id->CurrentValue;
-            $this->matauang_id->ViewValue = FormatNumber($this->matauang_id->ViewValue, $this->matauang_id->formatPattern());
+            $curVal = strval($this->matauang_id->CurrentValue);
+            if ($curVal != "") {
+                $this->matauang_id->ViewValue = $this->matauang_id->lookupCacheOption($curVal);
+                if ($this->matauang_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->matauang_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->matauang_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->matauang_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->matauang_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->matauang_id->ViewValue = $this->matauang_id->displayValue($arwrk);
+                    } else {
+                        $this->matauang_id->ViewValue = FormatNumber($this->matauang_id->CurrentValue, $this->matauang_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->matauang_id->ViewValue = null;
+            }
 
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
+            // subgrup_id
+            $this->subgrup_id->HrefValue = "";
+            $this->subgrup_id->TooltipValue = "";
 
             // kode
             $this->kode->HrefValue = "";
@@ -666,14 +708,6 @@ class AkunDelete extends Akun
             // nama
             $this->nama->HrefValue = "";
             $this->nama->TooltipValue = "";
-
-            // subgrup_id
-            $this->subgrup_id->HrefValue = "";
-            $this->subgrup_id->TooltipValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
-            $this->user_id->TooltipValue = "";
 
             // matauang_id
             $this->matauang_id->HrefValue = "";
@@ -814,6 +848,10 @@ class AkunDelete extends Akun
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_subgrup_id":
+                    break;
+                case "x_matauang_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

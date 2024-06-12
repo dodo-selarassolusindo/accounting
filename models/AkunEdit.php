@@ -129,11 +129,11 @@ class AkunEdit extends Akun
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
+        $this->subgrup_id->setVisibility();
         $this->kode->setVisibility();
         $this->nama->setVisibility();
-        $this->subgrup_id->setVisibility();
-        $this->user_id->setVisibility();
+        $this->user_id->Visible = false;
         $this->matauang_id->setVisibility();
     }
 
@@ -519,6 +519,10 @@ class AkunEdit extends Akun
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->subgrup_id);
+        $this->setupLookupOptions($this->matauang_id);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -697,10 +701,14 @@ class AkunEdit extends Akun
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
 
-        // Check field name 'id' first before field var 'x_id'
-        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
-        if (!$this->id->IsDetailKey) {
-            $this->id->setFormValue($val);
+        // Check field name 'subgrup_id' first before field var 'x_subgrup_id'
+        $val = $CurrentForm->hasValue("subgrup_id") ? $CurrentForm->getValue("subgrup_id") : $CurrentForm->getValue("x_subgrup_id");
+        if (!$this->subgrup_id->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->subgrup_id->Visible = false; // Disable update for API request
+            } else {
+                $this->subgrup_id->setFormValue($val);
+            }
         }
 
         // Check field name 'kode' first before field var 'x_kode'
@@ -723,34 +731,20 @@ class AkunEdit extends Akun
             }
         }
 
-        // Check field name 'subgrup_id' first before field var 'x_subgrup_id'
-        $val = $CurrentForm->hasValue("subgrup_id") ? $CurrentForm->getValue("subgrup_id") : $CurrentForm->getValue("x_subgrup_id");
-        if (!$this->subgrup_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->subgrup_id->Visible = false; // Disable update for API request
-            } else {
-                $this->subgrup_id->setFormValue($val, true, $validate);
-            }
-        }
-
-        // Check field name 'user_id' first before field var 'x_user_id'
-        $val = $CurrentForm->hasValue("user_id") ? $CurrentForm->getValue("user_id") : $CurrentForm->getValue("x_user_id");
-        if (!$this->user_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->user_id->Visible = false; // Disable update for API request
-            } else {
-                $this->user_id->setFormValue($val, true, $validate);
-            }
-        }
-
         // Check field name 'matauang_id' first before field var 'x_matauang_id'
         $val = $CurrentForm->hasValue("matauang_id") ? $CurrentForm->getValue("matauang_id") : $CurrentForm->getValue("x_matauang_id");
         if (!$this->matauang_id->IsDetailKey) {
             if (IsApi() && $val === null) {
                 $this->matauang_id->Visible = false; // Disable update for API request
             } else {
-                $this->matauang_id->setFormValue($val, true, $validate);
+                $this->matauang_id->setFormValue($val);
             }
+        }
+
+        // Check field name 'id' first before field var 'x_id'
+        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
+        if (!$this->id->IsDetailKey) {
+            $this->id->setFormValue($val);
         }
     }
 
@@ -759,10 +753,9 @@ class AkunEdit extends Akun
     {
         global $CurrentForm;
         $this->id->CurrentValue = $this->id->FormValue;
+        $this->subgrup_id->CurrentValue = $this->subgrup_id->FormValue;
         $this->kode->CurrentValue = $this->kode->FormValue;
         $this->nama->CurrentValue = $this->nama->FormValue;
-        $this->subgrup_id->CurrentValue = $this->subgrup_id->FormValue;
-        $this->user_id->CurrentValue = $this->user_id->FormValue;
         $this->matauang_id->CurrentValue = $this->matauang_id->FormValue;
     }
 
@@ -805,9 +798,9 @@ class AkunEdit extends Akun
         // Call Row Selected event
         $this->rowSelected($row);
         $this->id->setDbValue($row['id']);
+        $this->subgrup_id->setDbValue($row['subgrup_id']);
         $this->kode->setDbValue($row['kode']);
         $this->nama->setDbValue($row['nama']);
-        $this->subgrup_id->setDbValue($row['subgrup_id']);
         $this->user_id->setDbValue($row['user_id']);
         $this->matauang_id->setDbValue($row['matauang_id']);
     }
@@ -817,9 +810,9 @@ class AkunEdit extends Akun
     {
         $row = [];
         $row['id'] = $this->id->DefaultValue;
+        $row['subgrup_id'] = $this->subgrup_id->DefaultValue;
         $row['kode'] = $this->kode->DefaultValue;
         $row['nama'] = $this->nama->DefaultValue;
-        $row['subgrup_id'] = $this->subgrup_id->DefaultValue;
         $row['user_id'] = $this->user_id->DefaultValue;
         $row['matauang_id'] = $this->matauang_id->DefaultValue;
         return $row;
@@ -859,14 +852,14 @@ class AkunEdit extends Akun
         // id
         $this->id->RowCssClass = "row";
 
+        // subgrup_id
+        $this->subgrup_id->RowCssClass = "row";
+
         // kode
         $this->kode->RowCssClass = "row";
 
         // nama
         $this->nama->RowCssClass = "row";
-
-        // subgrup_id
-        $this->subgrup_id->RowCssClass = "row";
 
         // user_id
         $this->user_id->RowCssClass = "row";
@@ -879,26 +872,64 @@ class AkunEdit extends Akun
             // id
             $this->id->ViewValue = $this->id->CurrentValue;
 
+            // subgrup_id
+            $curVal = strval($this->subgrup_id->CurrentValue);
+            if ($curVal != "") {
+                $this->subgrup_id->ViewValue = $this->subgrup_id->lookupCacheOption($curVal);
+                if ($this->subgrup_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->subgrup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->subgrup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->subgrup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->subgrup_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->subgrup_id->ViewValue = $this->subgrup_id->displayValue($arwrk);
+                    } else {
+                        $this->subgrup_id->ViewValue = FormatNumber($this->subgrup_id->CurrentValue, $this->subgrup_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->subgrup_id->ViewValue = null;
+            }
+
             // kode
             $this->kode->ViewValue = $this->kode->CurrentValue;
 
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
 
-            // subgrup_id
-            $this->subgrup_id->ViewValue = $this->subgrup_id->CurrentValue;
-            $this->subgrup_id->ViewValue = FormatNumber($this->subgrup_id->ViewValue, $this->subgrup_id->formatPattern());
-
             // user_id
             $this->user_id->ViewValue = $this->user_id->CurrentValue;
             $this->user_id->ViewValue = FormatNumber($this->user_id->ViewValue, $this->user_id->formatPattern());
 
             // matauang_id
-            $this->matauang_id->ViewValue = $this->matauang_id->CurrentValue;
-            $this->matauang_id->ViewValue = FormatNumber($this->matauang_id->ViewValue, $this->matauang_id->formatPattern());
+            $curVal = strval($this->matauang_id->CurrentValue);
+            if ($curVal != "") {
+                $this->matauang_id->ViewValue = $this->matauang_id->lookupCacheOption($curVal);
+                if ($this->matauang_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->matauang_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->matauang_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->matauang_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->matauang_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->matauang_id->ViewValue = $this->matauang_id->displayValue($arwrk);
+                    } else {
+                        $this->matauang_id->ViewValue = FormatNumber($this->matauang_id->CurrentValue, $this->matauang_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->matauang_id->ViewValue = null;
+            }
 
-            // id
-            $this->id->HrefValue = "";
+            // subgrup_id
+            $this->subgrup_id->HrefValue = "";
 
             // kode
             $this->kode->HrefValue = "";
@@ -906,18 +937,35 @@ class AkunEdit extends Akun
             // nama
             $this->nama->HrefValue = "";
 
-            // subgrup_id
-            $this->subgrup_id->HrefValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
-
             // matauang_id
             $this->matauang_id->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
-            // id
-            $this->id->setupEditAttributes();
-            $this->id->EditValue = $this->id->CurrentValue;
+            // subgrup_id
+            $this->subgrup_id->setupEditAttributes();
+            $curVal = trim(strval($this->subgrup_id->CurrentValue));
+            if ($curVal != "") {
+                $this->subgrup_id->ViewValue = $this->subgrup_id->lookupCacheOption($curVal);
+            } else {
+                $this->subgrup_id->ViewValue = $this->subgrup_id->Lookup !== null && is_array($this->subgrup_id->lookupOptions()) && count($this->subgrup_id->lookupOptions()) > 0 ? $curVal : null;
+            }
+            if ($this->subgrup_id->ViewValue !== null) { // Load from cache
+                $this->subgrup_id->EditValue = array_values($this->subgrup_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->subgrup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->subgrup_id->CurrentValue, $this->subgrup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->subgrup_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->subgrup_id->EditValue = $arwrk;
+            }
+            $this->subgrup_id->PlaceHolder = RemoveHtml($this->subgrup_id->caption());
 
             // kode
             $this->kode->setupEditAttributes();
@@ -935,46 +983,43 @@ class AkunEdit extends Akun
             $this->nama->EditValue = HtmlEncode($this->nama->CurrentValue);
             $this->nama->PlaceHolder = RemoveHtml($this->nama->caption());
 
-            // subgrup_id
-            $this->subgrup_id->setupEditAttributes();
-            $this->subgrup_id->EditValue = $this->subgrup_id->CurrentValue;
-            $this->subgrup_id->PlaceHolder = RemoveHtml($this->subgrup_id->caption());
-            if (strval($this->subgrup_id->EditValue) != "" && is_numeric($this->subgrup_id->EditValue)) {
-                $this->subgrup_id->EditValue = FormatNumber($this->subgrup_id->EditValue, null);
-            }
-
-            // user_id
-            $this->user_id->setupEditAttributes();
-            $this->user_id->EditValue = $this->user_id->CurrentValue;
-            $this->user_id->PlaceHolder = RemoveHtml($this->user_id->caption());
-            if (strval($this->user_id->EditValue) != "" && is_numeric($this->user_id->EditValue)) {
-                $this->user_id->EditValue = FormatNumber($this->user_id->EditValue, null);
-            }
-
             // matauang_id
             $this->matauang_id->setupEditAttributes();
-            $this->matauang_id->EditValue = $this->matauang_id->CurrentValue;
-            $this->matauang_id->PlaceHolder = RemoveHtml($this->matauang_id->caption());
-            if (strval($this->matauang_id->EditValue) != "" && is_numeric($this->matauang_id->EditValue)) {
-                $this->matauang_id->EditValue = FormatNumber($this->matauang_id->EditValue, null);
+            $curVal = trim(strval($this->matauang_id->CurrentValue));
+            if ($curVal != "") {
+                $this->matauang_id->ViewValue = $this->matauang_id->lookupCacheOption($curVal);
+            } else {
+                $this->matauang_id->ViewValue = $this->matauang_id->Lookup !== null && is_array($this->matauang_id->lookupOptions()) && count($this->matauang_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->matauang_id->ViewValue !== null) { // Load from cache
+                $this->matauang_id->EditValue = array_values($this->matauang_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->matauang_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->matauang_id->CurrentValue, $this->matauang_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->matauang_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->matauang_id->EditValue = $arwrk;
+            }
+            $this->matauang_id->PlaceHolder = RemoveHtml($this->matauang_id->caption());
 
             // Edit refer script
 
-            // id
-            $this->id->HrefValue = "";
+            // subgrup_id
+            $this->subgrup_id->HrefValue = "";
 
             // kode
             $this->kode->HrefValue = "";
 
             // nama
             $this->nama->HrefValue = "";
-
-            // subgrup_id
-            $this->subgrup_id->HrefValue = "";
-
-            // user_id
-            $this->user_id->HrefValue = "";
 
             // matauang_id
             $this->matauang_id->HrefValue = "";
@@ -999,9 +1044,9 @@ class AkunEdit extends Akun
             return true;
         }
         $validateForm = true;
-            if ($this->id->Visible && $this->id->Required) {
-                if (!$this->id->IsDetailKey && EmptyValue($this->id->FormValue)) {
-                    $this->id->addErrorMessage(str_replace("%s", $this->id->caption(), $this->id->RequiredErrorMessage));
+            if ($this->subgrup_id->Visible && $this->subgrup_id->Required) {
+                if (!$this->subgrup_id->IsDetailKey && EmptyValue($this->subgrup_id->FormValue)) {
+                    $this->subgrup_id->addErrorMessage(str_replace("%s", $this->subgrup_id->caption(), $this->subgrup_id->RequiredErrorMessage));
                 }
             }
             if ($this->kode->Visible && $this->kode->Required) {
@@ -1014,29 +1059,10 @@ class AkunEdit extends Akun
                     $this->nama->addErrorMessage(str_replace("%s", $this->nama->caption(), $this->nama->RequiredErrorMessage));
                 }
             }
-            if ($this->subgrup_id->Visible && $this->subgrup_id->Required) {
-                if (!$this->subgrup_id->IsDetailKey && EmptyValue($this->subgrup_id->FormValue)) {
-                    $this->subgrup_id->addErrorMessage(str_replace("%s", $this->subgrup_id->caption(), $this->subgrup_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->subgrup_id->FormValue)) {
-                $this->subgrup_id->addErrorMessage($this->subgrup_id->getErrorMessage(false));
-            }
-            if ($this->user_id->Visible && $this->user_id->Required) {
-                if (!$this->user_id->IsDetailKey && EmptyValue($this->user_id->FormValue)) {
-                    $this->user_id->addErrorMessage(str_replace("%s", $this->user_id->caption(), $this->user_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->user_id->FormValue)) {
-                $this->user_id->addErrorMessage($this->user_id->getErrorMessage(false));
-            }
             if ($this->matauang_id->Visible && $this->matauang_id->Required) {
                 if (!$this->matauang_id->IsDetailKey && EmptyValue($this->matauang_id->FormValue)) {
                     $this->matauang_id->addErrorMessage(str_replace("%s", $this->matauang_id->caption(), $this->matauang_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->matauang_id->FormValue)) {
-                $this->matauang_id->addErrorMessage($this->matauang_id->getErrorMessage(false));
             }
 
         // Return validate result
@@ -1127,17 +1153,14 @@ class AkunEdit extends Akun
         global $Security;
         $rsnew = [];
 
+        // subgrup_id
+        $this->subgrup_id->setDbValueDef($rsnew, $this->subgrup_id->CurrentValue, $this->subgrup_id->ReadOnly);
+
         // kode
         $this->kode->setDbValueDef($rsnew, $this->kode->CurrentValue, $this->kode->ReadOnly);
 
         // nama
         $this->nama->setDbValueDef($rsnew, $this->nama->CurrentValue, $this->nama->ReadOnly);
-
-        // subgrup_id
-        $this->subgrup_id->setDbValueDef($rsnew, $this->subgrup_id->CurrentValue, $this->subgrup_id->ReadOnly);
-
-        // user_id
-        $this->user_id->setDbValueDef($rsnew, $this->user_id->CurrentValue, $this->user_id->ReadOnly);
 
         // matauang_id
         $this->matauang_id->setDbValueDef($rsnew, $this->matauang_id->CurrentValue, $this->matauang_id->ReadOnly);
@@ -1150,17 +1173,14 @@ class AkunEdit extends Akun
      */
     protected function restoreEditFormFromRow($row)
     {
+        if (isset($row['subgrup_id'])) { // subgrup_id
+            $this->subgrup_id->CurrentValue = $row['subgrup_id'];
+        }
         if (isset($row['kode'])) { // kode
             $this->kode->CurrentValue = $row['kode'];
         }
         if (isset($row['nama'])) { // nama
             $this->nama->CurrentValue = $row['nama'];
-        }
-        if (isset($row['subgrup_id'])) { // subgrup_id
-            $this->subgrup_id->CurrentValue = $row['subgrup_id'];
-        }
-        if (isset($row['user_id'])) { // user_id
-            $this->user_id->CurrentValue = $row['user_id'];
         }
         if (isset($row['matauang_id'])) { // matauang_id
             $this->matauang_id->CurrentValue = $row['matauang_id'];
@@ -1191,6 +1211,10 @@ class AkunEdit extends Akun
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_subgrup_id":
+                    break;
+                case "x_matauang_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

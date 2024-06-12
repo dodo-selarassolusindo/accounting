@@ -970,12 +970,15 @@ class GrupList extends Grup
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->name); // name
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->name, $ctrl); // name
             $this->setStartRecordNumber(1); // Reset start position
         }
 

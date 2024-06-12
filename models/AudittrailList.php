@@ -1280,17 +1280,20 @@ class AudittrailList extends Audittrail
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->Id); // Id
-            $this->updateSort($this->DateTime); // DateTime
-            $this->updateSort($this->Script); // Script
-            $this->updateSort($this->User); // User
-            $this->updateSort($this->_Action); // Action
-            $this->updateSort($this->_Table); // Table
-            $this->updateSort($this->Field); // Field
+            $this->updateSort($this->Id, $ctrl); // Id
+            $this->updateSort($this->DateTime, $ctrl); // DateTime
+            $this->updateSort($this->Script, $ctrl); // Script
+            $this->updateSort($this->User, $ctrl); // User
+            $this->updateSort($this->_Action, $ctrl); // Action
+            $this->updateSort($this->_Table, $ctrl); // Table
+            $this->updateSort($this->Field, $ctrl); // Field
             $this->setStartRecordNumber(1); // Reset start position
         }
 

@@ -1214,14 +1214,17 @@ class PajakList extends Pajak
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->kode); // kode
-            $this->updateSort($this->nama); // nama
-            $this->updateSort($this->nilai); // nilai
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->kode, $ctrl); // kode
+            $this->updateSort($this->nama, $ctrl); // nama
+            $this->updateSort($this->nilai, $ctrl); // nilai
             $this->setStartRecordNumber(1); // Reset start position
         }
 

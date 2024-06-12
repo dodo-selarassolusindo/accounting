@@ -55,9 +55,9 @@ class Akun extends DbTable
 
     // Fields
     public $id;
+    public $subgrup_id;
     public $kode;
     public $nama;
-    public $subgrup_id;
     public $user_id;
     public $matauang_id;
 
@@ -133,6 +133,34 @@ class Akun extends DbTable
         $this->id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['id'] = &$this->id;
 
+        // subgrup_id
+        $this->subgrup_id = new DbField(
+            $this, // Table
+            'x_subgrup_id', // Variable name
+            'subgrup_id', // Name
+            '`subgrup_id`', // Expression
+            '`subgrup_id`', // Basic search expression
+            3, // Type
+            11, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`subgrup_id`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'SELECT' // Edit Tag
+        );
+        $this->subgrup_id->InputTextType = "text";
+        $this->subgrup_id->Raw = true;
+        $this->subgrup_id->setSelectMultiple(false); // Select one
+        $this->subgrup_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->subgrup_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->subgrup_id->Lookup = new Lookup($this->subgrup_id, 'subgrup', false, 'id', ["kode","nama","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`kode`, ''),'" . ValueSeparator(1, $this->subgrup_id) . "',COALESCE(`nama`,''))");
+        $this->subgrup_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->subgrup_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->Fields['subgrup_id'] = &$this->subgrup_id;
+
         // kode
         $this->kode = new DbField(
             $this, // Table
@@ -177,30 +205,6 @@ class Akun extends DbTable
         $this->nama->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
         $this->Fields['nama'] = &$this->nama;
 
-        // subgrup_id
-        $this->subgrup_id = new DbField(
-            $this, // Table
-            'x_subgrup_id', // Variable name
-            'subgrup_id', // Name
-            '`subgrup_id`', // Expression
-            '`subgrup_id`', // Basic search expression
-            3, // Type
-            11, // Size
-            -1, // Date/Time format
-            false, // Is upload field
-            '`subgrup_id`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->subgrup_id->InputTextType = "text";
-        $this->subgrup_id->Raw = true;
-        $this->subgrup_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->subgrup_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
-        $this->Fields['subgrup_id'] = &$this->subgrup_id;
-
         // user_id
         $this->user_id = new DbField(
             $this, // Table
@@ -241,12 +245,16 @@ class Akun extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->matauang_id->InputTextType = "text";
         $this->matauang_id->Raw = true;
+        $this->matauang_id->setSelectMultiple(false); // Select one
+        $this->matauang_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->matauang_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->matauang_id->Lookup = new Lookup($this->matauang_id, 'matauang', false, 'id', ["nama","kode","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`nama`, ''),'" . ValueSeparator(1, $this->matauang_id) . "',COALESCE(`kode`,''))");
         $this->matauang_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->matauang_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->matauang_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['matauang_id'] = &$this->matauang_id;
 
         // Add Doctrine Cache
@@ -275,8 +283,8 @@ class Akun extends DbTable
         }
     }
 
-    // Single column sort
-    public function updateSort(&$fld)
+    // Multiple column sort
+    public function updateSort(&$fld, $ctrl)
     {
         if ($this->CurrentOrder == $fld->Name) {
             $sortField = $fld->Expression;
@@ -286,8 +294,29 @@ class Akun extends DbTable
             } else {
                 $curSort = $lastSort;
             }
-            $orderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortField . " " . $curSort : "";
-            $this->setSessionOrderBy($orderBy); // Save to Session
+            $lastOrderBy = in_array($lastSort, ["ASC", "DESC"]) ? $sortField . " " . $lastSort : "";
+            $curOrderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortField . " " . $curSort : "";
+            if ($ctrl) {
+                $orderBy = $this->getSessionOrderBy();
+                $arOrderBy = !empty($orderBy) ? explode(", ", $orderBy) : [];
+                if ($lastOrderBy != "" && in_array($lastOrderBy, $arOrderBy)) {
+                    foreach ($arOrderBy as $key => $val) {
+                        if ($val == $lastOrderBy) {
+                            if ($curOrderBy == "") {
+                                unset($arOrderBy[$key]);
+                            } else {
+                                $arOrderBy[$key] = $curOrderBy;
+                            }
+                        }
+                    }
+                } elseif ($curOrderBy != "") {
+                    $arOrderBy[] = $curOrderBy;
+                }
+                $orderBy = implode(", ", $arOrderBy);
+                $this->setSessionOrderBy($orderBy); // Save to Session
+            } else {
+                $this->setSessionOrderBy($curOrderBy); // Save to Session
+            }
         }
     }
 
@@ -782,9 +811,9 @@ class Akun extends DbTable
             return;
         }
         $this->id->DbValue = $row['id'];
+        $this->subgrup_id->DbValue = $row['subgrup_id'];
         $this->kode->DbValue = $row['kode'];
         $this->nama->DbValue = $row['nama'];
-        $this->subgrup_id->DbValue = $row['subgrup_id'];
         $this->user_id->DbValue = $row['user_id'];
         $this->matauang_id->DbValue = $row['matauang_id'];
     }
@@ -1017,7 +1046,7 @@ class Akun extends DbTable
         $attrs = "";
         if ($this->PageID != "grid" && $fld->Sortable) {
             $sortUrl = $this->sortUrl($fld);
-            $attrs = ' role="button" data-ew-action="sort" data-ajax="' . ($this->UseAjaxActions ? "true" : "false") . '" data-sort-url="' . $sortUrl . '" data-sort-type="1"';
+            $attrs = ' role="button" data-ew-action="sort" data-ajax="' . ($this->UseAjaxActions ? "true" : "false") . '" data-sort-url="' . $sortUrl . '" data-sort-type="2"';
             if ($this->ContextClass) { // Add context
                 $attrs .= ' data-context="' . HtmlEncode($this->ContextClass) . '"';
             }
@@ -1147,9 +1176,9 @@ class Akun extends DbTable
             return;
         }
         $this->id->setDbValue($row['id']);
+        $this->subgrup_id->setDbValue($row['subgrup_id']);
         $this->kode->setDbValue($row['kode']);
         $this->nama->setDbValue($row['nama']);
-        $this->subgrup_id->setDbValue($row['subgrup_id']);
         $this->user_id->setDbValue($row['user_id']);
         $this->matauang_id->setDbValue($row['matauang_id']);
     }
@@ -1184,11 +1213,11 @@ class Akun extends DbTable
 
         // id
 
+        // subgrup_id
+
         // kode
 
         // nama
-
-        // subgrup_id
 
         // user_id
 
@@ -1197,27 +1226,69 @@ class Akun extends DbTable
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
 
+        // subgrup_id
+        $curVal = strval($this->subgrup_id->CurrentValue);
+        if ($curVal != "") {
+            $this->subgrup_id->ViewValue = $this->subgrup_id->lookupCacheOption($curVal);
+            if ($this->subgrup_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->subgrup_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->subgrup_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                $sqlWrk = $this->subgrup_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->subgrup_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->subgrup_id->ViewValue = $this->subgrup_id->displayValue($arwrk);
+                } else {
+                    $this->subgrup_id->ViewValue = FormatNumber($this->subgrup_id->CurrentValue, $this->subgrup_id->formatPattern());
+                }
+            }
+        } else {
+            $this->subgrup_id->ViewValue = null;
+        }
+
         // kode
         $this->kode->ViewValue = $this->kode->CurrentValue;
 
         // nama
         $this->nama->ViewValue = $this->nama->CurrentValue;
 
-        // subgrup_id
-        $this->subgrup_id->ViewValue = $this->subgrup_id->CurrentValue;
-        $this->subgrup_id->ViewValue = FormatNumber($this->subgrup_id->ViewValue, $this->subgrup_id->formatPattern());
-
         // user_id
         $this->user_id->ViewValue = $this->user_id->CurrentValue;
         $this->user_id->ViewValue = FormatNumber($this->user_id->ViewValue, $this->user_id->formatPattern());
 
         // matauang_id
-        $this->matauang_id->ViewValue = $this->matauang_id->CurrentValue;
-        $this->matauang_id->ViewValue = FormatNumber($this->matauang_id->ViewValue, $this->matauang_id->formatPattern());
+        $curVal = strval($this->matauang_id->CurrentValue);
+        if ($curVal != "") {
+            $this->matauang_id->ViewValue = $this->matauang_id->lookupCacheOption($curVal);
+            if ($this->matauang_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->matauang_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->matauang_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                $sqlWrk = $this->matauang_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->matauang_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->matauang_id->ViewValue = $this->matauang_id->displayValue($arwrk);
+                } else {
+                    $this->matauang_id->ViewValue = FormatNumber($this->matauang_id->CurrentValue, $this->matauang_id->formatPattern());
+                }
+            }
+        } else {
+            $this->matauang_id->ViewValue = null;
+        }
 
         // id
         $this->id->HrefValue = "";
         $this->id->TooltipValue = "";
+
+        // subgrup_id
+        $this->subgrup_id->HrefValue = "";
+        $this->subgrup_id->TooltipValue = "";
 
         // kode
         $this->kode->HrefValue = "";
@@ -1226,10 +1297,6 @@ class Akun extends DbTable
         // nama
         $this->nama->HrefValue = "";
         $this->nama->TooltipValue = "";
-
-        // subgrup_id
-        $this->subgrup_id->HrefValue = "";
-        $this->subgrup_id->TooltipValue = "";
 
         // user_id
         $this->user_id->HrefValue = "";
@@ -1258,6 +1325,10 @@ class Akun extends DbTable
         $this->id->setupEditAttributes();
         $this->id->EditValue = $this->id->CurrentValue;
 
+        // subgrup_id
+        $this->subgrup_id->setupEditAttributes();
+        $this->subgrup_id->PlaceHolder = RemoveHtml($this->subgrup_id->caption());
+
         // kode
         $this->kode->setupEditAttributes();
         if (!$this->kode->Raw) {
@@ -1274,14 +1345,6 @@ class Akun extends DbTable
         $this->nama->EditValue = $this->nama->CurrentValue;
         $this->nama->PlaceHolder = RemoveHtml($this->nama->caption());
 
-        // subgrup_id
-        $this->subgrup_id->setupEditAttributes();
-        $this->subgrup_id->EditValue = $this->subgrup_id->CurrentValue;
-        $this->subgrup_id->PlaceHolder = RemoveHtml($this->subgrup_id->caption());
-        if (strval($this->subgrup_id->EditValue) != "" && is_numeric($this->subgrup_id->EditValue)) {
-            $this->subgrup_id->EditValue = FormatNumber($this->subgrup_id->EditValue, null);
-        }
-
         // user_id
         $this->user_id->setupEditAttributes();
         $this->user_id->EditValue = $this->user_id->CurrentValue;
@@ -1292,11 +1355,7 @@ class Akun extends DbTable
 
         // matauang_id
         $this->matauang_id->setupEditAttributes();
-        $this->matauang_id->EditValue = $this->matauang_id->CurrentValue;
         $this->matauang_id->PlaceHolder = RemoveHtml($this->matauang_id->caption());
-        if (strval($this->matauang_id->EditValue) != "" && is_numeric($this->matauang_id->EditValue)) {
-            $this->matauang_id->EditValue = FormatNumber($this->matauang_id->EditValue, null);
-        }
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1326,17 +1385,15 @@ class Akun extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->id);
+                    $doc->exportCaption($this->subgrup_id);
                     $doc->exportCaption($this->kode);
                     $doc->exportCaption($this->nama);
-                    $doc->exportCaption($this->subgrup_id);
-                    $doc->exportCaption($this->user_id);
                     $doc->exportCaption($this->matauang_id);
                 } else {
                     $doc->exportCaption($this->id);
+                    $doc->exportCaption($this->subgrup_id);
                     $doc->exportCaption($this->kode);
                     $doc->exportCaption($this->nama);
-                    $doc->exportCaption($this->subgrup_id);
                     $doc->exportCaption($this->user_id);
                     $doc->exportCaption($this->matauang_id);
                 }
@@ -1365,17 +1422,15 @@ class Akun extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->id);
+                        $doc->exportField($this->subgrup_id);
                         $doc->exportField($this->kode);
                         $doc->exportField($this->nama);
-                        $doc->exportField($this->subgrup_id);
-                        $doc->exportField($this->user_id);
                         $doc->exportField($this->matauang_id);
                     } else {
                         $doc->exportField($this->id);
+                        $doc->exportField($this->subgrup_id);
                         $doc->exportField($this->kode);
                         $doc->exportField($this->nama);
-                        $doc->exportField($this->subgrup_id);
                         $doc->exportField($this->user_id);
                         $doc->exportField($this->matauang_id);
                     }

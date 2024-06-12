@@ -974,16 +974,19 @@ class KonversiList extends Konversi
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->satuan_id); // satuan_id
-            $this->updateSort($this->nilai); // nilai
-            $this->updateSort($this->satuan_id2); // satuan_id2
-            $this->updateSort($this->operasi); // operasi
-            $this->updateSort($this->id_FK); // id_FK
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->satuan_id, $ctrl); // satuan_id
+            $this->updateSort($this->nilai, $ctrl); // nilai
+            $this->updateSort($this->satuan_id2, $ctrl); // satuan_id2
+            $this->updateSort($this->operasi, $ctrl); // operasi
+            $this->updateSort($this->id_FK, $ctrl); // id_FK
             $this->setStartRecordNumber(1); // Reset start position
         }
 

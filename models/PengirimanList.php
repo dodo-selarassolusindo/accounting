@@ -1245,17 +1245,20 @@ class PengirimanList extends Pengiriman
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->kode); // kode
-            $this->updateSort($this->nama); // nama
-            $this->updateSort($this->akunjual); // akunjual
-            $this->updateSort($this->akunbeli); // akunbeli
-            $this->updateSort($this->keterangan); // keterangan
-            $this->updateSort($this->tipe); // tipe
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->kode, $ctrl); // kode
+            $this->updateSort($this->nama, $ctrl); // nama
+            $this->updateSort($this->akunjual, $ctrl); // akunjual
+            $this->updateSort($this->akunbeli, $ctrl); // akunbeli
+            $this->updateSort($this->keterangan, $ctrl); // keterangan
+            $this->updateSort($this->tipe, $ctrl); // tipe
             $this->setStartRecordNumber(1); // Reset start position
         }
 

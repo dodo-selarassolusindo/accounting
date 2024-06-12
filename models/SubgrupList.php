@@ -1217,13 +1217,16 @@ class SubgrupList extends Subgrup
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->grup_id); // grup_id
-            $this->updateSort($this->kode); // kode
-            $this->updateSort($this->nama); // nama
+            $this->updateSort($this->grup_id, $ctrl); // grup_id
+            $this->updateSort($this->kode, $ctrl); // kode
+            $this->updateSort($this->nama, $ctrl); // nama
             $this->setStartRecordNumber(1); // Reset start position
         }
 

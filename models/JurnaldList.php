@@ -973,15 +973,18 @@ class JurnaldList extends Jurnald
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->jurnal_id); // jurnal_id
-            $this->updateSort($this->akun_id); // akun_id
-            $this->updateSort($this->debet); // debet
-            $this->updateSort($this->kredit); // kredit
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->jurnal_id, $ctrl); // jurnal_id
+            $this->updateSort($this->akun_id, $ctrl); // akun_id
+            $this->updateSort($this->debet, $ctrl); // debet
+            $this->updateSort($this->kredit, $ctrl); // kredit
             $this->setStartRecordNumber(1); // Reset start position
         }
 

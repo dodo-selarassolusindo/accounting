@@ -22,11 +22,10 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
+            ["subgrup_id", [fields.subgrup_id.visible && fields.subgrup_id.required ? ew.Validators.required(fields.subgrup_id.caption) : null], fields.subgrup_id.isInvalid],
             ["kode", [fields.kode.visible && fields.kode.required ? ew.Validators.required(fields.kode.caption) : null], fields.kode.isInvalid],
             ["nama", [fields.nama.visible && fields.nama.required ? ew.Validators.required(fields.nama.caption) : null], fields.nama.isInvalid],
-            ["subgrup_id", [fields.subgrup_id.visible && fields.subgrup_id.required ? ew.Validators.required(fields.subgrup_id.caption) : null, ew.Validators.integer], fields.subgrup_id.isInvalid],
-            ["user_id", [fields.user_id.visible && fields.user_id.required ? ew.Validators.required(fields.user_id.caption) : null, ew.Validators.integer], fields.user_id.isInvalid],
-            ["matauang_id", [fields.matauang_id.visible && fields.matauang_id.required ? ew.Validators.required(fields.matauang_id.caption) : null, ew.Validators.integer], fields.matauang_id.isInvalid]
+            ["matauang_id", [fields.matauang_id.visible && fields.matauang_id.required ? ew.Validators.required(fields.matauang_id.caption) : null], fields.matauang_id.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -42,6 +41,8 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "subgrup_id": <?= $Page->subgrup_id->toClientList($Page) ?>,
+            "matauang_id": <?= $Page->matauang_id->toClientList($Page) ?>,
         })
         .build();
     window[form.id] = form;
@@ -71,6 +72,52 @@ $Page->showMessage();
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
 <div class="ew-add-div"><!-- page* -->
+<?php if ($Page->subgrup_id->Visible) { // subgrup_id ?>
+    <div id="r_subgrup_id"<?= $Page->subgrup_id->rowAttributes() ?>>
+        <label id="elh_akun_subgrup_id" for="x_subgrup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->subgrup_id->caption() ?><?= $Page->subgrup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->subgrup_id->cellAttributes() ?>>
+<span id="el_akun_subgrup_id">
+    <select
+        id="x_subgrup_id"
+        name="x_subgrup_id"
+        class="form-select ew-select<?= $Page->subgrup_id->isInvalidClass() ?>"
+        <?php if (!$Page->subgrup_id->IsNativeSelect) { ?>
+        data-select2-id="fakunadd_x_subgrup_id"
+        <?php } ?>
+        data-table="akun"
+        data-field="x_subgrup_id"
+        data-value-separator="<?= $Page->subgrup_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->subgrup_id->getPlaceHolder()) ?>"
+        <?= $Page->subgrup_id->editAttributes() ?>>
+        <?= $Page->subgrup_id->selectOptionListHtml("x_subgrup_id") ?>
+    </select>
+    <?= $Page->subgrup_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->subgrup_id->getErrorMessage() ?></div>
+<?= $Page->subgrup_id->Lookup->getParamTag($Page, "p_x_subgrup_id") ?>
+<?php if (!$Page->subgrup_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fakunadd", function() {
+    var options = { name: "x_subgrup_id", selectId: "fakunadd_x_subgrup_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fakunadd.lists.subgrup_id?.lookupOptions.length) {
+        options.data = { id: "x_subgrup_id", form: "fakunadd" };
+    } else {
+        options.ajax = { id: "x_subgrup_id", form: "fakunadd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.akun.fields.subgrup_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
+</span>
+</div></div>
+    </div>
+<?php } ?>
 <?php if ($Page->kode->Visible) { // kode ?>
     <div id="r_kode"<?= $Page->kode->rowAttributes() ?>>
         <label id="elh_akun_kode" for="x_kode" class="<?= $Page->LeftColumnClass ?>"><?= $Page->kode->caption() ?><?= $Page->kode->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
@@ -95,38 +142,48 @@ $Page->showMessage();
 </div></div>
     </div>
 <?php } ?>
-<?php if ($Page->subgrup_id->Visible) { // subgrup_id ?>
-    <div id="r_subgrup_id"<?= $Page->subgrup_id->rowAttributes() ?>>
-        <label id="elh_akun_subgrup_id" for="x_subgrup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->subgrup_id->caption() ?><?= $Page->subgrup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->subgrup_id->cellAttributes() ?>>
-<span id="el_akun_subgrup_id">
-<input type="<?= $Page->subgrup_id->getInputTextType() ?>" name="x_subgrup_id" id="x_subgrup_id" data-table="akun" data-field="x_subgrup_id" value="<?= $Page->subgrup_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->subgrup_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->subgrup_id->formatPattern()) ?>"<?= $Page->subgrup_id->editAttributes() ?> aria-describedby="x_subgrup_id_help">
-<?= $Page->subgrup_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->subgrup_id->getErrorMessage() ?></div>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-    <div id="r_user_id"<?= $Page->user_id->rowAttributes() ?>>
-        <label id="elh_akun_user_id" for="x_user_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->user_id->caption() ?><?= $Page->user_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->user_id->cellAttributes() ?>>
-<span id="el_akun_user_id">
-<input type="<?= $Page->user_id->getInputTextType() ?>" name="x_user_id" id="x_user_id" data-table="akun" data-field="x_user_id" value="<?= $Page->user_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->user_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->user_id->formatPattern()) ?>"<?= $Page->user_id->editAttributes() ?> aria-describedby="x_user_id_help">
-<?= $Page->user_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->user_id->getErrorMessage() ?></div>
-</span>
-</div></div>
-    </div>
-<?php } ?>
 <?php if ($Page->matauang_id->Visible) { // matauang_id ?>
     <div id="r_matauang_id"<?= $Page->matauang_id->rowAttributes() ?>>
         <label id="elh_akun_matauang_id" for="x_matauang_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->matauang_id->caption() ?><?= $Page->matauang_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->matauang_id->cellAttributes() ?>>
 <span id="el_akun_matauang_id">
-<input type="<?= $Page->matauang_id->getInputTextType() ?>" name="x_matauang_id" id="x_matauang_id" data-table="akun" data-field="x_matauang_id" value="<?= $Page->matauang_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->matauang_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->matauang_id->formatPattern()) ?>"<?= $Page->matauang_id->editAttributes() ?> aria-describedby="x_matauang_id_help">
-<?= $Page->matauang_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->matauang_id->getErrorMessage() ?></div>
+    <select
+        id="x_matauang_id"
+        name="x_matauang_id"
+        class="form-select ew-select<?= $Page->matauang_id->isInvalidClass() ?>"
+        <?php if (!$Page->matauang_id->IsNativeSelect) { ?>
+        data-select2-id="fakunadd_x_matauang_id"
+        <?php } ?>
+        data-table="akun"
+        data-field="x_matauang_id"
+        data-value-separator="<?= $Page->matauang_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->matauang_id->getPlaceHolder()) ?>"
+        <?= $Page->matauang_id->editAttributes() ?>>
+        <?= $Page->matauang_id->selectOptionListHtml("x_matauang_id") ?>
+    </select>
+    <?= $Page->matauang_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->matauang_id->getErrorMessage() ?></div>
+<?= $Page->matauang_id->Lookup->getParamTag($Page, "p_x_matauang_id") ?>
+<?php if (!$Page->matauang_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fakunadd", function() {
+    var options = { name: "x_matauang_id", selectId: "fakunadd_x_matauang_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fakunadd.lists.matauang_id?.lookupOptions.length) {
+        options.data = { id: "x_matauang_id", form: "fakunadd" };
+    } else {
+        options.ajax = { id: "x_matauang_id", form: "fakunadd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.akun.fields.matauang_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 </div></div>
     </div>

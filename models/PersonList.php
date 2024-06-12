@@ -1387,30 +1387,33 @@ class PersonList extends Person
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->kode); // kode
-            $this->updateSort($this->nama); // nama
-            $this->updateSort($this->kontak); // kontak
-            $this->updateSort($this->type_id); // type_id
-            $this->updateSort($this->telp1); // telp1
-            $this->updateSort($this->matauang_id); // matauang_id
-            $this->updateSort($this->_username); // username
-            $this->updateSort($this->_password); // password
-            $this->updateSort($this->telp2); // telp2
-            $this->updateSort($this->fax); // fax
-            $this->updateSort($this->hp); // hp
-            $this->updateSort($this->_email); // email
-            $this->updateSort($this->website); // website
-            $this->updateSort($this->npwp); // npwp
-            $this->updateSort($this->alamat); // alamat
-            $this->updateSort($this->kota); // kota
-            $this->updateSort($this->zip); // zip
-            $this->updateSort($this->klasifikasi_id); // klasifikasi_id
-            $this->updateSort($this->id_FK); // id_FK
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->kode, $ctrl); // kode
+            $this->updateSort($this->nama, $ctrl); // nama
+            $this->updateSort($this->kontak, $ctrl); // kontak
+            $this->updateSort($this->type_id, $ctrl); // type_id
+            $this->updateSort($this->telp1, $ctrl); // telp1
+            $this->updateSort($this->matauang_id, $ctrl); // matauang_id
+            $this->updateSort($this->_username, $ctrl); // username
+            $this->updateSort($this->_password, $ctrl); // password
+            $this->updateSort($this->telp2, $ctrl); // telp2
+            $this->updateSort($this->fax, $ctrl); // fax
+            $this->updateSort($this->hp, $ctrl); // hp
+            $this->updateSort($this->_email, $ctrl); // email
+            $this->updateSort($this->website, $ctrl); // website
+            $this->updateSort($this->npwp, $ctrl); // npwp
+            $this->updateSort($this->alamat, $ctrl); // alamat
+            $this->updateSort($this->kota, $ctrl); // kota
+            $this->updateSort($this->zip, $ctrl); // zip
+            $this->updateSort($this->klasifikasi_id, $ctrl); // klasifikasi_id
+            $this->updateSort($this->id_FK, $ctrl); // id_FK
             $this->setStartRecordNumber(1); // Reset start position
         }
 

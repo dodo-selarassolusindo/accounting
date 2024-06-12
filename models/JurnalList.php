@@ -1244,17 +1244,20 @@ class JurnalList extends Jurnal
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->tipejurnal_id); // tipejurnal_id
-            $this->updateSort($this->period_id); // period_id
-            $this->updateSort($this->createon); // createon
-            $this->updateSort($this->keterangan); // keterangan
-            $this->updateSort($this->person_id); // person_id
-            $this->updateSort($this->nomer); // nomer
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->tipejurnal_id, $ctrl); // tipejurnal_id
+            $this->updateSort($this->period_id, $ctrl); // period_id
+            $this->updateSort($this->createon, $ctrl); // createon
+            $this->updateSort($this->keterangan, $ctrl); // keterangan
+            $this->updateSort($this->person_id, $ctrl); // person_id
+            $this->updateSort($this->nomer, $ctrl); // nomer
             $this->setStartRecordNumber(1); // Reset start position
         }
 

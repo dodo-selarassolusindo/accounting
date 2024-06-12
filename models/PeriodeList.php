@@ -976,15 +976,18 @@ class PeriodeList extends Periode
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->start); // start
-            $this->updateSort($this->end); // end
-            $this->updateSort($this->isaktif); // isaktif
-            $this->updateSort($this->user_id); // user_id
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->start, $ctrl); // start
+            $this->updateSort($this->end, $ctrl); // end
+            $this->updateSort($this->isaktif, $ctrl); // isaktif
+            $this->updateSort($this->user_id, $ctrl); // user_id
             $this->setStartRecordNumber(1); // Reset start position
         }
 

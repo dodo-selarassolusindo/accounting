@@ -223,8 +223,8 @@ class Gudang extends DbTable
         }
     }
 
-    // Single column sort
-    public function updateSort(&$fld)
+    // Multiple column sort
+    public function updateSort(&$fld, $ctrl)
     {
         if ($this->CurrentOrder == $fld->Name) {
             $sortField = $fld->Expression;
@@ -234,8 +234,29 @@ class Gudang extends DbTable
             } else {
                 $curSort = $lastSort;
             }
-            $orderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortField . " " . $curSort : "";
-            $this->setSessionOrderBy($orderBy); // Save to Session
+            $lastOrderBy = in_array($lastSort, ["ASC", "DESC"]) ? $sortField . " " . $lastSort : "";
+            $curOrderBy = in_array($curSort, ["ASC", "DESC"]) ? $sortField . " " . $curSort : "";
+            if ($ctrl) {
+                $orderBy = $this->getSessionOrderBy();
+                $arOrderBy = !empty($orderBy) ? explode(", ", $orderBy) : [];
+                if ($lastOrderBy != "" && in_array($lastOrderBy, $arOrderBy)) {
+                    foreach ($arOrderBy as $key => $val) {
+                        if ($val == $lastOrderBy) {
+                            if ($curOrderBy == "") {
+                                unset($arOrderBy[$key]);
+                            } else {
+                                $arOrderBy[$key] = $curOrderBy;
+                            }
+                        }
+                    }
+                } elseif ($curOrderBy != "") {
+                    $arOrderBy[] = $curOrderBy;
+                }
+                $orderBy = implode(", ", $arOrderBy);
+                $this->setSessionOrderBy($orderBy); // Save to Session
+            } else {
+                $this->setSessionOrderBy($curOrderBy); // Save to Session
+            }
         }
     }
 
@@ -963,7 +984,7 @@ class Gudang extends DbTable
         $attrs = "";
         if ($this->PageID != "grid" && $fld->Sortable) {
             $sortUrl = $this->sortUrl($fld);
-            $attrs = ' role="button" data-ew-action="sort" data-ajax="' . ($this->UseAjaxActions ? "true" : "false") . '" data-sort-url="' . $sortUrl . '" data-sort-type="1"';
+            $attrs = ' role="button" data-ew-action="sort" data-ajax="' . ($this->UseAjaxActions ? "true" : "false") . '" data-sort-url="' . $sortUrl . '" data-sort-type="2"';
             if ($this->ContextClass) { // Add context
                 $attrs .= ' data-context="' . HtmlEncode($this->ContextClass) . '"';
             }

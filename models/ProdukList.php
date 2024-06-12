@@ -1394,32 +1394,35 @@ class ProdukList extends Produk
             }
         }
 
+        // Check for Ctrl pressed
+        $ctrl = Get("ctrl") !== null;
+
         // Check for "order" parameter
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id); // id
-            $this->updateSort($this->kode); // kode
-            $this->updateSort($this->nama); // nama
-            $this->updateSort($this->kelompok_id); // kelompok_id
-            $this->updateSort($this->satuan_id); // satuan_id
-            $this->updateSort($this->satuan_id2); // satuan_id2
-            $this->updateSort($this->gudang_id); // gudang_id
-            $this->updateSort($this->minstok); // minstok
-            $this->updateSort($this->minorder); // minorder
-            $this->updateSort($this->akunhpp); // akunhpp
-            $this->updateSort($this->akunjual); // akunjual
-            $this->updateSort($this->akunpersediaan); // akunpersediaan
-            $this->updateSort($this->akunreturjual); // akunreturjual
-            $this->updateSort($this->hargapokok); // hargapokok
-            $this->updateSort($this->p); // p
-            $this->updateSort($this->l); // l
-            $this->updateSort($this->_t); // t
-            $this->updateSort($this->berat); // berat
-            $this->updateSort($this->supplier_id); // supplier_id
-            $this->updateSort($this->waktukirim); // waktukirim
-            $this->updateSort($this->aktif); // aktif
-            $this->updateSort($this->id_FK); // id_FK
+            $this->updateSort($this->id, $ctrl); // id
+            $this->updateSort($this->kode, $ctrl); // kode
+            $this->updateSort($this->nama, $ctrl); // nama
+            $this->updateSort($this->kelompok_id, $ctrl); // kelompok_id
+            $this->updateSort($this->satuan_id, $ctrl); // satuan_id
+            $this->updateSort($this->satuan_id2, $ctrl); // satuan_id2
+            $this->updateSort($this->gudang_id, $ctrl); // gudang_id
+            $this->updateSort($this->minstok, $ctrl); // minstok
+            $this->updateSort($this->minorder, $ctrl); // minorder
+            $this->updateSort($this->akunhpp, $ctrl); // akunhpp
+            $this->updateSort($this->akunjual, $ctrl); // akunjual
+            $this->updateSort($this->akunpersediaan, $ctrl); // akunpersediaan
+            $this->updateSort($this->akunreturjual, $ctrl); // akunreturjual
+            $this->updateSort($this->hargapokok, $ctrl); // hargapokok
+            $this->updateSort($this->p, $ctrl); // p
+            $this->updateSort($this->l, $ctrl); // l
+            $this->updateSort($this->_t, $ctrl); // t
+            $this->updateSort($this->berat, $ctrl); // berat
+            $this->updateSort($this->supplier_id, $ctrl); // supplier_id
+            $this->updateSort($this->waktukirim, $ctrl); // waktukirim
+            $this->updateSort($this->aktif, $ctrl); // aktif
+            $this->updateSort($this->id_FK, $ctrl); // id_FK
             $this->setStartRecordNumber(1); // Reset start position
         }
 
