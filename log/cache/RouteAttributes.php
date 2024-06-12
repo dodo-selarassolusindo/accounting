@@ -55,6 +55,7 @@
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
+        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone ($p['PHPMaker2024\\prj_accounting\\Attributes\\Get'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('PHPMaker2024\\prj_accounting\\Attributes\\Get')),
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Get'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
@@ -122,6 +123,11 @@
     [
         'PHPMaker2024\\prj_accounting\\Attributes\\Map' => [
             'methods' => [
+                [
+                    'GET',
+                    'POST',
+                    'OPTIONS',
+                ],
                 [
                     'GET',
                     'POST',
@@ -725,6 +731,7 @@
                 '/gudangview[/{id}]',
                 '/gudangedit[/{id}]',
                 '/gudangdelete[/{id}]',
+                '/home[/{params:.*}]',
                 '/jurnallist[/{id}]',
                 '/jurnaladd[/{id}]',
                 '/jurnalview[/{id}]',
@@ -844,6 +851,7 @@
                 'PHPMaker2024\\prj_accounting\\GudangController:view',
                 'PHPMaker2024\\prj_accounting\\GudangController:edit',
                 'PHPMaker2024\\prj_accounting\\GudangController:delete',
+                'PHPMaker2024\\prj_accounting\\HomeController:custom',
                 'PHPMaker2024\\prj_accounting\\JurnalController:list',
                 'PHPMaker2024\\prj_accounting\\JurnalController:add',
                 'PHPMaker2024\\prj_accounting\\JurnalController:view',
@@ -943,6 +951,9 @@
                 'PHPMaker2024\\prj_accounting\\TypeController:delete',
             ],
             'middleware' => [
+                [
+                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
+                ],
                 [
                     'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
                 ],
@@ -1314,6 +1325,7 @@
                 'view.gudang',
                 'edit.gudang',
                 'delete.gudang',
+                'custom.home',
                 'list.jurnal',
                 'add.jurnal',
                 'view.jurnal',
@@ -1413,6 +1425,7 @@
                 'delete.type',
             ],
             'options' => [
+                [],
                 [],
                 [],
                 [],
@@ -1651,6 +1664,7 @@
         $o[114],
         $o[115],
         $o[116],
+        $o[117],
     ],
     []
 );

@@ -8,6 +8,7 @@ C:\xampp\htdocs\accounting\controllers\AudittrailController.php
 C:\xampp\htdocs\accounting\controllers\ControllerBase.php
 C:\xampp\htdocs\accounting\controllers\GrupController.php
 C:\xampp\htdocs\accounting\controllers\GudangController.php
+C:\xampp\htdocs\accounting\controllers\HomeController.php
 C:\xampp\htdocs\accounting\controllers\JurnalController.php
 C:\xampp\htdocs\accounting\controllers\JurnaldController.php
 C:\xampp\htdocs\accounting\controllers\KelompokController.php
@@ -63,6 +64,7 @@ C:\xampp\htdocs\accounting\models\GudangDelete.php
 C:\xampp\htdocs\accounting\models\GudangEdit.php
 C:\xampp\htdocs\accounting\models\GudangList.php
 C:\xampp\htdocs\accounting\models\GudangView.php
+C:\xampp\htdocs\accounting\models\Home.php
 C:\xampp\htdocs\accounting\models\Jurnal.php
 C:\xampp\htdocs\accounting\models\JurnalAdd.php
 C:\xampp\htdocs\accounting\models\JurnalDelete.php
@@ -356,6 +358,7 @@ C:\xampp\htdocs\accounting\views\GudangDelete.php
 C:\xampp\htdocs\accounting\views\GudangEdit.php
 C:\xampp\htdocs\accounting\views\GudangList.php
 C:\xampp\htdocs\accounting\views\GudangView.php
+C:\xampp\htdocs\accounting\views\Home.php
 C:\xampp\htdocs\accounting\views\JurnalAdd.php
 C:\xampp\htdocs\accounting\views\JurnalDelete.php
 C:\xampp\htdocs\accounting\views\JurnalEdit.php

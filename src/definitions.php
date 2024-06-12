@@ -102,4 +102,5 @@ return [
     "top" => \DI\create(Top::class),
     "tos" => \DI\create(Tos::class),
     "type" => \DI\create(Type::class),
+    "home" => \DI\create(Home::class),
 ] + $definitions;

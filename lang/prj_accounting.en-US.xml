@@ -2,6 +2,9 @@
   <project>
     <phrase id="bodytitle" value="SELUSIN | Accounting" />
     <phrase id="footertext" value="&amp;copy;2024 Selaras Solusindo. All rights reserved." />
+    <menu id="28">
+      <phrase id="menutext" value="Home" />
+    </menu>
     <menu id="24">
       <phrase id="menutext" value="Master" />
     </menu>
@@ -578,6 +581,9 @@
       <field id="nama">
         <phrase id="fldcaption" value="nama" />
       </field>
+    </table>
+    <table id="home">
+      <phrase id="tblcaption" value="Home" />
     </table>
   </project>
 </ew-language>
