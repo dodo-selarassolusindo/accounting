@@ -16,6 +16,11 @@ $JurnalkasView = &$Page;
 $Page->showMessage();
 ?>
 <main class="view">
+<?php if (!$Page->IsModal) { ?>
+<?php if (!$Page->isExport()) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
+<?php } ?>
 <form name="fjurnalkasview" id="fjurnalkasview" class="ew-form ew-view-form overlay-wrapper" action="<?= CurrentPageUrl(false) ?>" method="post" novalidate autocomplete="off">
 <?php if (!$Page->isExport()) { ?>
 <script>
@@ -138,6 +143,11 @@ loadjs.ready("head", function () {
 <?php include_once "JurnalkasdGrid.php" ?>
 <?php } ?>
 </form>
+<?php if (!$Page->IsModal) { ?>
+<?php if (!$Page->isExport()) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
+<?php } ?>
 </main>
 <?php
 $Page->showPageFooter();

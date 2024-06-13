@@ -363,6 +363,11 @@ $Grid->ListOptions->render("footer", "right");
 // Close result set
 $Grid->Recordset?->free();
 ?>
+<?php if ($Grid->ShowOtherOptions) { ?>
+<div class="card-footer ew-grid-lower-panel">
+<?php $Grid->OtherOptions->render("body", "bottom") ?>
+</div>
+<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } else { ?>
 <div class="ew-list-other-options">

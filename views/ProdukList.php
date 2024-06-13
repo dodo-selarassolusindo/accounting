@@ -454,6 +454,16 @@ $Page->ListOptions->render("body", "right", $Page->RowCount);
 // Close result set
 $Page->Recordset?->free();
 ?>
+<?php if (!$Page->isExport()) { ?>
+<div class="card-footer ew-grid-lower-panel">
+<?php if (!$Page->isGridAdd() && !($Page->isGridEdit() && $Page->ModalGridEdit) && !$Page->isMultiEdit()) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $Page->OtherOptions->render("body", "bottom") ?>
+</div>
+</div>
+<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } else { ?>
 <div class="ew-list-other-options">

@@ -528,6 +528,9 @@ class AudittrailEdit extends Audittrail
             $SkipHeaderFooter = true;
         }
         $this->IsMobileOrModal = IsMobile() || $this->IsModal;
+
+        // Load record by position
+        $loadByPosition = false;
         $loaded = false;
         $postBack = false;
 
@@ -577,12 +580,55 @@ class AudittrailEdit extends Audittrail
                 } else {
                     $this->Id->CurrentValue = null;
                 }
+                if (!$loadByQuery || Get(Config("TABLE_START_REC")) !== null || Get(Config("TABLE_PAGE_NUMBER")) !== null) {
+                    $loadByPosition = true;
+                }
             }
 
             // Load result set
             if ($this->isShow()) {
+                if (!$this->IsModal) { // Normal edit page
+                    $this->StartRecord = 1; // Initialize start position
+                    $this->Recordset = $this->loadRecordset(); // Load records
+                    if ($this->TotalRecords <= 0) { // No record found
+                        if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
+                            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
+                        }
+                        $this->terminate("audittraillist"); // Return to list page
+                        return;
+                    } elseif ($loadByPosition) { // Load record by position
+                        $this->setupStartRecord(); // Set up start record position
+                        // Point to current record
+                        if ($this->StartRecord <= $this->TotalRecords) {
+                            $this->fetch($this->StartRecord);
+                            // Redirect to correct record
+                            $this->loadRowValues($this->CurrentRow);
+                            $url = $this->getCurrentUrl();
+                            $this->terminate($url);
+                            return;
+                        }
+                    } else { // Match key values
+                        if ($this->Id->CurrentValue != null) {
+                            while ($this->fetch()) {
+                                if (SameString($this->Id->CurrentValue, $this->CurrentRow['Id'])) {
+                                    $this->setStartRecordNumber($this->StartRecord); // Save record position
+                                    $loaded = true;
+                                    break;
+                                } else {
+                                    $this->StartRecord++;
+                                }
+                            }
+                        }
+                    }
+
+                    // Load current row values
+                    if ($loaded) {
+                        $this->loadRowValues($this->CurrentRow);
+                    }
+                } else {
                     // Load current record
                     $loaded = $this->loadRow();
+                } // End modal checking
                 $this->OldKey = $loaded ? $this->getKey(true) : ""; // Get from CurrentValue
             }
         }
@@ -609,6 +655,16 @@ class AudittrailEdit extends Audittrail
         // Perform current action
         switch ($this->CurrentAction) {
             case "show": // Get a record to display
+                if (!$this->IsModal) { // Normal edit page
+                    if (!$loaded) {
+                        if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
+                            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
+                        }
+                        $this->terminate("audittraillist"); // Return to list page
+                        return;
+                    } else {
+                    }
+                } else { // Modal edit page
                     if (!$loaded) { // Load record based on key
                         if ($this->getFailureMessage() == "") {
                             $this->setFailureMessage($Language->phrase("NoRecord")); // No record found
@@ -616,6 +672,7 @@ class AudittrailEdit extends Audittrail
                         $this->terminate("audittraillist"); // No matching record, return to list
                         return;
                     }
+                } // End modal checking
                 break;
             case "update": // Update
                 $returnUrl = $this->getReturnUrl();
@@ -667,6 +724,11 @@ class AudittrailEdit extends Audittrail
         $this->RowType = RowType::EDIT; // Render as Edit
         $this->resetAttributes();
         $this->renderRow();
+        if (!$this->IsModal) { // Normal view page
+            $this->Pager = new PrevNextPager($this, $this->StartRecord, $this->DisplayRecords, $this->TotalRecords, "", $this->RecordRange, $this->AutoHidePager, false, false);
+            $this->Pager->PageNumberName = Config("TABLE_PAGE_NUMBER");
+            $this->Pager->PagePhraseId = "Record"; // Show as record
+        }
 
         // Set LoginStatus / Page_Rendering / Page_Render
         if (!IsApi() && !$this->isTerminated()) {
@@ -814,6 +876,61 @@ class AudittrailEdit extends Audittrail
         $this->KeyValue->CurrentValue = $this->KeyValue->FormValue;
         $this->OldValue->CurrentValue = $this->OldValue->FormValue;
         $this->NewValue->CurrentValue = $this->NewValue->FormValue;
+    }
+
+    /**
+     * Load result set
+     *
+     * @param int $offset Offset
+     * @param int $rowcnt Maximum number of rows
+     * @return Doctrine\DBAL\Result Result
+     */
+    public function loadRecordset($offset = -1, $rowcnt = -1)
+    {
+        // Load List page SQL (QueryBuilder)
+        $sql = $this->getListSql();
+
+        // Load result set
+        if ($offset > -1) {
+            $sql->setFirstResult($offset);
+        }
+        if ($rowcnt > 0) {
+            $sql->setMaxResults($rowcnt);
+        }
+        $result = $sql->executeQuery();
+        if (property_exists($this, "TotalRecords") && $rowcnt < 0) {
+            $this->TotalRecords = $result->rowCount();
+            if ($this->TotalRecords <= 0) { // Handle database drivers that does not return rowCount()
+                $this->TotalRecords = $this->getRecordCount($this->getListSql());
+            }
+        }
+
+        // Call Recordset Selected event
+        $this->recordsetSelected($result);
+        return $result;
+    }
+
+    /**
+     * Load records as associative array
+     *
+     * @param int $offset Offset
+     * @param int $rowcnt Maximum number of rows
+     * @return void
+     */
+    public function loadRows($offset = -1, $rowcnt = -1)
+    {
+        // Load List page SQL (QueryBuilder)
+        $sql = $this->getListSql();
+
+        // Load result set
+        if ($offset > -1) {
+            $sql->setFirstResult($offset);
+        }
+        if ($rowcnt > 0) {
+            $sql->setMaxResults($rowcnt);
+        }
+        $result = $sql->executeQuery();
+        return $result->fetchAllAssociative();
     }
 
     /**

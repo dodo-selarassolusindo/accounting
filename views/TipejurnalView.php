@@ -16,6 +16,11 @@ $TipejurnalView = &$Page;
 $Page->showMessage();
 ?>
 <main class="view">
+<?php if (!$Page->IsModal) { ?>
+<?php if (!$Page->isExport()) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
+<?php } ?>
 <form name="ftipejurnalview" id="ftipejurnalview" class="ew-form ew-view-form overlay-wrapper" action="<?= CurrentPageUrl(false) ?>" method="post" novalidate autocomplete="off">
 <?php if (!$Page->isExport()) { ?>
 <script>
@@ -75,6 +80,11 @@ loadjs.ready("head", function () {
 <?php } ?>
 </table>
 </form>
+<?php if (!$Page->IsModal) { ?>
+<?php if (!$Page->isExport()) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
+<?php } ?>
 </main>
 <?php
 $Page->showPageFooter();

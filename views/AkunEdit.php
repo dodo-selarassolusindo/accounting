@@ -10,6 +10,9 @@ $AkunEdit = &$Page;
 $Page->showMessage();
 ?>
 <main class="edit">
+<?php if (!$Page->IsModal) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
 <form name="fakunedit" id="fakunedit" class="<?= $Page->FormClassName ?>" action="<?= CurrentPageUrl(false) ?>" method="post" novalidate autocomplete="off">
 <script>
 var currentTable = <?= JsonEncode($Page->toClientVar()) ?>;
@@ -202,6 +205,9 @@ loadjs.ready("fakunedit", function() {
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
 </form>
+<?php if (!$Page->IsModal) { ?>
+<?= $Page->Pager->render() ?>
+<?php } ?>
 </main>
 <?php
 $Page->showPageFooter();
