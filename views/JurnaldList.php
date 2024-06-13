@@ -183,6 +183,45 @@ $Page->ListOptions->render("body", "right", $Page->RowCount);
 }
 ?>
 </tbody>
+<?php
+// Render aggregate row
+$Page->RowType = RowType::AGGREGATE;
+$Page->resetAttributes();
+$Page->renderRow();
+?>
+<?php if ($Page->TotalRecords > 0 && !$Page->isGridAdd() && !$Page->isGridEdit() && !$Page->isMultiEdit()) { ?>
+<tfoot><!-- Table footer -->
+    <tr class="ew-table-footer">
+<?php
+// Render list options
+$Page->renderListOptions();
+
+// Render list options (footer, left)
+$Page->ListOptions->render("footer", "left");
+?>
+    <?php if ($Page->akun_id->Visible) { // akun_id ?>
+        <td data-name="akun_id" class="<?= $Page->akun_id->footerCellClass() ?>"><span id="elf_jurnald_akun_id" class="jurnald_akun_id">
+        </span></td>
+    <?php } ?>
+    <?php if ($Page->debet->Visible) { // debet ?>
+        <td data-name="debet" class="<?= $Page->debet->footerCellClass() ?>"><span id="elf_jurnald_debet" class="jurnald_debet">
+        <span class="ew-aggregate"><?= $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+        <?= $Page->debet->ViewValue ?></span>
+        </span></td>
+    <?php } ?>
+    <?php if ($Page->kredit->Visible) { // kredit ?>
+        <td data-name="kredit" class="<?= $Page->kredit->footerCellClass() ?>"><span id="elf_jurnald_kredit" class="jurnald_kredit">
+        <span class="ew-aggregate"><?= $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+        <?= $Page->kredit->ViewValue ?></span>
+        </span></td>
+    <?php } ?>
+<?php
+// Render list options (footer, right)
+$Page->ListOptions->render("footer", "right");
+?>
+    </tr>
+</tfoot>
+<?php } ?>
 </table><!-- /.ew-table -->
 <?php } ?>
 </div><!-- /.ew-grid-middle-panel -->

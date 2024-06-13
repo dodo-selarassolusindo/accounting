@@ -1401,11 +1401,28 @@ class Jurnald extends DbTable
     // Aggregate list row values
     public function aggregateListRowValues()
     {
+            if (is_numeric($this->debet->CurrentValue)) {
+                $this->debet->Total += $this->debet->CurrentValue; // Accumulate total
+            }
+            if (is_numeric($this->kredit->CurrentValue)) {
+                $this->kredit->Total += $this->kredit->CurrentValue; // Accumulate total
+            }
     }
 
     // Aggregate list row (for rendering)
     public function aggregateListRow()
     {
+            $this->debet->CurrentValue = $this->debet->Total;
+            $this->debet->ViewValue = $this->debet->CurrentValue;
+            $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+            $this->debet->CellCssStyle .= "text-align: right;";
+            $this->debet->HrefValue = ""; // Clear href value
+            $this->kredit->CurrentValue = $this->kredit->Total;
+            $this->kredit->ViewValue = $this->kredit->CurrentValue;
+            $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+            $this->kredit->CellCssStyle .= "text-align: right;";
+            $this->kredit->HrefValue = ""; // Clear href value
+
         // Call Row Rendered event
         $this->rowRendered();
     }
@@ -1449,6 +1466,7 @@ class Jurnald extends DbTable
                     }
                 }
                 $this->loadListRowValues($row);
+                $this->aggregateListRowValues(); // Aggregate row values
 
                 // Render row
                 $this->RowType = RowType::VIEW; // Render view
@@ -1474,6 +1492,22 @@ class Jurnald extends DbTable
             // Call Row Export server event
             if ($doc->ExportCustom) {
                 $this->rowExport($doc, $row);
+            }
+        }
+
+        // Export aggregates (horizontal format only)
+        if ($doc->Horizontal) {
+            $this->RowType = RowType::AGGREGATE;
+            $this->resetAttributes();
+            $this->aggregateListRow();
+            if (!$doc->ExportCustom) {
+                $doc->beginExportRow(-1);
+                $doc->exportAggregate($this->id, '');
+                $doc->exportAggregate($this->jurnal_id, '');
+                $doc->exportAggregate($this->akun_id, '');
+                $doc->exportAggregate($this->debet, 'TOTAL');
+                $doc->exportAggregate($this->kredit, 'TOTAL');
+                $doc->endExportRow();
             }
         }
         if (!$doc->ExportCustom) {

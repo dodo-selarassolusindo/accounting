@@ -305,6 +305,45 @@ loadjs.ready(["fjurnaldgrid","load"], () => fjurnaldgrid.updateLists(<?= $Grid->
 }
 ?>
 </tbody>
+<?php
+// Render aggregate row
+$Grid->RowType = RowType::AGGREGATE;
+$Grid->resetAttributes();
+$Grid->renderRow();
+?>
+<?php if ($Grid->TotalRecords > 0 && $Grid->CurrentMode == "view") { ?>
+<tfoot><!-- Table footer -->
+    <tr class="ew-table-footer">
+<?php
+// Render list options
+$Grid->renderListOptions();
+
+// Render list options (footer, left)
+$Grid->ListOptions->render("footer", "left");
+?>
+    <?php if ($Grid->akun_id->Visible) { // akun_id ?>
+        <td data-name="akun_id" class="<?= $Grid->akun_id->footerCellClass() ?>"><span id="elf_jurnald_akun_id" class="jurnald_akun_id">
+        </span></td>
+    <?php } ?>
+    <?php if ($Grid->debet->Visible) { // debet ?>
+        <td data-name="debet" class="<?= $Grid->debet->footerCellClass() ?>"><span id="elf_jurnald_debet" class="jurnald_debet">
+        <span class="ew-aggregate"><?= $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+        <?= $Grid->debet->ViewValue ?></span>
+        </span></td>
+    <?php } ?>
+    <?php if ($Grid->kredit->Visible) { // kredit ?>
+        <td data-name="kredit" class="<?= $Grid->kredit->footerCellClass() ?>"><span id="elf_jurnald_kredit" class="jurnald_kredit">
+        <span class="ew-aggregate"><?= $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+        <?= $Grid->kredit->ViewValue ?></span>
+        </span></td>
+    <?php } ?>
+<?php
+// Render list options (footer, right)
+$Grid->ListOptions->render("footer", "right");
+?>
+    </tr>
+</tfoot>
+<?php } ?>
 </table><!-- /.ew-table -->
 <?php if ($Grid->CurrentMode == "add" || $Grid->CurrentMode == "copy") { ?>
 <input type="hidden" name="<?= $Grid->FormKeyCountName ?>" id="<?= $Grid->FormKeyCountName ?>" value="<?= $Grid->KeyCount ?>">

@@ -1787,6 +1787,16 @@ class JurnaldList extends Jurnald
 
         // kredit
 
+        // Accumulate aggregate value
+        if ($this->RowType != RowType::AGGREGATEINIT && $this->RowType != RowType::AGGREGATE && $this->RowType != RowType::PREVIEWFIELD) {
+            if (is_numeric($this->debet->CurrentValue)) {
+                $this->debet->Total += $this->debet->CurrentValue; // Accumulate total
+            }
+            if (is_numeric($this->kredit->CurrentValue)) {
+                $this->kredit->Total += $this->kredit->CurrentValue; // Accumulate total
+            }
+        }
+
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
@@ -1840,6 +1850,20 @@ class JurnaldList extends Jurnald
             // kredit
             $this->kredit->HrefValue = "";
             $this->kredit->TooltipValue = "";
+        } elseif ($this->RowType == RowType::AGGREGATEINIT) { // Initialize aggregate row
+                    $this->debet->Total = 0; // Initialize total
+                    $this->kredit->Total = 0; // Initialize total
+        } elseif ($this->RowType == RowType::AGGREGATE) { // Aggregate row
+            $this->debet->CurrentValue = $this->debet->Total;
+            $this->debet->ViewValue = $this->debet->CurrentValue;
+            $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+            $this->debet->CellCssStyle .= "text-align: right;";
+            $this->debet->HrefValue = ""; // Clear href value
+            $this->kredit->CurrentValue = $this->kredit->Total;
+            $this->kredit->ViewValue = $this->kredit->CurrentValue;
+            $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+            $this->kredit->CellCssStyle .= "text-align: right;";
+            $this->kredit->HrefValue = ""; // Clear href value
         }
 
         // Call Row Rendered event
