@@ -1695,6 +1695,20 @@ class Jurnal extends DbTable
     public function rowRendering()
     {
         // Enter your code here
+        if ($this->CurrentAction == 'add') {
+            // isi nomor jurnal
+            $tahunBulan = date('ym');
+            $lastNomor = ExecuteScalar("SELECT MAX(nomer) AS lastNomor FROM jurnal WHERE nomer LIKE '%" . $tahunBulan . "%'");
+            // jika ada nomer untuk tahun-bulan saat ini, ambil angka terakhir dan tambah 1
+            if ($lastNomor) {
+                $num = (int)substr($lastNomor, 6) + 1; // ambil bagian angka setelah tahun-bulan
+            } else {
+                $num = 1; // jika tidak ada Nomor untuk tahun-bulan saat ini, mulai dari 1
+            }
+            // format Nomor baru
+            $newNomor = 'JU' . $tahunBulan . str_pad($num, 3, '0', STR_PAD_LEFT);
+            $this->nomer->EditValue = $newNomor;
+        }
     }
 
     // Row Rendered event
