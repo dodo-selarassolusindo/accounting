@@ -86,6 +86,8 @@ return [
     "home" => \DI\create(Home::class),
     "jurnal" => \DI\create(Jurnal::class),
     "jurnald" => \DI\create(Jurnald::class),
+    "jurnalkas" => \DI\create(Jurnalkas::class),
+    "jurnalkasd" => \DI\create(Jurnalkasd::class),
     "kelompok" => \DI\create(Kelompok::class),
     "klasifikasi" => \DI\create(Klasifikasi::class),
     "konversi" => \DI\create(Konversi::class),

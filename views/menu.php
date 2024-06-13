@@ -15,6 +15,7 @@ $topMenu->addMenuItem(17, "mi_saldoawal", $Language->menuPhrase("17", "MenuText"
 $topMenu->addMenuItem(20, "mi_tipejurnal", $Language->menuPhrase("20", "MenuText"), "tipejurnallist", 24, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(26, "mci_Transaksi", $Language->menuPhrase("26", "MenuText"), "", -1, "", true, false, true, "", "", true, false);
 $topMenu->addMenuItem(5, "mi_jurnal", $Language->menuPhrase("5", "MenuText"), "jurnallist", 26, "", true, false, false, "", "", true, false);
+$topMenu->addMenuItem(58, "mi_jurnalkas", $Language->menuPhrase("58", "MenuText"), "jurnalkaslist", 26, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(27, "mci_Setting", $Language->menuPhrase("27", "MenuText"), "", -1, "", true, false, true, "", "", true, false);
 $topMenu->addMenuItem(12, "mi_pajak", $Language->menuPhrase("12", "MenuText"), "pajaklist", 27, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(10, "mi_kurs", $Language->menuPhrase("10", "MenuText"), "kurslist", 27, "", true, false, false, "", "", true, false);
@@ -47,6 +48,7 @@ $sideMenu->addMenuItem(17, "mi_saldoawal", $Language->menuPhrase("17", "MenuText
 $sideMenu->addMenuItem(20, "mi_tipejurnal", $Language->menuPhrase("20", "MenuText"), "tipejurnallist", 24, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(26, "mci_Transaksi", $Language->menuPhrase("26", "MenuText"), "", -1, "", true, false, true, "", "", true, true);
 $sideMenu->addMenuItem(5, "mi_jurnal", $Language->menuPhrase("5", "MenuText"), "jurnallist", 26, "", true, false, false, "", "", true, true);
+$sideMenu->addMenuItem(58, "mi_jurnalkas", $Language->menuPhrase("58", "MenuText"), "jurnalkaslist", 26, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(27, "mci_Setting", $Language->menuPhrase("27", "MenuText"), "", -1, "", true, false, true, "", "", true, true);
 $sideMenu->addMenuItem(12, "mi_pajak", $Language->menuPhrase("12", "MenuText"), "pajaklist", 27, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(10, "mi_kurs", $Language->menuPhrase("10", "MenuText"), "kurslist", 27, "", true, false, false, "", "", true, true);

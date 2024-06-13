@@ -15,18 +15,18 @@ use Closure;
 /**
  * Page class
  */
-class JurnalAdd extends Jurnal
+class JurnalkasView extends Jurnalkas
 {
     use MessagesTrait;
 
     // Page ID
-    public $PageID = "add";
+    public $PageID = "view";
 
     // Project ID
     public $ProjectID = PROJECT_ID;
 
     // Page object name
-    public $PageObjName = "JurnalAdd";
+    public $PageObjName = "JurnalkasView";
 
     // View file path
     public $View = null;
@@ -38,7 +38,25 @@ class JurnalAdd extends Jurnal
     public $RenderingView = false;
 
     // CSS class/style
-    public $CurrentPageName = "jurnaladd";
+    public $CurrentPageName = "jurnalkasview";
+
+    // Page URLs
+    public $AddUrl;
+    public $EditUrl;
+    public $DeleteUrl;
+    public $ViewUrl;
+    public $CopyUrl;
+    public $ListUrl;
+
+    // Update URLs
+    public $InlineAddUrl;
+    public $InlineCopyUrl;
+    public $InlineEditUrl;
+    public $GridAddUrl;
+    public $GridEditUrl;
+    public $MultiEditUrl;
+    public $MultiDeleteUrl;
+    public $MultiUpdateUrl;
 
     // Audit Trail
     public $AuditTrailOnAdd = true;
@@ -129,13 +147,13 @@ class JurnalAdd extends Jurnal
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->Visible = false;
+        $this->id->setVisibility();
+        $this->tipejurnal_id->setVisibility();
+        $this->period_id->setVisibility();
         $this->createon->setVisibility();
-        $this->nomer->setVisibility();
-        $this->tipejurnal_id->Visible = false;
-        $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
-        $this->person_id->Visible = false;
+        $this->person_id->setVisibility();
+        $this->nomer->setVisibility();
     }
 
     // Constructor
@@ -143,11 +161,11 @@ class JurnalAdd extends Jurnal
     {
         parent::__construct();
         global $Language, $DashboardReport, $DebugTimer;
-        $this->TableVar = 'jurnal';
-        $this->TableName = 'jurnal';
+        $this->TableVar = 'jurnalkas';
+        $this->TableName = 'jurnalkas';
 
         // Table CSS class
-        $this->TableClass = "table table-striped table-bordered table-hover table-sm ew-desktop-table ew-add-table";
+        $this->TableClass = "table table-striped table-bordered table-hover table-sm ew-view-table";
 
         // Initialize
         $GLOBALS["Page"] = &$this;
@@ -155,14 +173,19 @@ class JurnalAdd extends Jurnal
         // Language object
         $Language = Container("app.language");
 
-        // Table object (jurnal)
-        if (!isset($GLOBALS["jurnal"]) || $GLOBALS["jurnal"]::class == PROJECT_NAMESPACE . "jurnal") {
-            $GLOBALS["jurnal"] = &$this;
+        // Table object (jurnalkas)
+        if (!isset($GLOBALS["jurnalkas"]) || $GLOBALS["jurnalkas"]::class == PROJECT_NAMESPACE . "jurnalkas") {
+            $GLOBALS["jurnalkas"] = &$this;
+        }
+
+        // Set up record key
+        if (($keyValue = Get("id") ?? Route("id")) !== null) {
+            $this->RecKey["id"] = $keyValue;
         }
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'jurnal');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'jurnalkas');
         }
 
         // Start timer
@@ -173,6 +196,17 @@ class JurnalAdd extends Jurnal
 
         // Open connection
         $GLOBALS["Conn"] ??= $this->getConnection();
+
+        // Export options
+        $this->ExportOptions = new ListOptions(TagClassName: "ew-export-option");
+
+        // Other options
+        $this->OtherOptions = new ListOptionsArray();
+
+        // Detail tables
+        $this->OtherOptions["detail"] = new ListOptions(TagClassName: "ew-detail-option");
+        // Actions
+        $this->OtherOptions["action"] = new ListOptions(TagClassName: "ew-action-option");
     }
 
     // Get content from stream
@@ -266,21 +300,12 @@ class JurnalAdd extends Jurnal
             if ($this->IsModal) { // Show as modal
                 $pageName = GetPageName($url);
                 $result = ["url" => GetUrl($url), "modal" => "1"];  // Assume return to modal for simplicity
-                if (
-                    SameString($pageName, GetPageName($this->getListUrl())) ||
-                    SameString($pageName, GetPageName($this->getViewUrl())) ||
-                    SameString($pageName, GetPageName(CurrentMasterTable()?->getViewUrl() ?? ""))
-                ) { // List / View / Master View page
-                    if (!SameString($pageName, GetPageName($this->getListUrl()))) { // Not List page
-                        $result["caption"] = $this->getModalCaption($pageName);
-                        $result["view"] = SameString($pageName, "jurnalview"); // If View page, no primary button
-                    } else { // List page
-                        $result["error"] = $this->getFailureMessage(); // List page should not be shown as modal => error
-                        $this->clearFailureMessage();
-                    }
-                } else { // Other pages (add messages and then clear messages)
-                    $result = array_merge($this->getMessages(), ["modal" => "1"]);
-                    $this->clearMessages();
+                if (!SameString($pageName, GetPageName($this->getListUrl()))) { // Not List page
+                    $result["caption"] = $this->getModalCaption($pageName);
+                    $result["view"] = SameString($pageName, "jurnalkasview"); // If View page, no primary button
+                } else { // List page
+                    $result["error"] = $this->getFailureMessage(); // List page should not be shown as modal => error
+                    $this->clearFailureMessage();
                 }
                 WriteJson($result);
             } else {
@@ -454,14 +479,17 @@ class JurnalAdd extends Jurnal
         }
         return $lookup->toJson($this, $response); // Use settings from current page
     }
-    public $FormClassName = "ew-form ew-add-form";
-    public $IsModal = false;
-    public $IsMobileOrModal = false;
-    public $DbMasterFilter = "";
-    public $DbDetailFilter = "";
+    public $ExportOptions; // Export options
+    public $OtherOptions; // Other options
+    public $DisplayRecords = 1;
+    public $DbMasterFilter;
+    public $DbDetailFilter;
     public $StartRecord;
-    public $Priv = 0;
-    public $CopyRecord;
+    public $StopRecord;
+    public $TotalRecords = 0;
+    public $RecordRange = 10;
+    public $RecKey = [];
+    public $IsModal = false;
 
     /**
      * Page run
@@ -486,9 +514,6 @@ class JurnalAdd extends Jurnal
         if (IsLoggedIn()) {
             Profile()->setUserName(CurrentUserName())->loadFromStorage();
         }
-
-        // Create form object
-        $CurrentForm = new HttpForm();
         $this->CurrentAction = Param("action"); // Set up current action
         $this->setVisibility();
 
@@ -514,140 +539,79 @@ class JurnalAdd extends Jurnal
             $this->InlineDelete = true;
         }
 
-        // Set up lookup cache
-        $this->setupLookupOptions($this->tipejurnal_id);
-        $this->setupLookupOptions($this->period_id);
-
-        // Load default values for add
-        $this->loadDefaultValues();
-
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
         }
-        $this->IsMobileOrModal = IsMobile() || $this->IsModal;
-        $postBack = false;
 
-        // Set up current action
-        if (IsApi()) {
-            $this->CurrentAction = "insert"; // Add record directly
-            $postBack = true;
-        } elseif (Post("action", "") !== "") {
-            $this->CurrentAction = Post("action"); // Get form action
-            $this->setKey(Post($this->OldKeyName));
-            $postBack = true;
-        } else {
-            // Load key values from QueryString
-            if (($keyValue = Get("id") ?? Route("id")) !== null) {
-                $this->id->setQueryStringValue($keyValue);
-            }
-            $this->OldKey = $this->getKey(true); // Get from CurrentValue
-            $this->CopyRecord = !EmptyValue($this->OldKey);
-            if ($this->CopyRecord) {
-                $this->CurrentAction = "copy"; // Copy record
-                $this->setKey($this->OldKey); // Set up record key
-            } else {
-                $this->CurrentAction = "show"; // Display blank record
-            }
+        // Load current record
+        $loadCurrentRecord = false;
+        $returnUrl = "";
+        $matchRecord = false;
+        if (($keyValue = Get("id") ?? Route("id")) !== null) {
+            $this->id->setQueryStringValue($keyValue);
+            $this->RecKey["id"] = $this->id->QueryStringValue;
+        } elseif (Post("id") !== null) {
+            $this->id->setFormValue(Post("id"));
+            $this->RecKey["id"] = $this->id->FormValue;
+        } elseif (IsApi() && ($keyValue = Key(0) ?? Route(2)) !== null) {
+            $this->id->setQueryStringValue($keyValue);
+            $this->RecKey["id"] = $this->id->QueryStringValue;
+        } elseif (!$loadCurrentRecord) {
+            $returnUrl = "jurnalkaslist"; // Return to list
         }
 
-        // Load old record or default values
-        $rsold = $this->loadOldRecord();
+        // Get action
+        $this->CurrentAction = "show"; // Display
+        switch ($this->CurrentAction) {
+            case "show": // Get a record to display
 
-        // Load form values
-        if ($postBack) {
-            $this->loadFormValues(); // Load form values
+                    // Load record based on key
+                    if (IsApi()) {
+                        $filter = $this->getRecordFilter();
+                        $this->CurrentFilter = $filter;
+                        $sql = $this->getCurrentSql();
+                        $conn = $this->getConnection();
+                        $res = ($this->Recordset = ExecuteQuery($sql, $conn));
+                    } else {
+                        $res = $this->loadRow();
+                    }
+                    if (!$res) { // Load record based on key
+                        if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
+                            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
+                        }
+                        $returnUrl = "jurnalkaslist"; // No matching record, return to list
+                    }
+                break;
         }
+        if ($returnUrl != "") {
+            $this->terminate($returnUrl);
+            return;
+        }
+
+        // Set up Breadcrumb
+        if (!$this->isExport()) {
+            $this->setupBreadcrumb();
+        }
+
+        // Render row
+        $this->RowType = RowType::VIEW;
+        $this->resetAttributes();
+        $this->renderRow();
 
         // Set up detail parameters
         $this->setupDetailParms();
 
-        // Validate form if post back
-        if ($postBack) {
-            if (!$this->validateForm()) {
-                $this->EventCancelled = true; // Event cancelled
-                $this->restoreFormValues(); // Restore form values
-                if (IsApi()) {
-                    $this->terminate();
-                    return;
-                } else {
-                    $this->CurrentAction = "show"; // Form error, reset action
-                }
+        // Normal return
+        if (IsApi()) {
+            if (!$this->isExport()) {
+                $row = $this->getRecordsFromRecordset($this->Recordset, true); // Get current record only
+                $this->Recordset?->free();
+                WriteJson(["success" => true, "action" => Config("API_VIEW_ACTION"), $this->TableVar => $row]);
+                $this->terminate(true);
             }
+            return;
         }
-
-        // Perform current action
-        switch ($this->CurrentAction) {
-            case "copy": // Copy an existing record
-                if (!$rsold) { // Record not loaded
-                    if ($this->getFailureMessage() == "") {
-                        $this->setFailureMessage($Language->phrase("NoRecord")); // No record found
-                    }
-                    $this->terminate("jurnallist"); // No matching record, return to list
-                    return;
-                }
-
-                // Set up detail parameters
-                $this->setupDetailParms();
-                break;
-            case "insert": // Add new record
-                $this->SendEmail = true; // Send email on add success
-                if ($this->addRow($rsold)) { // Add successful
-                    if ($this->getSuccessMessage() == "" && Post("addopt") != "1") { // Skip success message for addopt (done in JavaScript)
-                        $this->setSuccessMessage($Language->phrase("AddSuccess")); // Set up success message
-                    }
-                    if ($this->getCurrentDetailTable() != "") { // Master/detail add
-                        $returnUrl = $this->getDetailUrl();
-                    } else {
-                        $returnUrl = $this->getReturnUrl();
-                    }
-                    if (GetPageName($returnUrl) == "jurnallist") {
-                        $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
-                    } elseif (GetPageName($returnUrl) == "jurnalview") {
-                        $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
-                    }
-
-                    // Handle UseAjaxActions with return page
-                    if ($this->IsModal && $this->UseAjaxActions) {
-                        $this->IsModal = false;
-                        if (GetPageName($returnUrl) != "jurnallist") {
-                            Container("app.flash")->addMessage("Return-Url", $returnUrl); // Save return URL
-                            $returnUrl = "jurnallist"; // Return list page content
-                        }
-                    }
-                    if (IsJsonResponse()) { // Return to caller
-                        $this->terminate(true);
-                        return;
-                    } else {
-                        $this->terminate($returnUrl);
-                        return;
-                    }
-                } elseif (IsApi()) { // API request, return
-                    $this->terminate();
-                    return;
-                } elseif ($this->IsModal && $this->UseAjaxActions) { // Return JSON error message
-                    WriteJson(["success" => false, "validation" => $this->getValidationErrors(), "error" => $this->getFailureMessage()]);
-                    $this->clearFailureMessage();
-                    $this->terminate();
-                    return;
-                } else {
-                    $this->EventCancelled = true; // Event cancelled
-                    $this->restoreFormValues(); // Add failed, restore form values
-
-                    // Set up detail parameters
-                    $this->setupDetailParms();
-                }
-        }
-
-        // Set up Breadcrumb
-        $this->setupBreadcrumb();
-
-        // Render row based on row type
-        $this->RowType = RowType::ADD; // Render add type
-
-        // Render row
-        $this->resetAttributes();
-        $this->renderRow();
 
         // Set LoginStatus / Page_Rendering / Page_Render
         if (!IsApi() && !$this->isTerminated()) {
@@ -669,67 +633,155 @@ class JurnalAdd extends Jurnal
         }
     }
 
-    // Get upload files
-    protected function getUploadFiles()
+    // Set up other options
+    protected function setupOtherOptions()
     {
-        global $CurrentForm, $Language;
-    }
+        global $Language, $Security;
 
-    // Load default values
-    protected function loadDefaultValues()
-    {
-    }
+        // Disable Add/Edit/Copy/Delete for Modal and UseAjaxActions
+        /*
+        if ($this->IsModal && $this->UseAjaxActions) {
+            $this->AddUrl = "";
+            $this->EditUrl = "";
+            $this->CopyUrl = "";
+            $this->DeleteUrl = "";
+        }
+        */
+        $options = &$this->OtherOptions;
+        $option = $options["action"];
 
-    // Load form values
-    protected function loadFormValues()
-    {
-        // Load from form
-        global $CurrentForm;
-        $validate = !Config("SERVER_VALIDATE");
+        // Add
+        $item = &$option->add("add");
+        $addcaption = HtmlTitle($Language->phrase("ViewPageAddLink"));
+        if ($this->IsModal) {
+            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" data-ew-action=\"modal\" data-url=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
+        } else {
+            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
+        }
+        $item->Visible = $this->AddUrl != "";
 
-        // Check field name 'createon' first before field var 'x_createon'
-        $val = $CurrentForm->hasValue("createon") ? $CurrentForm->getValue("createon") : $CurrentForm->getValue("x_createon");
-        if (!$this->createon->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->createon->Visible = false; // Disable update for API request
-            } else {
-                $this->createon->setFormValue($val);
+        // Edit
+        $item = &$option->add("edit");
+        $editcaption = HtmlTitle($Language->phrase("ViewPageEditLink"));
+        if ($this->IsModal) {
+            $item->Body = "<a class=\"ew-action ew-edit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" data-ew-action=\"modal\" data-url=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("ViewPageEditLink") . "</a>";
+        } else {
+            $item->Body = "<a class=\"ew-action ew-edit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("ViewPageEditLink") . "</a>";
+        }
+        $item->Visible = $this->EditUrl != "";
+
+        // Copy
+        $item = &$option->add("copy");
+        $copycaption = HtmlTitle($Language->phrase("ViewPageCopyLink"));
+        if ($this->IsModal) {
+            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" data-ew-action=\"modal\" data-url=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\" data-btn=\"AddBtn\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
+        } else {
+            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
+        }
+        $item->Visible = $this->CopyUrl != "";
+
+        // Delete
+        $item = &$option->add("delete");
+        $url = GetUrl($this->DeleteUrl);
+        $item->Body = "<a class=\"ew-action ew-delete\"" .
+            ($this->InlineDelete || $this->IsModal ? " data-ew-action=\"inline-delete\"" : "") .
+            " title=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) .
+            "\" href=\"" . HtmlEncode($url) . "\">" . $Language->phrase("ViewPageDeleteLink") . "</a>";
+        $item->Visible = $this->DeleteUrl != "";
+        $option = $options["detail"];
+        $detailTableLink = "";
+        $detailViewTblVar = "";
+        $detailCopyTblVar = "";
+        $detailEditTblVar = "";
+
+        // "detail_jurnalkasd"
+        $item = &$option->add("detail_jurnalkasd");
+        $body = $Language->phrase("ViewPageDetailLink") . $Language->tablePhrase("jurnalkasd", "TblCaption");
+        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("jurnalkasdlist?" . Config("TABLE_SHOW_MASTER") . "=jurnalkas&" . GetForeignKeyUrl("fk_id", $this->id->CurrentValue) . "")) . "\">" . $body . "</a>";
+        $links = "";
+        $detailPageObj = Container("JurnalkasdGrid");
+        if ($detailPageObj->DetailView) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=jurnalkasd"))) . "\">" . $Language->phrase("MasterDetailViewLink", null) . "</a></li>";
+            if ($detailViewTblVar != "") {
+                $detailViewTblVar .= ",";
             }
-            $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
+            $detailViewTblVar .= "jurnalkasd";
+        }
+        if ($detailPageObj->DetailEdit) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=jurnalkasd"))) . "\">" . $Language->phrase("MasterDetailEditLink", null) . "</a></li>";
+            if ($detailEditTblVar != "") {
+                $detailEditTblVar .= ",";
+            }
+            $detailEditTblVar .= "jurnalkasd";
+        }
+        if ($detailPageObj->DetailAdd) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=jurnalkasd"))) . "\">" . $Language->phrase("MasterDetailCopyLink", null) . "</a></li>";
+            if ($detailCopyTblVar != "") {
+                $detailCopyTblVar .= ",";
+            }
+            $detailCopyTblVar .= "jurnalkasd";
+        }
+        if ($links != "") {
+            $body .= "<button type=\"button\" class=\"dropdown-toggle btn btn-default ew-detail\" data-bs-toggle=\"dropdown\"></button>";
+            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
+        } else {
+            $body = preg_replace('/\b\s+dropdown-toggle\b/', "", $body);
+        }
+        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
+        $item->Body = $body;
+        $item->Visible = true;
+        if ($item->Visible) {
+            if ($detailTableLink != "") {
+                $detailTableLink .= ",";
+            }
+            $detailTableLink .= "jurnalkasd";
+        }
+        if ($this->ShowMultipleDetails) {
+            $item->Visible = false;
         }
 
-        // Check field name 'nomer' first before field var 'x_nomer'
-        $val = $CurrentForm->hasValue("nomer") ? $CurrentForm->getValue("nomer") : $CurrentForm->getValue("x_nomer");
-        if (!$this->nomer->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->nomer->Visible = false; // Disable update for API request
-            } else {
-                $this->nomer->setFormValue($val);
+        // Multiple details
+        if ($this->ShowMultipleDetails) {
+            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">";
+            $links = "";
+            if ($detailViewTblVar != "") {
+                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlEncode($Language->phrase("MasterDetailViewLink", true)) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailViewTblVar))) . "\">" . $Language->phrase("MasterDetailViewLink", null) . "</a></li>";
             }
+            if ($detailEditTblVar != "") {
+                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlEncode($Language->phrase("MasterDetailEditLink", true)) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailEditTblVar))) . "\">" . $Language->phrase("MasterDetailEditLink", null) . "</a></li>";
+            }
+            if ($detailCopyTblVar != "") {
+                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlEncode($Language->phrase("MasterDetailCopyLink", true)) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailCopyTblVar))) . "\">" . $Language->phrase("MasterDetailCopyLink", null) . "</a></li>";
+            }
+            if ($links != "") {
+                $body .= "<button type=\"button\" class=\"dropdown-toggle btn btn-default ew-master-detail\" title=\"" . HtmlEncode($Language->phrase("MultipleMasterDetails", true)) . "\" data-bs-toggle=\"dropdown\">" . $Language->phrase("MultipleMasterDetails") . "</button>";
+                $body .= "<ul class=\"dropdown-menu ew-dropdown-menu\">" . $links . "</ul>";
+            }
+            $body .= "</div>";
+            // Multiple details
+            $item = &$option->add("details");
+            $item->Body = $body;
         }
 
-        // Check field name 'keterangan' first before field var 'x_keterangan'
-        $val = $CurrentForm->hasValue("keterangan") ? $CurrentForm->getValue("keterangan") : $CurrentForm->getValue("x_keterangan");
-        if (!$this->keterangan->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->keterangan->Visible = false; // Disable update for API request
-            } else {
-                $this->keterangan->setFormValue($val);
-            }
-        }
+        // Set up detail default
+        $option = $options["detail"];
+        $options["detail"]->DropDownButtonPhrase = $Language->phrase("ButtonDetails");
+        $ar = explode(",", $detailTableLink);
+        $cnt = count($ar);
+        $option->UseDropDownButton = ($cnt > 1);
+        $option->UseButtonGroup = true;
+        $item = &$option->addGroupOption();
+        $item->Body = "";
+        $item->Visible = false;
 
-        // Check field name 'id' first before field var 'x_id'
-        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
-    }
-
-    // Restore form values
-    public function restoreFormValues()
-    {
-        global $CurrentForm;
-        $this->createon->CurrentValue = $this->createon->FormValue;
-        $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
-        $this->nomer->CurrentValue = $this->nomer->FormValue;
-        $this->keterangan->CurrentValue = $this->keterangan->FormValue;
+        // Set up action default
+        $option = $options["action"];
+        $option->DropDownButtonPhrase = $Language->phrase("ButtonActions");
+        $option->UseDropDownButton = !IsJsonResponse() && true;
+        $option->UseButtonGroup = true;
+        $item = &$option->addGroupOption();
+        $item->Body = "";
+        $item->Visible = false;
     }
 
     /**
@@ -770,13 +822,16 @@ class JurnalAdd extends Jurnal
 
         // Call Row Selected event
         $this->rowSelected($row);
+        if ($this->AuditTrailOnView) {
+            $this->writeAuditTrailOnView($row);
+        }
         $this->id->setDbValue($row['id']);
-        $this->createon->setDbValue($row['createon']);
-        $this->nomer->setDbValue($row['nomer']);
         $this->tipejurnal_id->setDbValue($row['tipejurnal_id']);
         $this->period_id->setDbValue($row['period_id']);
+        $this->createon->setDbValue($row['createon']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
+        $this->nomer->setDbValue($row['nomer']);
     }
 
     // Return a row with default values
@@ -784,32 +839,13 @@ class JurnalAdd extends Jurnal
     {
         $row = [];
         $row['id'] = $this->id->DefaultValue;
-        $row['createon'] = $this->createon->DefaultValue;
-        $row['nomer'] = $this->nomer->DefaultValue;
         $row['tipejurnal_id'] = $this->tipejurnal_id->DefaultValue;
         $row['period_id'] = $this->period_id->DefaultValue;
+        $row['createon'] = $this->createon->DefaultValue;
         $row['keterangan'] = $this->keterangan->DefaultValue;
         $row['person_id'] = $this->person_id->DefaultValue;
+        $row['nomer'] = $this->nomer->DefaultValue;
         return $row;
-    }
-
-    // Load old record
-    protected function loadOldRecord()
-    {
-        // Load old record
-        if ($this->OldKey != "") {
-            $this->setKey($this->OldKey);
-            $this->CurrentFilter = $this->getRecordFilter();
-            $sql = $this->getCurrentSql();
-            $conn = $this->getConnection();
-            $rs = ExecuteQuery($sql, $conn);
-            if ($row = $rs->fetch()) {
-                $this->loadRowValues($row); // Load row values
-                return $row;
-            }
-        }
-        $this->loadRowValues(); // Load default row values
-        return null;
     }
 
     // Render row values based on field settings
@@ -818,6 +854,12 @@ class JurnalAdd extends Jurnal
         global $Security, $Language, $CurrentLanguage;
 
         // Initialize URLs
+        $this->AddUrl = $this->getAddUrl();
+        $this->EditUrl = $this->getEditUrl();
+        $this->CopyUrl = $this->getCopyUrl();
+        $this->DeleteUrl = $this->getDeleteUrl();
+        $this->ListUrl = $this->getListUrl();
+        $this->setupOtherOptions();
 
         // Call Row_Rendering event
         $this->rowRendering();
@@ -825,83 +867,35 @@ class JurnalAdd extends Jurnal
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
-
-        // createon
-        $this->createon->RowCssClass = "row";
-
-        // nomer
-        $this->nomer->RowCssClass = "row";
 
         // tipejurnal_id
-        $this->tipejurnal_id->RowCssClass = "row";
 
         // period_id
-        $this->period_id->RowCssClass = "row";
+
+        // createon
 
         // keterangan
-        $this->keterangan->RowCssClass = "row";
 
         // person_id
-        $this->person_id->RowCssClass = "row";
+
+        // nomer
 
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
             $this->id->ViewValue = $this->id->CurrentValue;
 
+            // tipejurnal_id
+            $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->CurrentValue;
+            $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->ViewValue, $this->tipejurnal_id->formatPattern());
+
+            // period_id
+            $this->period_id->ViewValue = $this->period_id->CurrentValue;
+            $this->period_id->ViewValue = FormatNumber($this->period_id->ViewValue, $this->period_id->formatPattern());
+
             // createon
             $this->createon->ViewValue = $this->createon->CurrentValue;
             $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
-
-            // nomer
-            $this->nomer->ViewValue = $this->nomer->CurrentValue;
-
-            // tipejurnal_id
-            $curVal = strval($this->tipejurnal_id->CurrentValue);
-            if ($curVal != "") {
-                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
-                if ($this->tipejurnal_id->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
-                    $sqlWrk = $this->tipejurnal_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
-                    $conn = Conn();
-                    $config = $conn->getConfiguration();
-                    $config->setResultCache($this->Cache);
-                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->tipejurnal_id->Lookup->renderViewRow($rswrk[0]);
-                        $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->displayValue($arwrk);
-                    } else {
-                        $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->formatPattern());
-                    }
-                }
-            } else {
-                $this->tipejurnal_id->ViewValue = null;
-            }
-
-            // period_id
-            $curVal = strval($this->period_id->CurrentValue);
-            if ($curVal != "") {
-                $this->period_id->ViewValue = $this->period_id->lookupCacheOption($curVal);
-                if ($this->period_id->ViewValue === null) { // Lookup from database
-                    $filterWrk = SearchFilter($this->period_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->period_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
-                    $sqlWrk = $this->period_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
-                    $conn = Conn();
-                    $config = $conn->getConfiguration();
-                    $config->setResultCache($this->Cache);
-                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->period_id->Lookup->renderViewRow($rswrk[0]);
-                        $this->period_id->ViewValue = $this->period_id->displayValue($arwrk);
-                    } else {
-                        $this->period_id->ViewValue = FormatNumber($this->period_id->CurrentValue, $this->period_id->formatPattern());
-                    }
-                }
-            } else {
-                $this->period_id->ViewValue = null;
-            }
 
             // keterangan
             $this->keterangan->ViewValue = $this->keterangan->CurrentValue;
@@ -910,221 +904,41 @@ class JurnalAdd extends Jurnal
             $this->person_id->ViewValue = $this->person_id->CurrentValue;
             $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+            // nomer
+            $this->nomer->ViewValue = $this->nomer->CurrentValue;
+
+            // id
+            $this->id->HrefValue = "";
+            $this->id->TooltipValue = "";
+
+            // tipejurnal_id
+            $this->tipejurnal_id->HrefValue = "";
+            $this->tipejurnal_id->TooltipValue = "";
+
+            // period_id
+            $this->period_id->HrefValue = "";
+            $this->period_id->TooltipValue = "";
+
             // createon
             $this->createon->HrefValue = "";
             $this->createon->TooltipValue = "";
 
+            // keterangan
+            $this->keterangan->HrefValue = "";
+            $this->keterangan->TooltipValue = "";
+
+            // person_id
+            $this->person_id->HrefValue = "";
+            $this->person_id->TooltipValue = "";
+
             // nomer
             $this->nomer->HrefValue = "";
             $this->nomer->TooltipValue = "";
-
-            // keterangan
-            $this->keterangan->HrefValue = "";
-        } elseif ($this->RowType == RowType::ADD) {
-            // createon
-
-            // nomer
-            $this->nomer->setupEditAttributes();
-            if (!$this->nomer->Raw) {
-                $this->nomer->CurrentValue = HtmlDecode($this->nomer->CurrentValue);
-            }
-            $this->nomer->EditValue = HtmlEncode($this->nomer->CurrentValue);
-            $this->nomer->PlaceHolder = RemoveHtml($this->nomer->caption());
-
-            // keterangan
-            $this->keterangan->setupEditAttributes();
-            if (!$this->keterangan->Raw) {
-                $this->keterangan->CurrentValue = HtmlDecode($this->keterangan->CurrentValue);
-            }
-            $this->keterangan->EditValue = HtmlEncode($this->keterangan->CurrentValue);
-            $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
-
-            // Add refer script
-
-            // createon
-            $this->createon->HrefValue = "";
-
-            // nomer
-            $this->nomer->HrefValue = "";
-
-            // keterangan
-            $this->keterangan->HrefValue = "";
-        }
-        if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
-            $this->setupFieldTitles();
         }
 
         // Call Row Rendered event
         if ($this->RowType != RowType::AGGREGATEINIT) {
             $this->rowRendered();
-        }
-    }
-
-    // Validate form
-    protected function validateForm()
-    {
-        global $Language, $Security;
-
-        // Check if validation required
-        if (!Config("SERVER_VALIDATE")) {
-            return true;
-        }
-        $validateForm = true;
-            if ($this->createon->Visible && $this->createon->Required) {
-                if (!$this->createon->IsDetailKey && EmptyValue($this->createon->FormValue)) {
-                    $this->createon->addErrorMessage(str_replace("%s", $this->createon->caption(), $this->createon->RequiredErrorMessage));
-                }
-            }
-            if ($this->nomer->Visible && $this->nomer->Required) {
-                if (!$this->nomer->IsDetailKey && EmptyValue($this->nomer->FormValue)) {
-                    $this->nomer->addErrorMessage(str_replace("%s", $this->nomer->caption(), $this->nomer->RequiredErrorMessage));
-                }
-            }
-            if ($this->keterangan->Visible && $this->keterangan->Required) {
-                if (!$this->keterangan->IsDetailKey && EmptyValue($this->keterangan->FormValue)) {
-                    $this->keterangan->addErrorMessage(str_replace("%s", $this->keterangan->caption(), $this->keterangan->RequiredErrorMessage));
-                }
-            }
-
-        // Validate detail grid
-        $detailTblVar = explode(",", $this->getCurrentDetailTable());
-        $detailPage = Container("JurnaldGrid");
-        if (in_array("jurnald", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->run();
-            $validateForm = $validateForm && $detailPage->validateGridForm();
-        }
-
-        // Return validate result
-        $validateForm = $validateForm && !$this->hasInvalidFields();
-
-        // Call Form_CustomValidate event
-        $formCustomError = "";
-        $validateForm = $validateForm && $this->formCustomValidate($formCustomError);
-        if ($formCustomError != "") {
-            $this->setFailureMessage($formCustomError);
-        }
-        return $validateForm;
-    }
-
-    // Add record
-    protected function addRow($rsold = null)
-    {
-        global $Language, $Security;
-
-        // Get new row
-        $rsnew = $this->getAddRow();
-
-        // Update current values
-        $this->setCurrentValues($rsnew);
-        $conn = $this->getConnection();
-
-        // Begin transaction
-        if ($this->getCurrentDetailTable() != "" && $this->UseTransaction) {
-            $conn->beginTransaction();
-        }
-
-        // Load db values from old row
-        $this->loadDbValues($rsold);
-
-        // Call Row Inserting event
-        $insertRow = $this->rowInserting($rsold, $rsnew);
-        if ($insertRow) {
-            $addRow = $this->insert($rsnew);
-            if ($addRow) {
-            } elseif (!EmptyValue($this->DbErrorMessage)) { // Show database error
-                $this->setFailureMessage($this->DbErrorMessage);
-            }
-        } else {
-            if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
-                // Use the message, do nothing
-            } elseif ($this->CancelMessage != "") {
-                $this->setFailureMessage($this->CancelMessage);
-                $this->CancelMessage = "";
-            } else {
-                $this->setFailureMessage($Language->phrase("InsertCancelled"));
-            }
-            $addRow = false;
-        }
-
-        // Add detail records
-        if ($addRow) {
-            $detailTblVar = explode(",", $this->getCurrentDetailTable());
-            $detailPage = Container("JurnaldGrid");
-            if (in_array("jurnald", $detailTblVar) && $detailPage->DetailAdd && $addRow) {
-                $detailPage->jurnal_id->setSessionValue($this->id->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->jurnal_id->setSessionValue(""); // Clear master key if insert failed
-                }
-            }
-        }
-
-        // Commit/Rollback transaction
-        if ($this->getCurrentDetailTable() != "") {
-            if ($addRow) {
-                if ($this->UseTransaction) { // Commit transaction
-                    if ($conn->isTransactionActive()) {
-                        $conn->commit();
-                    }
-                }
-            } else {
-                if ($this->UseTransaction) { // Rollback transaction
-                    if ($conn->isTransactionActive()) {
-                        $conn->rollback();
-                    }
-                }
-            }
-        }
-        if ($addRow) {
-            // Call Row Inserted event
-            $this->rowInserted($rsold, $rsnew);
-        }
-
-        // Write JSON response
-        if (IsJsonResponse() && $addRow) {
-            $row = $this->getRecordsFromRecordset([$rsnew], true);
-            $table = $this->TableVar;
-            WriteJson(["success" => true, "action" => Config("API_ADD_ACTION"), $table => $row]);
-        }
-        return $addRow;
-    }
-
-    /**
-     * Get add row
-     *
-     * @return array
-     */
-    protected function getAddRow()
-    {
-        global $Security;
-        $rsnew = [];
-
-        // createon
-        $this->createon->CurrentValue = $this->createon->getAutoUpdateValue(); // PHP
-        $this->createon->setDbValueDef($rsnew, UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern()), false);
-
-        // nomer
-        $this->nomer->setDbValueDef($rsnew, $this->nomer->CurrentValue, false);
-
-        // keterangan
-        $this->keterangan->setDbValueDef($rsnew, $this->keterangan->CurrentValue, false);
-        return $rsnew;
-    }
-
-    /**
-     * Restore add form from row
-     * @param array $row Row
-     */
-    protected function restoreAddFormFromRow($row)
-    {
-        if (isset($row['createon'])) { // createon
-            $this->createon->setFormValue($row['createon']);
-        }
-        if (isset($row['nomer'])) { // nomer
-            $this->nomer->setFormValue($row['nomer']);
-        }
-        if (isset($row['keterangan'])) { // keterangan
-            $this->keterangan->setFormValue($row['keterangan']);
         }
     }
 
@@ -1140,16 +954,11 @@ class JurnalAdd extends Jurnal
         }
         if ($detailTblVar != "") {
             $detailTblVar = explode(",", $detailTblVar);
-            if (in_array("jurnald", $detailTblVar)) {
-                $detailPageObj = Container("JurnaldGrid");
-                if ($detailPageObj->DetailAdd) {
+            if (in_array("jurnalkasd", $detailTblVar)) {
+                $detailPageObj = Container("JurnalkasdGrid");
+                if ($detailPageObj->DetailView) {
                     $detailPageObj->EventCancelled = $this->EventCancelled;
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
+                    $detailPageObj->CurrentMode = "view";
 
                     // Save current master table to detail table
                     $detailPageObj->setCurrentMasterTable($this->TableVar);
@@ -1168,9 +977,9 @@ class JurnalAdd extends Jurnal
         global $Breadcrumb, $Language;
         $Breadcrumb = new Breadcrumb("index");
         $url = CurrentUrl();
-        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("jurnallist"), "", $this->TableVar, true);
-        $pageId = ($this->isCopy()) ? "Copy" : "Add";
-        $Breadcrumb->add("add", $pageId, $url);
+        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("jurnalkaslist"), "", $this->TableVar, true);
+        $pageId = "view";
+        $Breadcrumb->add("view", $pageId, $url);
     }
 
     // Setup lookup options
@@ -1186,10 +995,6 @@ class JurnalAdd extends Jurnal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_tipejurnal_id":
-                    break;
-                case "x_period_id":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;
@@ -1219,11 +1024,44 @@ class JurnalAdd extends Jurnal
         }
     }
 
+    // Set up starting record parameters
+    public function setupStartRecord()
+    {
+        if ($this->DisplayRecords == 0) {
+            return;
+        }
+        $pageNo = Get(Config("TABLE_PAGE_NUMBER"));
+        $startRec = Get(Config("TABLE_START_REC"));
+        $infiniteScroll = false;
+        $recordNo = $pageNo ?? $startRec; // Record number = page number or start record
+        if ($recordNo !== null && is_numeric($recordNo)) {
+            $this->StartRecord = $recordNo;
+        } else {
+            $this->StartRecord = $this->getStartRecordNumber();
+        }
+
+        // Check if correct start record counter
+        if (!is_numeric($this->StartRecord) || intval($this->StartRecord) <= 0) { // Avoid invalid start record counter
+            $this->StartRecord = 1; // Reset start record counter
+        } elseif ($this->StartRecord > $this->TotalRecords) { // Avoid starting record > total records
+            $this->StartRecord = (int)(($this->TotalRecords - 1) / $this->DisplayRecords) * $this->DisplayRecords + 1; // Point to last page first record
+        } elseif (($this->StartRecord - 1) % $this->DisplayRecords != 0) {
+            $this->StartRecord = (int)(($this->StartRecord - 1) / $this->DisplayRecords) * $this->DisplayRecords + 1; // Point to page boundary
+        }
+        if (!$infiniteScroll) {
+            $this->setStartRecordNumber($this->StartRecord);
+        }
+    }
+
+    // Get page count
+    public function pageCount() {
+        return ceil($this->TotalRecords / $this->DisplayRecords);
+    }
+
     // Page Load event
     public function pageLoad()
     {
         //Log("Page Load");
-        $this->period_id->DisplayValueSeparator = ' - ';
     }
 
     // Page Unload event
@@ -1282,10 +1120,27 @@ class JurnalAdd extends Jurnal
         //$content = "<div style=\"break-after:page;\"></div>"; // Modify page break content
     }
 
-    // Form Custom Validate event
-    public function formCustomValidate(&$customError)
+    // Page Exporting event
+    // $doc = export object
+    public function pageExporting(&$doc)
     {
-        // Return error message in $customError
-        return true;
+        //$doc->Text = "my header"; // Export header
+        //return false; // Return false to skip default export and use Row_Export event
+        return true; // Return true to use default export and skip Row_Export event
+    }
+
+    // Row Export event
+    // $doc = export document object
+    public function rowExport($doc, $rs)
+    {
+        //$doc->Text .= "my content"; // Build HTML with field value: $rs["MyField"] or $this->MyField->ViewValue
+    }
+
+    // Page Exported event
+    // $doc = export document object
+    public function pageExported($doc)
+    {
+        //$doc->Text .= "my footer"; // Export footer
+        //Log($doc->Text);
     }
 }

@@ -24,7 +24,6 @@ loadjs.ready(["wrapper", "head"], function () {
         .setFields([
             ["createon", [fields.createon.visible && fields.createon.required ? ew.Validators.required(fields.createon.caption) : null], fields.createon.isInvalid],
             ["nomer", [fields.nomer.visible && fields.nomer.required ? ew.Validators.required(fields.nomer.caption) : null], fields.nomer.isInvalid],
-            ["tipejurnal_id", [fields.tipejurnal_id.visible && fields.tipejurnal_id.required ? ew.Validators.required(fields.tipejurnal_id.caption) : null], fields.tipejurnal_id.isInvalid],
             ["keterangan", [fields.keterangan.visible && fields.keterangan.required ? ew.Validators.required(fields.keterangan.caption) : null], fields.keterangan.isInvalid]
         ])
 
@@ -41,7 +40,6 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
-            "tipejurnal_id": <?= $Page->tipejurnal_id->toClientList($Page) ?>,
         })
         .build();
     window[form.id] = form;
@@ -79,52 +77,6 @@ $Page->showMessage();
 <input type="<?= $Page->nomer->getInputTextType() ?>" name="x_nomer" id="x_nomer" data-table="jurnal" data-field="x_nomer" value="<?= $Page->nomer->EditValue ?>" size="30" maxlength="50" placeholder="<?= HtmlEncode($Page->nomer->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->nomer->formatPattern()) ?>"<?= $Page->nomer->editAttributes() ?> aria-describedby="x_nomer_help">
 <?= $Page->nomer->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->nomer->getErrorMessage() ?></div>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
-    <div id="r_tipejurnal_id"<?= $Page->tipejurnal_id->rowAttributes() ?>>
-        <label id="elh_jurnal_tipejurnal_id" for="x_tipejurnal_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->tipejurnal_id->caption() ?><?= $Page->tipejurnal_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->tipejurnal_id->cellAttributes() ?>>
-<span id="el_jurnal_tipejurnal_id">
-    <select
-        id="x_tipejurnal_id"
-        name="x_tipejurnal_id"
-        class="form-select ew-select<?= $Page->tipejurnal_id->isInvalidClass() ?>"
-        <?php if (!$Page->tipejurnal_id->IsNativeSelect) { ?>
-        data-select2-id="fjurnaladd_x_tipejurnal_id"
-        <?php } ?>
-        data-table="jurnal"
-        data-field="x_tipejurnal_id"
-        data-value-separator="<?= $Page->tipejurnal_id->displayValueSeparatorAttribute() ?>"
-        data-placeholder="<?= HtmlEncode($Page->tipejurnal_id->getPlaceHolder()) ?>"
-        <?= $Page->tipejurnal_id->editAttributes() ?>>
-        <?= $Page->tipejurnal_id->selectOptionListHtml("x_tipejurnal_id") ?>
-    </select>
-    <?= $Page->tipejurnal_id->getCustomMessage() ?>
-    <div class="invalid-feedback"><?= $Page->tipejurnal_id->getErrorMessage() ?></div>
-<?= $Page->tipejurnal_id->Lookup->getParamTag($Page, "p_x_tipejurnal_id") ?>
-<?php if (!$Page->tipejurnal_id->IsNativeSelect) { ?>
-<script>
-loadjs.ready("fjurnaladd", function() {
-    var options = { name: "x_tipejurnal_id", selectId: "fjurnaladd_x_tipejurnal_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    if (!el)
-        return;
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
-    if (fjurnaladd.lists.tipejurnal_id?.lookupOptions.length) {
-        options.data = { id: "x_tipejurnal_id", form: "fjurnaladd" };
-    } else {
-        options.ajax = { id: "x_tipejurnal_id", form: "fjurnaladd", limit: ew.LOOKUP_PAGE_SIZE };
-    }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnal.fields.tipejurnal_id.selectOptions);
-    ew.createSelect(options);
-});
-</script>
-<?php } ?>
 </span>
 </div></div>
     </div>
