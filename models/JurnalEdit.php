@@ -127,7 +127,7 @@ class JurnalEdit extends Jurnal
         $this->tipejurnal_id->Visible = false;
         $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
-        $this->person_id->setVisibility();
+        $this->person_id->Visible = false;
     }
 
     // Constructor
@@ -800,16 +800,6 @@ class JurnalEdit extends Jurnal
             }
         }
 
-        // Check field name 'person_id' first before field var 'x_person_id'
-        $val = $CurrentForm->hasValue("person_id") ? $CurrentForm->getValue("person_id") : $CurrentForm->getValue("x_person_id");
-        if (!$this->person_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->person_id->Visible = false; // Disable update for API request
-            } else {
-                $this->person_id->setFormValue($val, true, $validate);
-            }
-        }
-
         // Check field name 'id' first before field var 'x_id'
         $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
         if (!$this->id->IsDetailKey) {
@@ -826,7 +816,6 @@ class JurnalEdit extends Jurnal
         $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
         $this->nomer->CurrentValue = $this->nomer->FormValue;
         $this->keterangan->CurrentValue = $this->keterangan->FormValue;
-        $this->person_id->CurrentValue = $this->person_id->FormValue;
     }
 
     /**
@@ -1072,9 +1061,6 @@ class JurnalEdit extends Jurnal
 
             // keterangan
             $this->keterangan->HrefValue = "";
-
-            // person_id
-            $this->person_id->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
             // createon
 
@@ -1086,14 +1072,6 @@ class JurnalEdit extends Jurnal
             $this->keterangan->setupEditAttributes();
             $this->keterangan->EditValue = HtmlEncode($this->keterangan->CurrentValue);
             $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
-
-            // person_id
-            $this->person_id->setupEditAttributes();
-            $this->person_id->EditValue = $this->person_id->CurrentValue;
-            $this->person_id->PlaceHolder = RemoveHtml($this->person_id->caption());
-            if (strval($this->person_id->EditValue) != "" && is_numeric($this->person_id->EditValue)) {
-                $this->person_id->EditValue = FormatNumber($this->person_id->EditValue, null);
-            }
 
             // Edit refer script
 
@@ -1107,9 +1085,6 @@ class JurnalEdit extends Jurnal
 
             // keterangan
             $this->keterangan->HrefValue = "";
-
-            // person_id
-            $this->person_id->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1145,14 +1120,6 @@ class JurnalEdit extends Jurnal
                 if (!$this->keterangan->IsDetailKey && EmptyValue($this->keterangan->FormValue)) {
                     $this->keterangan->addErrorMessage(str_replace("%s", $this->keterangan->caption(), $this->keterangan->RequiredErrorMessage));
                 }
-            }
-            if ($this->person_id->Visible && $this->person_id->Required) {
-                if (!$this->person_id->IsDetailKey && EmptyValue($this->person_id->FormValue)) {
-                    $this->person_id->addErrorMessage(str_replace("%s", $this->person_id->caption(), $this->person_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->person_id->FormValue)) {
-                $this->person_id->addErrorMessage($this->person_id->getErrorMessage(false));
             }
 
         // Validate detail grid
@@ -1282,9 +1249,6 @@ class JurnalEdit extends Jurnal
 
         // keterangan
         $this->keterangan->setDbValueDef($rsnew, $this->keterangan->CurrentValue, $this->keterangan->ReadOnly);
-
-        // person_id
-        $this->person_id->setDbValueDef($rsnew, $this->person_id->CurrentValue, $this->person_id->ReadOnly);
         return $rsnew;
     }
 
@@ -1296,9 +1260,6 @@ class JurnalEdit extends Jurnal
     {
         if (isset($row['keterangan'])) { // keterangan
             $this->keterangan->CurrentValue = $row['keterangan'];
-        }
-        if (isset($row['person_id'])) { // person_id
-            $this->person_id->CurrentValue = $row['person_id'];
         }
     }
 
