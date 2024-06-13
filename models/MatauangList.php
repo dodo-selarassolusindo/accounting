@@ -1312,7 +1312,7 @@ class MatauangList extends Matauang
         $item->ShowInButtonGroup = false;
 
         // Drop down button for ListOptions
-        $this->ListOptions->UseDropDownButton = true;
+        $this->ListOptions->UseDropDownButton = false;
         $this->ListOptions->DropDownButtonPhrase = $Language->phrase("ButtonListOptions");
         $this->ListOptions->UseButtonGroup = false;
         if ($this->ListOptions->UseButtonGroup && IsMobile()) {
@@ -1503,7 +1503,7 @@ class MatauangList extends Matauang
         // Set up options default
         foreach ($options as $name => $option) {
             if ($name != "column") { // Always use dropdown for column
-                $option->UseDropDownButton = true;
+                $option->UseDropDownButton = false;
                 $option->UseButtonGroup = true;
             }
             //$option->ButtonClass = ""; // Class for button group
