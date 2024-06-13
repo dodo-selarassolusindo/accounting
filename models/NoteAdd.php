@@ -807,9 +807,6 @@ class NoteAdd extends Note
 
             // Catatan
             $this->Catatan->setupEditAttributes();
-            if (!$this->Catatan->Raw) {
-                $this->Catatan->CurrentValue = HtmlDecode($this->Catatan->CurrentValue);
-            }
             $this->Catatan->EditValue = HtmlEncode($this->Catatan->CurrentValue);
             $this->Catatan->PlaceHolder = RemoveHtml($this->Catatan->caption());
 

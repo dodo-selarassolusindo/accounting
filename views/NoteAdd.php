@@ -73,7 +73,7 @@ $Page->showMessage();
         <label id="elh_note_Catatan" for="x_Catatan" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->Catatan->cellAttributes() ?>>
 <span id="el_note_Catatan">
-<input type="<?= $Page->Catatan->getInputTextType() ?>" name="x_Catatan" id="x_Catatan" data-table="note" data-field="x_Catatan" value="<?= $Page->Catatan->EditValue ?>" size="30" maxlength="65535" placeholder="<?= HtmlEncode($Page->Catatan->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->Catatan->formatPattern()) ?>"<?= $Page->Catatan->editAttributes() ?> aria-describedby="x_Catatan_help">
+<textarea data-table="note" data-field="x_Catatan" name="x_Catatan" id="x_Catatan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->Catatan->getPlaceHolder()) ?>"<?= $Page->Catatan->editAttributes() ?> aria-describedby="x_Catatan_help"><?= $Page->Catatan->EditValue ?></textarea>
 <?= $Page->Catatan->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->Catatan->getErrorMessage() ?></div>
 </span>

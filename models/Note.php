@@ -164,7 +164,7 @@ class Note extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'TEXTAREA' // Edit Tag
         );
         $this->Catatan->InputTextType = "text";
         $this->Catatan->Nullable = false; // NOT NULL field
@@ -1157,9 +1157,6 @@ class Note extends DbTable
 
         // Catatan
         $this->Catatan->setupEditAttributes();
-        if (!$this->Catatan->Raw) {
-            $this->Catatan->CurrentValue = HtmlDecode($this->Catatan->CurrentValue);
-        }
         $this->Catatan->EditValue = $this->Catatan->CurrentValue;
         $this->Catatan->PlaceHolder = RemoveHtml($this->Catatan->caption());
 
