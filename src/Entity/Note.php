@@ -82,7 +82,7 @@ class Note extends AbstractEntity
 
     public function setStatus(string $value): static
     {
-        if (!in_array($value, ["Terkonfirmasi", "Sedang Dikerjakan", "Selesai"])) {
+        if (!in_array($value, ["Tercatat", "Terkonfirmasi", "Sedang Dikerjakan", "Selesai"])) {
             throw new \InvalidArgumentException("Invalid 'Status' value");
         }
         $this->status = $value;

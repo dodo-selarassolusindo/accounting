@@ -121,7 +121,7 @@ class NoteEdit extends Note
     // Set field visibility
     public function setVisibility()
     {
-        $this->NoteID->setVisibility();
+        $this->NoteID->Visible = false;
         $this->Tanggal->setVisibility();
         $this->Catatan->setVisibility();
         $this->Status->setVisibility();
@@ -752,12 +752,6 @@ class NoteEdit extends Note
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
 
-        // Check field name 'NoteID' first before field var 'x_NoteID'
-        $val = $CurrentForm->hasValue("NoteID") ? $CurrentForm->getValue("NoteID") : $CurrentForm->getValue("x_NoteID");
-        if (!$this->NoteID->IsDetailKey) {
-            $this->NoteID->setFormValue($val);
-        }
-
         // Check field name 'Tanggal' first before field var 'x_Tanggal'
         $val = $CurrentForm->hasValue("Tanggal") ? $CurrentForm->getValue("Tanggal") : $CurrentForm->getValue("x_Tanggal");
         if (!$this->Tanggal->IsDetailKey) {
@@ -787,6 +781,12 @@ class NoteEdit extends Note
             } else {
                 $this->Status->setFormValue($val);
             }
+        }
+
+        // Check field name 'NoteID' first before field var 'x_NoteID'
+        $val = $CurrentForm->hasValue("NoteID") ? $CurrentForm->getValue("NoteID") : $CurrentForm->getValue("x_NoteID");
+        if (!$this->NoteID->IsDetailKey) {
+            $this->NoteID->setFormValue($val);
         }
     }
 
@@ -973,9 +973,6 @@ class NoteEdit extends Note
                 $this->Status->ViewValue = null;
             }
 
-            // NoteID
-            $this->NoteID->HrefValue = "";
-
             // Tanggal
             $this->Tanggal->HrefValue = "";
 
@@ -985,10 +982,6 @@ class NoteEdit extends Note
             // Status
             $this->Status->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
-            // NoteID
-            $this->NoteID->setupEditAttributes();
-            $this->NoteID->EditValue = $this->NoteID->CurrentValue;
-
             // Tanggal
 
             // Catatan
@@ -1001,9 +994,6 @@ class NoteEdit extends Note
             $this->Status->PlaceHolder = RemoveHtml($this->Status->caption());
 
             // Edit refer script
-
-            // NoteID
-            $this->NoteID->HrefValue = "";
 
             // Tanggal
             $this->Tanggal->HrefValue = "";
@@ -1034,11 +1024,6 @@ class NoteEdit extends Note
             return true;
         }
         $validateForm = true;
-            if ($this->NoteID->Visible && $this->NoteID->Required) {
-                if (!$this->NoteID->IsDetailKey && EmptyValue($this->NoteID->FormValue)) {
-                    $this->NoteID->addErrorMessage(str_replace("%s", $this->NoteID->caption(), $this->NoteID->RequiredErrorMessage));
-                }
-            }
             if ($this->Tanggal->Visible && $this->Tanggal->Required) {
                 if (!$this->Tanggal->IsDetailKey && EmptyValue($this->Tanggal->FormValue)) {
                     $this->Tanggal->addErrorMessage(str_replace("%s", $this->Tanggal->caption(), $this->Tanggal->RequiredErrorMessage));

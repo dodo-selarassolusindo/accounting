@@ -911,10 +911,6 @@ class NoteView extends Note
                 $this->Status->ViewValue = null;
             }
 
-            // NoteID
-            $this->NoteID->HrefValue = "";
-            $this->NoteID->TooltipValue = "";
-
             // Tanggal
             $this->Tanggal->HrefValue = "";
             $this->Tanggal->TooltipValue = "";

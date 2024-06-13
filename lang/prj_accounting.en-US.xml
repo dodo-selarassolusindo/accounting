@@ -348,12 +348,14 @@
       </field>
       <field id="status">
         <phrase id="fldcaption" value="Status" />
-        <phrase id="fldtagvalue1" value="Terkonfirmasi" />
-        <phrase id="fldtagcaption1" value="Terkonfirmasi" />
-        <phrase id="fldtagvalue2" value="Sedang Dikerjakan" />
-        <phrase id="fldtagcaption2" value="Sedang Dikerjakan" />
-        <phrase id="fldtagvalue3" value="Selesai" />
-        <phrase id="fldtagcaption3" value="Selesai" />
+        <phrase id="fldtagvalue1" value="Tercatat" />
+        <phrase id="fldtagcaption1" value="Tercatat" />
+        <phrase id="fldtagvalue2" value="Terkonfirmasi" />
+        <phrase id="fldtagcaption2" value="Terkonfirmasi" />
+        <phrase id="fldtagvalue3" value="Sedang Dikerjakan" />
+        <phrase id="fldtagcaption3" value="Sedang Dikerjakan" />
+        <phrase id="fldtagvalue4" value="Selesai" />
+        <phrase id="fldtagcaption4" value="Selesai" />
       </field>
     </table>
     <table id="pajak">

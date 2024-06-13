@@ -31,7 +31,6 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["NoteID", [fields.NoteID.visible && fields.NoteID.required ? ew.Validators.required(fields.NoteID.caption) : null], fields.NoteID.isInvalid],
             ["Tanggal", [fields.Tanggal.visible && fields.Tanggal.required ? ew.Validators.required(fields.Tanggal.caption) : null], fields.Tanggal.isInvalid],
             ["Catatan", [fields.Catatan.visible && fields.Catatan.required ? ew.Validators.required(fields.Catatan.caption) : null], fields.Catatan.isInvalid],
             ["Status", [fields.Status.visible && fields.Status.required ? ew.Validators.required(fields.Status.caption) : null], fields.Status.isInvalid]
@@ -75,18 +74,6 @@ loadjs.ready("head", function () {
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
 <div class="ew-edit-div"><!-- page* -->
-<?php if ($Page->NoteID->Visible) { // NoteID ?>
-    <div id="r_NoteID"<?= $Page->NoteID->rowAttributes() ?>>
-        <label id="elh_note_NoteID" class="<?= $Page->LeftColumnClass ?>"><?= $Page->NoteID->caption() ?><?= $Page->NoteID->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->NoteID->cellAttributes() ?>>
-<span id="el_note_NoteID">
-<span<?= $Page->NoteID->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->NoteID->getDisplayValue($Page->NoteID->EditValue))) ?>"></span>
-<input type="hidden" data-table="note" data-field="x_NoteID" data-hidden="1" name="x_NoteID" id="x_NoteID" value="<?= HtmlEncode($Page->NoteID->CurrentValue) ?>">
-</span>
-</div></div>
-    </div>
-<?php } ?>
 <?php if ($Page->Catatan->Visible) { // Catatan ?>
     <div id="r_Catatan"<?= $Page->Catatan->rowAttributes() ?>>
         <label id="elh_note_Catatan" for="x_Catatan" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
@@ -131,6 +118,7 @@ loadjs.ready("head", function () {
     </div>
 <?php } ?>
 </div><!-- /page* -->
+    <input type="hidden" data-table="note" data-field="x_NoteID" data-hidden="1" name="x_NoteID" id="x_NoteID" value="<?= HtmlEncode($Page->NoteID->CurrentValue) ?>">
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fnoteedit"><?= $Language->phrase("SaveBtn") ?></button>

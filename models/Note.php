@@ -196,7 +196,7 @@ class Note extends DbTable
         $this->Status->Nullable = false; // NOT NULL field
         $this->Status->Required = true; // Required field
         $this->Status->Lookup = new Lookup($this->Status, 'note', false, '', ["","","",""], '', '', [], [], [], [], [], [], false, '', '', "");
-        $this->Status->OptionCount = 3;
+        $this->Status->OptionCount = 4;
         $this->Status->SearchOperators = ["=", "<>"];
         $this->Fields['Status'] = &$this->Status;
 
@@ -1235,7 +1235,6 @@ class Note extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->NoteID);
                     $doc->exportCaption($this->Tanggal);
                     $doc->exportCaption($this->Catatan);
                     $doc->exportCaption($this->Status);
@@ -1270,7 +1269,6 @@ class Note extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->NoteID);
                         $doc->exportField($this->Tanggal);
                         $doc->exportField($this->Catatan);
                         $doc->exportField($this->Status);

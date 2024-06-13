@@ -50,9 +50,6 @@ $Page->showMessage();
 <table class="<?= $Page->TableClass ?>">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->NoteID->Visible) { // NoteID ?>
-        <th class="<?= $Page->NoteID->headerCellClass() ?>"><span id="elh_note_NoteID" class="note_NoteID"><?= $Page->NoteID->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->Tanggal->Visible) { // Tanggal ?>
         <th class="<?= $Page->Tanggal->headerCellClass() ?>"><span id="elh_note_Tanggal" class="note_Tanggal"><?= $Page->Tanggal->caption() ?></span></th>
 <?php } ?>
@@ -83,14 +80,6 @@ while ($Page->fetch()) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->NoteID->Visible) { // NoteID ?>
-        <td<?= $Page->NoteID->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->NoteID->viewAttributes() ?>>
-<?= $Page->NoteID->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->Tanggal->Visible) { // Tanggal ?>
         <td<?= $Page->Tanggal->cellAttributes() ?>>
 <span id="">

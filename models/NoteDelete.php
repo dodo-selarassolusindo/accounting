@@ -121,7 +121,7 @@ class NoteDelete extends Note
     // Set field visibility
     public function setVisibility()
     {
-        $this->NoteID->setVisibility();
+        $this->NoteID->Visible = false;
         $this->Tanggal->setVisibility();
         $this->Catatan->setVisibility();
         $this->Status->setVisibility();
@@ -635,10 +635,6 @@ class NoteDelete extends Note
             } else {
                 $this->Status->ViewValue = null;
             }
-
-            // NoteID
-            $this->NoteID->HrefValue = "";
-            $this->NoteID->TooltipValue = "";
 
             // Tanggal
             $this->Tanggal->HrefValue = "";

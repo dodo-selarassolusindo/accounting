@@ -56,17 +56,6 @@ loadjs.ready("head", function () {
 <input type="hidden" name="t" value="note">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
 <table class="<?= $Page->TableClass ?>">
-<?php if ($Page->NoteID->Visible) { // NoteID ?>
-    <tr id="r_NoteID"<?= $Page->NoteID->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_note_NoteID"><?= $Page->NoteID->caption() ?></span></td>
-        <td data-name="NoteID"<?= $Page->NoteID->cellAttributes() ?>>
-<span id="el_note_NoteID">
-<span<?= $Page->NoteID->viewAttributes() ?>>
-<?= $Page->NoteID->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->Tanggal->Visible) { // Tanggal ?>
     <tr id="r_Tanggal"<?= $Page->Tanggal->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_note_Tanggal"><?= $Page->Tanggal->caption() ?></span></td>

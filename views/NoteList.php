@@ -155,9 +155,6 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->NoteID->Visible) { // NoteID ?>
-        <th data-name="NoteID" class="<?= $Page->NoteID->headerCellClass() ?>"><div id="elh_note_NoteID" class="note_NoteID"><?= $Page->renderFieldHeader($Page->NoteID) ?></div></th>
-<?php } ?>
 <?php if ($Page->Tanggal->Visible) { // Tanggal ?>
         <th data-name="Tanggal" class="<?= $Page->Tanggal->headerCellClass() ?>"><div id="elh_note_Tanggal" class="note_Tanggal"><?= $Page->renderFieldHeader($Page->Tanggal) ?></div></th>
 <?php } ?>
@@ -194,14 +191,6 @@ while ($Page->RecordCount < $Page->StopRecord || $Page->RowIndex === '$rowindex$
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->NoteID->Visible) { // NoteID ?>
-        <td data-name="NoteID"<?= $Page->NoteID->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_note_NoteID" class="el_note_NoteID">
-<span<?= $Page->NoteID->viewAttributes() ?>>
-<?= $Page->NoteID->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->Tanggal->Visible) { // Tanggal ?>
         <td data-name="Tanggal"<?= $Page->Tanggal->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_note_Tanggal" class="el_note_Tanggal">

@@ -145,7 +145,7 @@ class NoteList extends Note
     // Set field visibility
     public function setVisibility()
     {
-        $this->NoteID->setVisibility();
+        $this->NoteID->Visible = false;
         $this->Tanggal->setVisibility();
         $this->Catatan->setVisibility();
         $this->Status->setVisibility();
@@ -1214,7 +1214,6 @@ class NoteList extends Note
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->NoteID, $ctrl); // NoteID
             $this->updateSort($this->Tanggal, $ctrl); // Tanggal
             $this->updateSort($this->Catatan, $ctrl); // Catatan
             $this->updateSort($this->Status, $ctrl); // Status
@@ -1495,7 +1494,6 @@ class NoteList extends Note
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "NoteID");
             $this->createColumnOption($option, "Tanggal");
             $this->createColumnOption($option, "Catatan");
             $this->createColumnOption($option, "Status");
@@ -2017,10 +2015,6 @@ class NoteList extends Note
             } else {
                 $this->Status->ViewValue = null;
             }
-
-            // NoteID
-            $this->NoteID->HrefValue = "";
-            $this->NoteID->TooltipValue = "";
 
             // Tanggal
             $this->Tanggal->HrefValue = "";
