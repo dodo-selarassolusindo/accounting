@@ -1555,11 +1555,11 @@ class Jurnal extends DbTable
     }
 
     // Table level events
-
     // Table Load event
     public function tableLoad()
     {
         // Enter your code here
+        $this->UseAjaxActions = true;
     }
 
     // Recordset Selecting event
