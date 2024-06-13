@@ -925,9 +925,6 @@ class JurnalAdd extends Jurnal
 
             // keterangan
             $this->keterangan->setupEditAttributes();
-            if (!$this->keterangan->Raw) {
-                $this->keterangan->CurrentValue = HtmlDecode($this->keterangan->CurrentValue);
-            }
             $this->keterangan->EditValue = HtmlEncode($this->keterangan->CurrentValue);
             $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
 
@@ -1217,6 +1214,18 @@ class JurnalAdd extends Jurnal
         //Log("Page Load");
         $this->period_id->DisplayValueSeparator = ' - ';
         $this->nomer->ReadOnly = true;
+
+        // isi nomor jurnal
+        $tahunBulan = date('ym');
+        $lastNomor = ExecuteScalar("SELECT MAX(nomer) AS lastNomor FROM jurnal WHERE nomer LIKE '%" . $tahunBulan . "%'");
+        // jika ada nomer untuk tahun-bulan saat ini, ambil angka terakhir dan tambah 1
+        if ($lastNomor) {
+            $num = (int)substr($lastNomor, 6) + 1; // ambil bagian angka setelah tahun-bulan
+        } else {
+            $num = 1; // jika tidak ada Nomor untuk tahun-bulan saat ini, mulai dari 1
+        }
+        // format Nomor baru
+        $newNomor = 'JU' . $tahunBulan . str_pad($num, 3, '0', STR_PAD_LEFT);
     }
 
     // Page Unload event

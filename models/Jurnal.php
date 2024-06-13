@@ -246,7 +246,7 @@ class Jurnal extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'TEXTAREA' // Edit Tag
         );
         $this->keterangan->InputTextType = "text";
         $this->keterangan->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
@@ -1443,9 +1443,6 @@ class Jurnal extends DbTable
 
         // keterangan
         $this->keterangan->setupEditAttributes();
-        if (!$this->keterangan->Raw) {
-            $this->keterangan->CurrentValue = HtmlDecode($this->keterangan->CurrentValue);
-        }
         $this->keterangan->EditValue = $this->keterangan->CurrentValue;
         $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
 

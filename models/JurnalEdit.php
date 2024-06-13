@@ -1084,9 +1084,6 @@ class JurnalEdit extends Jurnal
 
             // keterangan
             $this->keterangan->setupEditAttributes();
-            if (!$this->keterangan->Raw) {
-                $this->keterangan->CurrentValue = HtmlDecode($this->keterangan->CurrentValue);
-            }
             $this->keterangan->EditValue = HtmlEncode($this->keterangan->CurrentValue);
             $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
 
