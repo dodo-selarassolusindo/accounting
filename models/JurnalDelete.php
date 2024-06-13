@@ -132,7 +132,7 @@ class JurnalDelete extends Jurnal
         $this->id->Visible = false;
         $this->createon->setVisibility();
         $this->nomer->setVisibility();
-        $this->tipejurnal_id->setVisibility();
+        $this->tipejurnal_id->Visible = false;
         $this->period_id->setVisibility();
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
@@ -713,10 +713,6 @@ class JurnalDelete extends Jurnal
             // nomer
             $this->nomer->HrefValue = "";
             $this->nomer->TooltipValue = "";
-
-            // tipejurnal_id
-            $this->tipejurnal_id->HrefValue = "";
-            $this->tipejurnal_id->TooltipValue = "";
 
             // period_id
             $this->period_id->HrefValue = "";

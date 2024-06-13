@@ -161,9 +161,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->nomer->Visible) { // nomer ?>
         <th data-name="nomer" class="<?= $Page->nomer->headerCellClass() ?>"><div id="elh_jurnal_nomer" class="jurnal_nomer"><?= $Page->renderFieldHeader($Page->nomer) ?></div></th>
 <?php } ?>
-<?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
-        <th data-name="tipejurnal_id" class="<?= $Page->tipejurnal_id->headerCellClass() ?>"><div id="elh_jurnal_tipejurnal_id" class="jurnal_tipejurnal_id"><?= $Page->renderFieldHeader($Page->tipejurnal_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->period_id->Visible) { // period_id ?>
         <th data-name="period_id" class="<?= $Page->period_id->headerCellClass() ?>"><div id="elh_jurnal_period_id" class="jurnal_period_id"><?= $Page->renderFieldHeader($Page->period_id) ?></div></th>
 <?php } ?>
@@ -210,14 +207,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_nomer" class="el_jurnal_nomer">
 <span<?= $Page->nomer->viewAttributes() ?>>
 <?= $Page->nomer->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
-        <td data-name="tipejurnal_id"<?= $Page->tipejurnal_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_tipejurnal_id" class="el_jurnal_tipejurnal_id">
-<span<?= $Page->tipejurnal_id->viewAttributes() ?>>
-<?= $Page->tipejurnal_id->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

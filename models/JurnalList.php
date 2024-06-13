@@ -156,7 +156,7 @@ class JurnalList extends Jurnal
         $this->id->Visible = false;
         $this->createon->setVisibility();
         $this->nomer->setVisibility();
-        $this->tipejurnal_id->setVisibility();
+        $this->tipejurnal_id->Visible = false;
         $this->period_id->setVisibility();
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
@@ -1260,7 +1260,6 @@ class JurnalList extends Jurnal
             $this->CurrentOrderType = Get("ordertype", "");
             $this->updateSort($this->createon, $ctrl); // createon
             $this->updateSort($this->nomer, $ctrl); // nomer
-            $this->updateSort($this->tipejurnal_id, $ctrl); // tipejurnal_id
             $this->updateSort($this->period_id, $ctrl); // period_id
             $this->updateSort($this->keterangan, $ctrl); // keterangan
             $this->setStartRecordNumber(1); // Reset start position
@@ -1669,7 +1668,6 @@ class JurnalList extends Jurnal
             $item->Visible = $this->UseColumnVisibility;
             $this->createColumnOption($option, "createon");
             $this->createColumnOption($option, "nomer");
-            $this->createColumnOption($option, "tipejurnal_id");
             $this->createColumnOption($option, "period_id");
             $this->createColumnOption($option, "keterangan");
         }
@@ -2256,10 +2254,6 @@ class JurnalList extends Jurnal
             // nomer
             $this->nomer->HrefValue = "";
             $this->nomer->TooltipValue = "";
-
-            // tipejurnal_id
-            $this->tipejurnal_id->HrefValue = "";
-            $this->tipejurnal_id->TooltipValue = "";
 
             // period_id
             $this->period_id->HrefValue = "";

@@ -73,17 +73,6 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
-    <tr id="r_tipejurnal_id"<?= $Page->tipejurnal_id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_tipejurnal_id"><?= $Page->tipejurnal_id->caption() ?></span></td>
-        <td data-name="tipejurnal_id"<?= $Page->tipejurnal_id->cellAttributes() ?>>
-<span id="el_jurnal_tipejurnal_id">
-<span<?= $Page->tipejurnal_id->viewAttributes() ?>>
-<?= $Page->tipejurnal_id->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->period_id->Visible) { // period_id ?>
     <tr id="r_period_id"<?= $Page->period_id->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_period_id"><?= $Page->period_id->caption() ?></span></td>

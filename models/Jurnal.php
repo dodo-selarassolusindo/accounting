@@ -1509,7 +1509,6 @@ class Jurnal extends DbTable
                 if ($exportPageType == "view") {
                     $doc->exportCaption($this->createon);
                     $doc->exportCaption($this->nomer);
-                    $doc->exportCaption($this->tipejurnal_id);
                     $doc->exportCaption($this->period_id);
                     $doc->exportCaption($this->keterangan);
                 } else {
@@ -1548,7 +1547,6 @@ class Jurnal extends DbTable
                     if ($exportPageType == "view") {
                         $doc->exportField($this->createon);
                         $doc->exportField($this->nomer);
-                        $doc->exportField($this->tipejurnal_id);
                         $doc->exportField($this->period_id);
                         $doc->exportField($this->keterangan);
                     } else {
