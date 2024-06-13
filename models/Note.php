@@ -129,10 +129,10 @@ class Note extends DbTable
             'x_Tanggal', // Variable name
             'Tanggal', // Name
             '`Tanggal`', // Expression
-            CastDateFieldForLike("`Tanggal`", 1, "DB"), // Basic search expression
+            CastDateFieldForLike("`Tanggal`", 11, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            1, // Date/Time format
+            11, // Date/Time format
             false, // Is upload field
             '`Tanggal`', // Virtual expression
             false, // Is virtual
@@ -145,7 +145,7 @@ class Note extends DbTable
         $this->Tanggal->InputTextType = "text";
         $this->Tanggal->Raw = true;
         $this->Tanggal->Nullable = false; // NOT NULL field
-        $this->Tanggal->DefaultErrorMessage = str_replace("%s", DateFormat(1), $Language->phrase("IncorrectDate"));
+        $this->Tanggal->DefaultErrorMessage = str_replace("%s", DateFormat(11), $Language->phrase("IncorrectDate"));
         $this->Tanggal->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['Tanggal'] = &$this->Tanggal;
 
