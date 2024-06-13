@@ -1969,7 +1969,6 @@ class JurnaldGrid extends Jurnald
             $this->kredit->TooltipValue = "";
         } elseif ($this->RowType == RowType::ADD) {
             // akun_id
-            $this->akun_id->setupEditAttributes();
             $curVal = trim(strval($this->akun_id->CurrentValue));
             if ($curVal != "") {
                 $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
@@ -1978,6 +1977,9 @@ class JurnaldGrid extends Jurnald
             }
             if ($this->akun_id->ViewValue !== null) { // Load from cache
                 $this->akun_id->EditValue = array_values($this->akun_id->lookupOptions());
+                if ($this->akun_id->ViewValue == "") {
+                    $this->akun_id->ViewValue = $Language->phrase("PleaseSelect");
+                }
             } else { // Lookup from database
                 if ($curVal == "") {
                     $filterWrk = "0=1";
@@ -1990,6 +1992,12 @@ class JurnaldGrid extends Jurnald
                 $config->setResultCache($this->Cache);
                 $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
                 $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                } else {
+                    $this->akun_id->ViewValue = $Language->phrase("PleaseSelect");
+                }
                 $arwrk = $rswrk;
                 $this->akun_id->EditValue = $arwrk;
             }
@@ -2023,7 +2031,6 @@ class JurnaldGrid extends Jurnald
             $this->kredit->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
             // akun_id
-            $this->akun_id->setupEditAttributes();
             $curVal = trim(strval($this->akun_id->CurrentValue));
             if ($curVal != "") {
                 $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
@@ -2032,6 +2039,9 @@ class JurnaldGrid extends Jurnald
             }
             if ($this->akun_id->ViewValue !== null) { // Load from cache
                 $this->akun_id->EditValue = array_values($this->akun_id->lookupOptions());
+                if ($this->akun_id->ViewValue == "") {
+                    $this->akun_id->ViewValue = $Language->phrase("PleaseSelect");
+                }
             } else { // Lookup from database
                 if ($curVal == "") {
                     $filterWrk = "0=1";
@@ -2044,6 +2054,12 @@ class JurnaldGrid extends Jurnald
                 $config->setResultCache($this->Cache);
                 $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
                 $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                } else {
+                    $this->akun_id->ViewValue = $Language->phrase("PleaseSelect");
+                }
                 $arwrk = $rswrk;
                 $this->akun_id->EditValue = $arwrk;
             }

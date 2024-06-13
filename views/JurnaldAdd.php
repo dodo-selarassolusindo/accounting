@@ -82,12 +82,12 @@ $Page->showMessage();
     <select
         id="x_akun_id"
         name="x_akun_id"
-        class="form-select ew-select<?= $Page->akun_id->isInvalidClass() ?>"
-        <?php if (!$Page->akun_id->IsNativeSelect) { ?>
+        class="form-control ew-select<?= $Page->akun_id->isInvalidClass() ?>"
         data-select2-id="fjurnaldadd_x_akun_id"
-        <?php } ?>
         data-table="jurnald"
         data-field="x_akun_id"
+        data-caption="<?= HtmlEncode(RemoveHtml($Page->akun_id->caption())) ?>"
+        data-modal-lookup="true"
         data-value-separator="<?= $Page->akun_id->displayValueSeparatorAttribute() ?>"
         data-placeholder="<?= HtmlEncode($Page->akun_id->getPlaceHolder()) ?>"
         <?= $Page->akun_id->editAttributes() ?>>
@@ -96,26 +96,18 @@ $Page->showMessage();
     <?= $Page->akun_id->getCustomMessage() ?>
     <div class="invalid-feedback"><?= $Page->akun_id->getErrorMessage() ?></div>
 <?= $Page->akun_id->Lookup->getParamTag($Page, "p_x_akun_id") ?>
-<?php if (!$Page->akun_id->IsNativeSelect) { ?>
 <script>
 loadjs.ready("fjurnaldadd", function() {
-    var options = { name: "x_akun_id", selectId: "fjurnaldadd_x_akun_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    if (!el)
-        return;
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    var options = { name: "x_akun_id", selectId: "fjurnaldadd_x_akun_id" };
     if (fjurnaldadd.lists.akun_id?.lookupOptions.length) {
         options.data = { id: "x_akun_id", form: "fjurnaldadd" };
     } else {
         options.ajax = { id: "x_akun_id", form: "fjurnaldadd", limit: ew.LOOKUP_PAGE_SIZE };
     }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnald.fields.akun_id.selectOptions);
-    ew.createSelect(options);
+    options = Object.assign({}, ew.modalLookupOptions, options, ew.vars.tables.jurnald.fields.akun_id.modalLookupOptions);
+    ew.createModalLookup(options);
 });
 </script>
-<?php } ?>
 </span>
 </div></div>
     </div>

@@ -138,12 +138,12 @@ $Grid->ListOptions->render("body", "left", $Grid->RowCount);
     <select
         id="x<?= $Grid->RowIndex ?>_akun_id"
         name="x<?= $Grid->RowIndex ?>_akun_id"
-        class="form-select ew-select<?= $Grid->akun_id->isInvalidClass() ?>"
-        <?php if (!$Grid->akun_id->IsNativeSelect) { ?>
+        class="form-control ew-select<?= $Grid->akun_id->isInvalidClass() ?>"
         data-select2-id="fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id"
-        <?php } ?>
         data-table="jurnald"
         data-field="x_akun_id"
+        data-caption="<?= HtmlEncode(RemoveHtml($Grid->akun_id->caption())) ?>"
+        data-modal-lookup="true"
         data-value-separator="<?= $Grid->akun_id->displayValueSeparatorAttribute() ?>"
         data-placeholder="<?= HtmlEncode($Grid->akun_id->getPlaceHolder()) ?>"
         <?= $Grid->akun_id->editAttributes() ?>>
@@ -151,26 +151,18 @@ $Grid->ListOptions->render("body", "left", $Grid->RowCount);
     </select>
     <div class="invalid-feedback"><?= $Grid->akun_id->getErrorMessage() ?></div>
 <?= $Grid->akun_id->Lookup->getParamTag($Grid, "p_x" . $Grid->RowIndex . "_akun_id") ?>
-<?php if (!$Grid->akun_id->IsNativeSelect) { ?>
 <script>
 loadjs.ready("fjurnaldgrid", function() {
-    var options = { name: "x<?= $Grid->RowIndex ?>_akun_id", selectId: "fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    if (!el)
-        return;
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    var options = { name: "x<?= $Grid->RowIndex ?>_akun_id", selectId: "fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id" };
     if (fjurnaldgrid.lists.akun_id?.lookupOptions.length) {
         options.data = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid" };
     } else {
         options.ajax = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid", limit: ew.LOOKUP_PAGE_SIZE };
     }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnald.fields.akun_id.selectOptions);
-    ew.createSelect(options);
+    options = Object.assign({}, ew.modalLookupOptions, options, ew.vars.tables.jurnald.fields.akun_id.modalLookupOptions);
+    ew.createModalLookup(options);
 });
 </script>
-<?php } ?>
 </span>
 <input type="hidden" data-table="jurnald" data-field="x_akun_id" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_akun_id" id="o<?= $Grid->RowIndex ?>_akun_id" value="<?= HtmlEncode($Grid->akun_id->OldValue) ?>">
 <?php } ?>
@@ -179,12 +171,12 @@ loadjs.ready("fjurnaldgrid", function() {
     <select
         id="x<?= $Grid->RowIndex ?>_akun_id"
         name="x<?= $Grid->RowIndex ?>_akun_id"
-        class="form-select ew-select<?= $Grid->akun_id->isInvalidClass() ?>"
-        <?php if (!$Grid->akun_id->IsNativeSelect) { ?>
+        class="form-control ew-select<?= $Grid->akun_id->isInvalidClass() ?>"
         data-select2-id="fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id"
-        <?php } ?>
         data-table="jurnald"
         data-field="x_akun_id"
+        data-caption="<?= HtmlEncode(RemoveHtml($Grid->akun_id->caption())) ?>"
+        data-modal-lookup="true"
         data-value-separator="<?= $Grid->akun_id->displayValueSeparatorAttribute() ?>"
         data-placeholder="<?= HtmlEncode($Grid->akun_id->getPlaceHolder()) ?>"
         <?= $Grid->akun_id->editAttributes() ?>>
@@ -192,26 +184,18 @@ loadjs.ready("fjurnaldgrid", function() {
     </select>
     <div class="invalid-feedback"><?= $Grid->akun_id->getErrorMessage() ?></div>
 <?= $Grid->akun_id->Lookup->getParamTag($Grid, "p_x" . $Grid->RowIndex . "_akun_id") ?>
-<?php if (!$Grid->akun_id->IsNativeSelect) { ?>
 <script>
 loadjs.ready("fjurnaldgrid", function() {
-    var options = { name: "x<?= $Grid->RowIndex ?>_akun_id", selectId: "fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id" },
-        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
-    if (!el)
-        return;
-    options.closeOnSelect = !options.multiple;
-    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    var options = { name: "x<?= $Grid->RowIndex ?>_akun_id", selectId: "fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id" };
     if (fjurnaldgrid.lists.akun_id?.lookupOptions.length) {
         options.data = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid" };
     } else {
         options.ajax = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid", limit: ew.LOOKUP_PAGE_SIZE };
     }
-    options.minimumResultsForSearch = Infinity;
-    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnald.fields.akun_id.selectOptions);
-    ew.createSelect(options);
+    options = Object.assign({}, ew.modalLookupOptions, options, ew.vars.tables.jurnald.fields.akun_id.modalLookupOptions);
+    ew.createModalLookup(options);
 });
 </script>
-<?php } ?>
 </span>
 <?php } ?>
 <?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
