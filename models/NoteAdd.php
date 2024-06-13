@@ -664,7 +664,7 @@ class NoteAdd extends Note
             if (IsApi() && $val === null) {
                 $this->Tanggal->Visible = false; // Disable update for API request
             } else {
-                $this->Tanggal->setFormValue($val, true, $validate);
+                $this->Tanggal->setFormValue($val);
             }
             $this->Tanggal->CurrentValue = UnFormatDateTime($this->Tanggal->CurrentValue, $this->Tanggal->formatPattern());
         }
@@ -804,9 +804,6 @@ class NoteAdd extends Note
             $this->Catatan->HrefValue = "";
         } elseif ($this->RowType == RowType::ADD) {
             // Tanggal
-            $this->Tanggal->setupEditAttributes();
-            $this->Tanggal->EditValue = HtmlEncode(FormatDateTime($this->Tanggal->CurrentValue, $this->Tanggal->formatPattern()));
-            $this->Tanggal->PlaceHolder = RemoveHtml($this->Tanggal->caption());
 
             // Catatan
             $this->Catatan->setupEditAttributes();
@@ -848,9 +845,6 @@ class NoteAdd extends Note
                 if (!$this->Tanggal->IsDetailKey && EmptyValue($this->Tanggal->FormValue)) {
                     $this->Tanggal->addErrorMessage(str_replace("%s", $this->Tanggal->caption(), $this->Tanggal->RequiredErrorMessage));
                 }
-            }
-            if (!CheckDate($this->Tanggal->FormValue, $this->Tanggal->formatPattern())) {
-                $this->Tanggal->addErrorMessage($this->Tanggal->getErrorMessage(false));
             }
             if ($this->Catatan->Visible && $this->Catatan->Required) {
                 if (!$this->Catatan->IsDetailKey && EmptyValue($this->Catatan->FormValue)) {
@@ -929,6 +923,7 @@ class NoteAdd extends Note
         $rsnew = [];
 
         // Tanggal
+        $this->Tanggal->CurrentValue = $this->Tanggal->getAutoUpdateValue(); // PHP
         $this->Tanggal->setDbValueDef($rsnew, UnFormatDateTime($this->Tanggal->CurrentValue, $this->Tanggal->formatPattern()), false);
 
         // Catatan

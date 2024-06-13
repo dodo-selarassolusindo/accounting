@@ -452,6 +452,9 @@ class NoteList extends Note
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
             $this->NoteID->Visible = false;
         }
+        if ($this->isAddOrEdit()) {
+            $this->Tanggal->Visible = false;
+        }
     }
 
     // Lookup data

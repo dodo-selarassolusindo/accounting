@@ -128,10 +128,10 @@ class Note extends DbTable
             'x_Tanggal', // Variable name
             'Tanggal', // Name
             '`Tanggal`', // Expression
-            CastDateFieldForLike("`Tanggal`", 0, "DB"), // Basic search expression
+            CastDateFieldForLike("`Tanggal`", 1, "DB"), // Basic search expression
             135, // Type
             19, // Size
-            0, // Date/Time format
+            1, // Date/Time format
             false, // Is upload field
             '`Tanggal`', // Virtual expression
             false, // Is virtual
@@ -140,11 +140,11 @@ class Note extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
+        $this->Tanggal->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
         $this->Tanggal->InputTextType = "text";
         $this->Tanggal->Raw = true;
         $this->Tanggal->Nullable = false; // NOT NULL field
-        $this->Tanggal->Required = true; // Required field
-        $this->Tanggal->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $Language->phrase("IncorrectDate"));
+        $this->Tanggal->DefaultErrorMessage = str_replace("%s", DateFormat(1), $Language->phrase("IncorrectDate"));
         $this->Tanggal->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['Tanggal'] = &$this->Tanggal;
 
@@ -1154,9 +1154,6 @@ class Note extends DbTable
         $this->NoteID->EditValue = $this->NoteID->CurrentValue;
 
         // Tanggal
-        $this->Tanggal->setupEditAttributes();
-        $this->Tanggal->EditValue = FormatDateTime($this->Tanggal->CurrentValue, $this->Tanggal->formatPattern());
-        $this->Tanggal->PlaceHolder = RemoveHtml($this->Tanggal->caption());
 
         // Catatan
         $this->Catatan->setupEditAttributes();
