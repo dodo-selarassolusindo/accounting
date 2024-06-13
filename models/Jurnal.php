@@ -170,6 +170,7 @@ class Jurnal extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
+        $this->nomer->addMethod("getDefault", fn() => 'JU24');
         $this->nomer->InputTextType = "text";
         $this->nomer->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
         $this->Fields['nomer'] = &$this->nomer;
