@@ -903,6 +903,7 @@ class SaldoawalDelete extends Saldoawal
     {
         //Log("Page Load");
         $this->periode_id->DisplayValueSeparator = " - "; // Use hyphen as separator
+        $this->akun_id->DisplayValueSeparator = " - "; // Use hyphen as separator
     }
 
     // Page Unload event

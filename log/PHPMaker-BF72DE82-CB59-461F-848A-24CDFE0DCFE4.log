@@ -150,6 +150,7 @@ C:\xampp\htdocs\accounting\models\JurnaldDelete.php
 C:\xampp\htdocs\accounting\models\JurnaldEdit.php
 C:\xampp\htdocs\accounting\models\JurnaldEdit.php
 C:\xampp\htdocs\accounting\models\JurnaldGrid.php
+C:\xampp\htdocs\accounting\models\JurnaldGrid.php
 C:\xampp\htdocs\accounting\models\JurnaldList.php
 C:\xampp\htdocs\accounting\models\JurnaldList.php
 C:\xampp\htdocs\accounting\models\JurnaldView.php
@@ -724,6 +725,7 @@ C:\xampp\htdocs\accounting\views\JurnalEdit.php
 C:\xampp\htdocs\accounting\views\JurnalList.php
 C:\xampp\htdocs\accounting\views\JurnalList.php
 C:\xampp\htdocs\accounting\views\JurnalMaster.php
+C:\xampp\htdocs\accounting\views\JurnalMaster.php
 C:\xampp\htdocs\accounting\views\JurnalView.php
 C:\xampp\htdocs\accounting\views\JurnalView.php
 C:\xampp\htdocs\accounting\views\JurnaldAdd.php
@@ -732,6 +734,7 @@ C:\xampp\htdocs\accounting\views\JurnaldDelete.php
 C:\xampp\htdocs\accounting\views\JurnaldDelete.php
 C:\xampp\htdocs\accounting\views\JurnaldEdit.php
 C:\xampp\htdocs\accounting\views\JurnaldEdit.php
+C:\xampp\htdocs\accounting\views\JurnaldGrid.php
 C:\xampp\htdocs\accounting\views\JurnaldGrid.php
 C:\xampp\htdocs\accounting\views\JurnaldList.php
 C:\xampp\htdocs\accounting\views\JurnaldList.php
