@@ -133,7 +133,7 @@ class JurnalEdit extends Jurnal
         $this->createon->setVisibility();
         $this->nomer->setVisibility();
         $this->tipejurnal_id->setVisibility();
-        $this->period_id->setVisibility();
+        $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
         $this->person_id->setVisibility();
     }
@@ -746,16 +746,6 @@ class JurnalEdit extends Jurnal
             }
         }
 
-        // Check field name 'period_id' first before field var 'x_period_id'
-        $val = $CurrentForm->hasValue("period_id") ? $CurrentForm->getValue("period_id") : $CurrentForm->getValue("x_period_id");
-        if (!$this->period_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->period_id->Visible = false; // Disable update for API request
-            } else {
-                $this->period_id->setFormValue($val);
-            }
-        }
-
         // Check field name 'keterangan' first before field var 'x_keterangan'
         $val = $CurrentForm->hasValue("keterangan") ? $CurrentForm->getValue("keterangan") : $CurrentForm->getValue("x_keterangan");
         if (!$this->keterangan->IsDetailKey) {
@@ -792,7 +782,6 @@ class JurnalEdit extends Jurnal
         $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
         $this->nomer->CurrentValue = $this->nomer->FormValue;
         $this->tipejurnal_id->CurrentValue = $this->tipejurnal_id->FormValue;
-        $this->period_id->CurrentValue = $this->period_id->FormValue;
         $this->keterangan->CurrentValue = $this->keterangan->FormValue;
         $this->person_id->CurrentValue = $this->person_id->FormValue;
     }
@@ -986,9 +975,6 @@ class JurnalEdit extends Jurnal
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
 
-            // period_id
-            $this->period_id->HrefValue = "";
-
             // keterangan
             $this->keterangan->HrefValue = "";
 
@@ -1028,36 +1014,6 @@ class JurnalEdit extends Jurnal
             }
             $this->tipejurnal_id->PlaceHolder = RemoveHtml($this->tipejurnal_id->caption());
 
-            // period_id
-            $this->period_id->setupEditAttributes();
-            $curVal = trim(strval($this->period_id->CurrentValue));
-            if ($curVal != "") {
-                $this->period_id->ViewValue = $this->period_id->lookupCacheOption($curVal);
-            } else {
-                $this->period_id->ViewValue = $this->period_id->Lookup !== null && is_array($this->period_id->lookupOptions()) && count($this->period_id->lookupOptions()) > 0 ? $curVal : null;
-            }
-            if ($this->period_id->ViewValue !== null) { // Load from cache
-                $this->period_id->EditValue = array_values($this->period_id->lookupOptions());
-            } else { // Lookup from database
-                if ($curVal == "") {
-                    $filterWrk = "0=1";
-                } else {
-                    $filterWrk = SearchFilter($this->period_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->period_id->CurrentValue, $this->period_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
-                }
-                $sqlWrk = $this->period_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
-                $conn = Conn();
-                $config = $conn->getConfiguration();
-                $config->setResultCache($this->Cache);
-                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
-                $ari = count($rswrk);
-                $arwrk = $rswrk;
-                foreach ($arwrk as &$row) {
-                    $row = $this->period_id->Lookup->renderViewRow($row);
-                }
-                $this->period_id->EditValue = $arwrk;
-            }
-            $this->period_id->PlaceHolder = RemoveHtml($this->period_id->caption());
-
             // keterangan
             $this->keterangan->setupEditAttributes();
             if (!$this->keterangan->Raw) {
@@ -1086,9 +1042,6 @@ class JurnalEdit extends Jurnal
 
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
-
-            // period_id
-            $this->period_id->HrefValue = "";
 
             // keterangan
             $this->keterangan->HrefValue = "";
@@ -1129,11 +1082,6 @@ class JurnalEdit extends Jurnal
             if ($this->tipejurnal_id->Visible && $this->tipejurnal_id->Required) {
                 if (!$this->tipejurnal_id->IsDetailKey && EmptyValue($this->tipejurnal_id->FormValue)) {
                     $this->tipejurnal_id->addErrorMessage(str_replace("%s", $this->tipejurnal_id->caption(), $this->tipejurnal_id->RequiredErrorMessage));
-                }
-            }
-            if ($this->period_id->Visible && $this->period_id->Required) {
-                if (!$this->period_id->IsDetailKey && EmptyValue($this->period_id->FormValue)) {
-                    $this->period_id->addErrorMessage(str_replace("%s", $this->period_id->caption(), $this->period_id->RequiredErrorMessage));
                 }
             }
             if ($this->keterangan->Visible && $this->keterangan->Required) {
@@ -1278,9 +1226,6 @@ class JurnalEdit extends Jurnal
         // tipejurnal_id
         $this->tipejurnal_id->setDbValueDef($rsnew, $this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->ReadOnly);
 
-        // period_id
-        $this->period_id->setDbValueDef($rsnew, $this->period_id->CurrentValue, $this->period_id->ReadOnly);
-
         // keterangan
         $this->keterangan->setDbValueDef($rsnew, $this->keterangan->CurrentValue, $this->keterangan->ReadOnly);
 
@@ -1297,9 +1242,6 @@ class JurnalEdit extends Jurnal
     {
         if (isset($row['tipejurnal_id'])) { // tipejurnal_id
             $this->tipejurnal_id->CurrentValue = $row['tipejurnal_id'];
-        }
-        if (isset($row['period_id'])) { // period_id
-            $this->period_id->CurrentValue = $row['period_id'];
         }
         if (isset($row['keterangan'])) { // keterangan
             $this->keterangan->CurrentValue = $row['keterangan'];
