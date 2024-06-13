@@ -32,17 +32,6 @@ $jurnal->TableClass = "table table-bordered table-hover table-sm ew-table ew-mas
 </td>
         </tr>
 <?php } ?>
-<?php if ($jurnal->period_id->Visible) { // period_id ?>
-        <tr id="r_period_id"<?= $jurnal->period_id->rowAttributes() ?>>
-            <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->period_id->caption() ?></td>
-            <td<?= $jurnal->period_id->cellAttributes() ?>>
-<span id="el_jurnal_period_id">
-<span<?= $jurnal->period_id->viewAttributes() ?>>
-<?= $jurnal->period_id->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
 <?php if ($jurnal->keterangan->Visible) { // keterangan ?>
         <tr id="r_keterangan"<?= $jurnal->keterangan->rowAttributes() ?>>
             <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->keterangan->caption() ?></td>

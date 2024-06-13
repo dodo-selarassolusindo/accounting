@@ -56,9 +56,6 @@ $Page->showMessage();
 <?php if ($Page->nomer->Visible) { // nomer ?>
         <th class="<?= $Page->nomer->headerCellClass() ?>"><span id="elh_jurnal_nomer" class="jurnal_nomer"><?= $Page->nomer->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->period_id->Visible) { // period_id ?>
-        <th class="<?= $Page->period_id->headerCellClass() ?>"><span id="elh_jurnal_period_id" class="jurnal_period_id"><?= $Page->period_id->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
         <th class="<?= $Page->keterangan->headerCellClass() ?>"><span id="elh_jurnal_keterangan" class="jurnal_keterangan"><?= $Page->keterangan->caption() ?></span></th>
 <?php } ?>
@@ -96,14 +93,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->nomer->viewAttributes() ?>>
 <?= $Page->nomer->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->period_id->Visible) { // period_id ?>
-        <td<?= $Page->period_id->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->period_id->viewAttributes() ?>>
-<?= $Page->period_id->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

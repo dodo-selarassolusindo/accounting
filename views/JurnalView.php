@@ -73,17 +73,6 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->period_id->Visible) { // period_id ?>
-    <tr id="r_period_id"<?= $Page->period_id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_period_id"><?= $Page->period_id->caption() ?></span></td>
-        <td data-name="period_id"<?= $Page->period_id->cellAttributes() ?>>
-<span id="el_jurnal_period_id">
-<span<?= $Page->period_id->viewAttributes() ?>>
-<?= $Page->period_id->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
     <tr id="r_keterangan"<?= $Page->keterangan->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_keterangan"><?= $Page->keterangan->caption() ?></span></td>
