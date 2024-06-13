@@ -154,12 +154,12 @@ class JurnalList extends Jurnal
     public function setVisibility()
     {
         $this->id->Visible = false;
+        $this->createon->setVisibility();
+        $this->nomer->setVisibility();
         $this->tipejurnal_id->setVisibility();
         $this->period_id->setVisibility();
-        $this->createon->setVisibility();
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
-        $this->nomer->setVisibility();
     }
 
     // Constructor
@@ -702,6 +702,7 @@ class JurnalList extends Jurnal
 
         // Set up lookup cache
         $this->setupLookupOptions($this->tipejurnal_id);
+        $this->setupLookupOptions($this->period_id);
 
         // Update form name to avoid conflict
         if ($this->IsModal) {
@@ -1038,12 +1039,12 @@ class JurnalList extends Jurnal
         $filterList = "";
         $savedFilterList = "";
         $filterList = Concat($filterList, $this->id->AdvancedSearch->toJson(), ","); // Field id
+        $filterList = Concat($filterList, $this->createon->AdvancedSearch->toJson(), ","); // Field createon
+        $filterList = Concat($filterList, $this->nomer->AdvancedSearch->toJson(), ","); // Field nomer
         $filterList = Concat($filterList, $this->tipejurnal_id->AdvancedSearch->toJson(), ","); // Field tipejurnal_id
         $filterList = Concat($filterList, $this->period_id->AdvancedSearch->toJson(), ","); // Field period_id
-        $filterList = Concat($filterList, $this->createon->AdvancedSearch->toJson(), ","); // Field createon
         $filterList = Concat($filterList, $this->keterangan->AdvancedSearch->toJson(), ","); // Field keterangan
         $filterList = Concat($filterList, $this->person_id->AdvancedSearch->toJson(), ","); // Field person_id
-        $filterList = Concat($filterList, $this->nomer->AdvancedSearch->toJson(), ","); // Field nomer
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1091,6 +1092,22 @@ class JurnalList extends Jurnal
         $this->id->AdvancedSearch->SearchOperator2 = @$filter["w_id"];
         $this->id->AdvancedSearch->save();
 
+        // Field createon
+        $this->createon->AdvancedSearch->SearchValue = @$filter["x_createon"];
+        $this->createon->AdvancedSearch->SearchOperator = @$filter["z_createon"];
+        $this->createon->AdvancedSearch->SearchCondition = @$filter["v_createon"];
+        $this->createon->AdvancedSearch->SearchValue2 = @$filter["y_createon"];
+        $this->createon->AdvancedSearch->SearchOperator2 = @$filter["w_createon"];
+        $this->createon->AdvancedSearch->save();
+
+        // Field nomer
+        $this->nomer->AdvancedSearch->SearchValue = @$filter["x_nomer"];
+        $this->nomer->AdvancedSearch->SearchOperator = @$filter["z_nomer"];
+        $this->nomer->AdvancedSearch->SearchCondition = @$filter["v_nomer"];
+        $this->nomer->AdvancedSearch->SearchValue2 = @$filter["y_nomer"];
+        $this->nomer->AdvancedSearch->SearchOperator2 = @$filter["w_nomer"];
+        $this->nomer->AdvancedSearch->save();
+
         // Field tipejurnal_id
         $this->tipejurnal_id->AdvancedSearch->SearchValue = @$filter["x_tipejurnal_id"];
         $this->tipejurnal_id->AdvancedSearch->SearchOperator = @$filter["z_tipejurnal_id"];
@@ -1107,14 +1124,6 @@ class JurnalList extends Jurnal
         $this->period_id->AdvancedSearch->SearchOperator2 = @$filter["w_period_id"];
         $this->period_id->AdvancedSearch->save();
 
-        // Field createon
-        $this->createon->AdvancedSearch->SearchValue = @$filter["x_createon"];
-        $this->createon->AdvancedSearch->SearchOperator = @$filter["z_createon"];
-        $this->createon->AdvancedSearch->SearchCondition = @$filter["v_createon"];
-        $this->createon->AdvancedSearch->SearchValue2 = @$filter["y_createon"];
-        $this->createon->AdvancedSearch->SearchOperator2 = @$filter["w_createon"];
-        $this->createon->AdvancedSearch->save();
-
         // Field keterangan
         $this->keterangan->AdvancedSearch->SearchValue = @$filter["x_keterangan"];
         $this->keterangan->AdvancedSearch->SearchOperator = @$filter["z_keterangan"];
@@ -1130,14 +1139,6 @@ class JurnalList extends Jurnal
         $this->person_id->AdvancedSearch->SearchValue2 = @$filter["y_person_id"];
         $this->person_id->AdvancedSearch->SearchOperator2 = @$filter["w_person_id"];
         $this->person_id->AdvancedSearch->save();
-
-        // Field nomer
-        $this->nomer->AdvancedSearch->SearchValue = @$filter["x_nomer"];
-        $this->nomer->AdvancedSearch->SearchOperator = @$filter["z_nomer"];
-        $this->nomer->AdvancedSearch->SearchCondition = @$filter["v_nomer"];
-        $this->nomer->AdvancedSearch->SearchValue2 = @$filter["y_nomer"];
-        $this->nomer->AdvancedSearch->SearchOperator2 = @$filter["w_nomer"];
-        $this->nomer->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
     }
@@ -1174,8 +1175,8 @@ class JurnalList extends Jurnal
 
         // Fields to search
         $searchFlds = [];
-        $searchFlds[] = &$this->keterangan;
         $searchFlds[] = &$this->nomer;
+        $searchFlds[] = &$this->keterangan;
         $searchKeyword = $default ? $this->BasicSearch->KeywordDefault : $this->BasicSearch->Keyword;
         $searchType = $default ? $this->BasicSearch->TypeDefault : $this->BasicSearch->Type;
 
@@ -1257,11 +1258,11 @@ class JurnalList extends Jurnal
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
+            $this->updateSort($this->createon, $ctrl); // createon
+            $this->updateSort($this->nomer, $ctrl); // nomer
             $this->updateSort($this->tipejurnal_id, $ctrl); // tipejurnal_id
             $this->updateSort($this->period_id, $ctrl); // period_id
-            $this->updateSort($this->createon, $ctrl); // createon
             $this->updateSort($this->keterangan, $ctrl); // keterangan
-            $this->updateSort($this->nomer, $ctrl); // nomer
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1287,12 +1288,12 @@ class JurnalList extends Jurnal
                 $orderBy = "";
                 $this->setSessionOrderBy($orderBy);
                 $this->id->setSort("");
+                $this->createon->setSort("");
+                $this->nomer->setSort("");
                 $this->tipejurnal_id->setSort("");
                 $this->period_id->setSort("");
-                $this->createon->setSort("");
                 $this->keterangan->setSort("");
                 $this->person_id->setSort("");
-                $this->nomer->setSort("");
             }
 
             // Reset start position
@@ -1666,11 +1667,11 @@ class JurnalList extends Jurnal
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
+            $this->createColumnOption($option, "createon");
+            $this->createColumnOption($option, "nomer");
             $this->createColumnOption($option, "tipejurnal_id");
             $this->createColumnOption($option, "period_id");
-            $this->createColumnOption($option, "createon");
             $this->createColumnOption($option, "keterangan");
-            $this->createColumnOption($option, "nomer");
         }
 
         // Set up custom actions
@@ -2110,12 +2111,12 @@ class JurnalList extends Jurnal
         // Call Row Selected event
         $this->rowSelected($row);
         $this->id->setDbValue($row['id']);
+        $this->createon->setDbValue($row['createon']);
+        $this->nomer->setDbValue($row['nomer']);
         $this->tipejurnal_id->setDbValue($row['tipejurnal_id']);
         $this->period_id->setDbValue($row['period_id']);
-        $this->createon->setDbValue($row['createon']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
-        $this->nomer->setDbValue($row['nomer']);
     }
 
     // Return a row with default values
@@ -2123,12 +2124,12 @@ class JurnalList extends Jurnal
     {
         $row = [];
         $row['id'] = $this->id->DefaultValue;
+        $row['createon'] = $this->createon->DefaultValue;
+        $row['nomer'] = $this->nomer->DefaultValue;
         $row['tipejurnal_id'] = $this->tipejurnal_id->DefaultValue;
         $row['period_id'] = $this->period_id->DefaultValue;
-        $row['createon'] = $this->createon->DefaultValue;
         $row['keterangan'] = $this->keterangan->DefaultValue;
         $row['person_id'] = $this->person_id->DefaultValue;
-        $row['nomer'] = $this->nomer->DefaultValue;
         return $row;
     }
 
@@ -2171,22 +2172,29 @@ class JurnalList extends Jurnal
 
         // id
 
+        // createon
+
+        // nomer
+
         // tipejurnal_id
 
         // period_id
-
-        // createon
 
         // keterangan
 
         // person_id
 
-        // nomer
-
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
             $this->id->ViewValue = $this->id->CurrentValue;
+
+            // createon
+            $this->createon->ViewValue = $this->createon->CurrentValue;
+            $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
+
+            // nomer
+            $this->nomer->ViewValue = $this->nomer->CurrentValue;
 
             // tipejurnal_id
             $curVal = strval($this->tipejurnal_id->CurrentValue);
@@ -2212,12 +2220,27 @@ class JurnalList extends Jurnal
             }
 
             // period_id
-            $this->period_id->ViewValue = $this->period_id->CurrentValue;
-            $this->period_id->ViewValue = FormatNumber($this->period_id->ViewValue, $this->period_id->formatPattern());
-
-            // createon
-            $this->createon->ViewValue = $this->createon->CurrentValue;
-            $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
+            $curVal = strval($this->period_id->CurrentValue);
+            if ($curVal != "") {
+                $this->period_id->ViewValue = $this->period_id->lookupCacheOption($curVal);
+                if ($this->period_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->period_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->period_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->period_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->period_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->period_id->ViewValue = $this->period_id->displayValue($arwrk);
+                    } else {
+                        $this->period_id->ViewValue = FormatNumber($this->period_id->CurrentValue, $this->period_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->period_id->ViewValue = null;
+            }
 
             // keterangan
             $this->keterangan->ViewValue = $this->keterangan->CurrentValue;
@@ -2226,8 +2249,13 @@ class JurnalList extends Jurnal
             $this->person_id->ViewValue = $this->person_id->CurrentValue;
             $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+            // createon
+            $this->createon->HrefValue = "";
+            $this->createon->TooltipValue = "";
+
             // nomer
-            $this->nomer->ViewValue = $this->nomer->CurrentValue;
+            $this->nomer->HrefValue = "";
+            $this->nomer->TooltipValue = "";
 
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
@@ -2237,17 +2265,9 @@ class JurnalList extends Jurnal
             $this->period_id->HrefValue = "";
             $this->period_id->TooltipValue = "";
 
-            // createon
-            $this->createon->HrefValue = "";
-            $this->createon->TooltipValue = "";
-
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // nomer
-            $this->nomer->HrefValue = "";
-            $this->nomer->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -2332,6 +2352,8 @@ class JurnalList extends Jurnal
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_tipejurnal_id":
+                    break;
+                case "x_period_id":
                     break;
                 default:
                     $lookupFilter = "";

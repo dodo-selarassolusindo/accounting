@@ -55,12 +55,12 @@ class Jurnal extends DbTable
 
     // Fields
     public $id;
+    public $createon;
+    public $nomer;
     public $tipejurnal_id;
     public $period_id;
-    public $createon;
     public $keterangan;
     public $person_id;
-    public $nomer;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -135,6 +135,53 @@ class Jurnal extends DbTable
         $this->id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['id'] = &$this->id;
 
+        // createon
+        $this->createon = new DbField(
+            $this, // Table
+            'x_createon', // Variable name
+            'createon', // Name
+            '`createon`', // Expression
+            CastDateFieldForLike("`createon`", 7, "DB"), // Basic search expression
+            135, // Type
+            19, // Size
+            7, // Date/Time format
+            false, // Is upload field
+            '`createon`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->createon->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
+        $this->createon->InputTextType = "text";
+        $this->createon->Raw = true;
+        $this->createon->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
+        $this->createon->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->Fields['createon'] = &$this->createon;
+
+        // nomer
+        $this->nomer = new DbField(
+            $this, // Table
+            'x_nomer', // Variable name
+            'nomer', // Name
+            '`nomer`', // Expression
+            '`nomer`', // Basic search expression
+            200, // Type
+            50, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`nomer`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->nomer->InputTextType = "text";
+        $this->nomer->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->Fields['nomer'] = &$this->nomer;
+
         // tipejurnal_id
         $this->tipejurnal_id = new DbField(
             $this, // Table
@@ -179,38 +226,17 @@ class Jurnal extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->period_id->InputTextType = "text";
         $this->period_id->Raw = true;
+        $this->period_id->setSelectMultiple(false); // Select one
+        $this->period_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->period_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->period_id->Lookup = new Lookup($this->period_id, 'periode', false, 'id', ["start","end","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(" . CastDateFieldForLike("`start`", 7, "DB") . ", ''),'" . ValueSeparator(1, $this->period_id) . "',COALESCE(" . CastDateFieldForLike("`end`", 7, "DB") . ",''))");
         $this->period_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->period_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->period_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['period_id'] = &$this->period_id;
-
-        // createon
-        $this->createon = new DbField(
-            $this, // Table
-            'x_createon', // Variable name
-            'createon', // Name
-            '`createon`', // Expression
-            CastDateFieldForLike("`createon`", 7, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            7, // Date/Time format
-            false, // Is upload field
-            '`createon`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->createon->addMethod("getAutoUpdateValue", fn() => CurrentDateTime());
-        $this->createon->InputTextType = "text";
-        $this->createon->Raw = true;
-        $this->createon->DefaultErrorMessage = str_replace("%s", DateFormat(7), $Language->phrase("IncorrectDate"));
-        $this->createon->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
-        $this->Fields['createon'] = &$this->createon;
 
         // keterangan
         $this->keterangan = new DbField(
@@ -257,28 +283,6 @@ class Jurnal extends DbTable
         $this->person_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->person_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['person_id'] = &$this->person_id;
-
-        // nomer
-        $this->nomer = new DbField(
-            $this, // Table
-            'x_nomer', // Variable name
-            'nomer', // Name
-            '`nomer`', // Expression
-            '`nomer`', // Basic search expression
-            200, // Type
-            50, // Size
-            -1, // Date/Time format
-            false, // Is upload field
-            '`nomer`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->nomer->InputTextType = "text";
-        $this->nomer->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
-        $this->Fields['nomer'] = &$this->nomer;
 
         // Add Doctrine Cache
         $this->Cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
@@ -911,12 +915,12 @@ class Jurnal extends DbTable
             return;
         }
         $this->id->DbValue = $row['id'];
+        $this->createon->DbValue = $row['createon'];
+        $this->nomer->DbValue = $row['nomer'];
         $this->tipejurnal_id->DbValue = $row['tipejurnal_id'];
         $this->period_id->DbValue = $row['period_id'];
-        $this->createon->DbValue = $row['createon'];
         $this->keterangan->DbValue = $row['keterangan'];
         $this->person_id->DbValue = $row['person_id'];
-        $this->nomer->DbValue = $row['nomer'];
     }
 
     // Delete uploaded files
@@ -1285,12 +1289,12 @@ class Jurnal extends DbTable
             return;
         }
         $this->id->setDbValue($row['id']);
+        $this->createon->setDbValue($row['createon']);
+        $this->nomer->setDbValue($row['nomer']);
         $this->tipejurnal_id->setDbValue($row['tipejurnal_id']);
         $this->period_id->setDbValue($row['period_id']);
-        $this->createon->setDbValue($row['createon']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
-        $this->nomer->setDbValue($row['nomer']);
     }
 
     // Render list content
@@ -1323,20 +1327,27 @@ class Jurnal extends DbTable
 
         // id
 
+        // createon
+
+        // nomer
+
         // tipejurnal_id
 
         // period_id
-
-        // createon
 
         // keterangan
 
         // person_id
 
-        // nomer
-
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
+
+        // createon
+        $this->createon->ViewValue = $this->createon->CurrentValue;
+        $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
+
+        // nomer
+        $this->nomer->ViewValue = $this->nomer->CurrentValue;
 
         // tipejurnal_id
         $curVal = strval($this->tipejurnal_id->CurrentValue);
@@ -1362,12 +1373,27 @@ class Jurnal extends DbTable
         }
 
         // period_id
-        $this->period_id->ViewValue = $this->period_id->CurrentValue;
-        $this->period_id->ViewValue = FormatNumber($this->period_id->ViewValue, $this->period_id->formatPattern());
-
-        // createon
-        $this->createon->ViewValue = $this->createon->CurrentValue;
-        $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
+        $curVal = strval($this->period_id->CurrentValue);
+        if ($curVal != "") {
+            $this->period_id->ViewValue = $this->period_id->lookupCacheOption($curVal);
+            if ($this->period_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->period_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->period_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                $sqlWrk = $this->period_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->period_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->period_id->ViewValue = $this->period_id->displayValue($arwrk);
+                } else {
+                    $this->period_id->ViewValue = FormatNumber($this->period_id->CurrentValue, $this->period_id->formatPattern());
+                }
+            }
+        } else {
+            $this->period_id->ViewValue = null;
+        }
 
         // keterangan
         $this->keterangan->ViewValue = $this->keterangan->CurrentValue;
@@ -1376,12 +1402,17 @@ class Jurnal extends DbTable
         $this->person_id->ViewValue = $this->person_id->CurrentValue;
         $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
-        // nomer
-        $this->nomer->ViewValue = $this->nomer->CurrentValue;
-
         // id
         $this->id->HrefValue = "";
         $this->id->TooltipValue = "";
+
+        // createon
+        $this->createon->HrefValue = "";
+        $this->createon->TooltipValue = "";
+
+        // nomer
+        $this->nomer->HrefValue = "";
+        $this->nomer->TooltipValue = "";
 
         // tipejurnal_id
         $this->tipejurnal_id->HrefValue = "";
@@ -1391,10 +1422,6 @@ class Jurnal extends DbTable
         $this->period_id->HrefValue = "";
         $this->period_id->TooltipValue = "";
 
-        // createon
-        $this->createon->HrefValue = "";
-        $this->createon->TooltipValue = "";
-
         // keterangan
         $this->keterangan->HrefValue = "";
         $this->keterangan->TooltipValue = "";
@@ -1402,10 +1429,6 @@ class Jurnal extends DbTable
         // person_id
         $this->person_id->HrefValue = "";
         $this->person_id->TooltipValue = "";
-
-        // nomer
-        $this->nomer->HrefValue = "";
-        $this->nomer->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1426,19 +1449,19 @@ class Jurnal extends DbTable
         $this->id->setupEditAttributes();
         $this->id->EditValue = $this->id->CurrentValue;
 
+        // createon
+
+        // nomer
+        $this->nomer->setupEditAttributes();
+        $this->nomer->EditValue = $this->nomer->CurrentValue;
+
         // tipejurnal_id
         $this->tipejurnal_id->setupEditAttributes();
         $this->tipejurnal_id->PlaceHolder = RemoveHtml($this->tipejurnal_id->caption());
 
         // period_id
         $this->period_id->setupEditAttributes();
-        $this->period_id->EditValue = $this->period_id->CurrentValue;
         $this->period_id->PlaceHolder = RemoveHtml($this->period_id->caption());
-        if (strval($this->period_id->EditValue) != "" && is_numeric($this->period_id->EditValue)) {
-            $this->period_id->EditValue = FormatNumber($this->period_id->EditValue, null);
-        }
-
-        // createon
 
         // keterangan
         $this->keterangan->setupEditAttributes();
@@ -1455,14 +1478,6 @@ class Jurnal extends DbTable
         if (strval($this->person_id->EditValue) != "" && is_numeric($this->person_id->EditValue)) {
             $this->person_id->EditValue = FormatNumber($this->person_id->EditValue, null);
         }
-
-        // nomer
-        $this->nomer->setupEditAttributes();
-        if (!$this->nomer->Raw) {
-            $this->nomer->CurrentValue = HtmlDecode($this->nomer->CurrentValue);
-        }
-        $this->nomer->EditValue = $this->nomer->CurrentValue;
-        $this->nomer->PlaceHolder = RemoveHtml($this->nomer->caption());
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1492,19 +1507,19 @@ class Jurnal extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
+                    $doc->exportCaption($this->createon);
+                    $doc->exportCaption($this->nomer);
                     $doc->exportCaption($this->tipejurnal_id);
                     $doc->exportCaption($this->period_id);
-                    $doc->exportCaption($this->createon);
                     $doc->exportCaption($this->keterangan);
-                    $doc->exportCaption($this->nomer);
                 } else {
                     $doc->exportCaption($this->id);
+                    $doc->exportCaption($this->createon);
+                    $doc->exportCaption($this->nomer);
                     $doc->exportCaption($this->tipejurnal_id);
                     $doc->exportCaption($this->period_id);
-                    $doc->exportCaption($this->createon);
                     $doc->exportCaption($this->keterangan);
                     $doc->exportCaption($this->person_id);
-                    $doc->exportCaption($this->nomer);
                 }
                 $doc->endExportRow();
             }
@@ -1531,19 +1546,19 @@ class Jurnal extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
+                        $doc->exportField($this->createon);
+                        $doc->exportField($this->nomer);
                         $doc->exportField($this->tipejurnal_id);
                         $doc->exportField($this->period_id);
-                        $doc->exportField($this->createon);
                         $doc->exportField($this->keterangan);
-                        $doc->exportField($this->nomer);
                     } else {
                         $doc->exportField($this->id);
+                        $doc->exportField($this->createon);
+                        $doc->exportField($this->nomer);
                         $doc->exportField($this->tipejurnal_id);
                         $doc->exportField($this->period_id);
-                        $doc->exportField($this->createon);
                         $doc->exportField($this->keterangan);
                         $doc->exportField($this->person_id);
-                        $doc->exportField($this->nomer);
                     }
                     $doc->endExportRow($rowCnt);
                 }

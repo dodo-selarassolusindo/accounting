@@ -33,23 +33,23 @@ class Jurnal extends AbstractEntity
     #[GeneratedValue]
     private int $id;
 
+    #[Column(type: "datetime", nullable: true)]
+    private ?DateTime $createon;
+
+    #[Column(type: "string", nullable: true)]
+    private ?string $nomer;
+
     #[Column(name: "tipejurnal_id", type: "integer", nullable: true)]
     private ?int $tipejurnalId;
 
     #[Column(name: "period_id", type: "integer", nullable: true)]
     private ?int $periodId;
 
-    #[Column(type: "datetime", nullable: true)]
-    private ?DateTime $createon;
-
     #[Column(type: "string", nullable: true)]
     private ?string $keterangan;
 
     #[Column(name: "person_id", type: "integer", nullable: true)]
     private ?int $personId;
-
-    #[Column(type: "string", nullable: true)]
-    private ?string $nomer;
 
     public function getId(): int
     {
@@ -59,6 +59,28 @@ class Jurnal extends AbstractEntity
     public function setId(int $value): static
     {
         $this->id = $value;
+        return $this;
+    }
+
+    public function getCreateon(): ?DateTime
+    {
+        return $this->createon;
+    }
+
+    public function setCreateon(?DateTime $value): static
+    {
+        $this->createon = $value;
+        return $this;
+    }
+
+    public function getNomer(): ?string
+    {
+        return HtmlDecode($this->nomer);
+    }
+
+    public function setNomer(?string $value): static
+    {
+        $this->nomer = RemoveXss($value);
         return $this;
     }
 
@@ -84,17 +106,6 @@ class Jurnal extends AbstractEntity
         return $this;
     }
 
-    public function getCreateon(): ?DateTime
-    {
-        return $this->createon;
-    }
-
-    public function setCreateon(?DateTime $value): static
-    {
-        $this->createon = $value;
-        return $this;
-    }
-
     public function getKeterangan(): ?string
     {
         return HtmlDecode($this->keterangan);
@@ -114,17 +125,6 @@ class Jurnal extends AbstractEntity
     public function setPersonId(?int $value): static
     {
         $this->personId = $value;
-        return $this;
-    }
-
-    public function getNomer(): ?string
-    {
-        return HtmlDecode($this->nomer);
-    }
-
-    public function setNomer(?string $value): static
-    {
-        $this->nomer = RemoveXss($value);
         return $this;
     }
 }

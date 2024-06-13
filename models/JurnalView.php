@@ -148,12 +148,12 @@ class JurnalView extends Jurnal
     public function setVisibility()
     {
         $this->id->setVisibility();
+        $this->createon->setVisibility();
+        $this->nomer->setVisibility();
         $this->tipejurnal_id->setVisibility();
         $this->period_id->setVisibility();
-        $this->createon->setVisibility();
         $this->keterangan->setVisibility();
         $this->person_id->setVisibility();
-        $this->nomer->setVisibility();
     }
 
     // Constructor
@@ -541,6 +541,7 @@ class JurnalView extends Jurnal
 
         // Set up lookup cache
         $this->setupLookupOptions($this->tipejurnal_id);
+        $this->setupLookupOptions($this->period_id);
 
         // Check modal
         if ($this->IsModal) {
@@ -829,12 +830,12 @@ class JurnalView extends Jurnal
             $this->writeAuditTrailOnView($row);
         }
         $this->id->setDbValue($row['id']);
+        $this->createon->setDbValue($row['createon']);
+        $this->nomer->setDbValue($row['nomer']);
         $this->tipejurnal_id->setDbValue($row['tipejurnal_id']);
         $this->period_id->setDbValue($row['period_id']);
-        $this->createon->setDbValue($row['createon']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
-        $this->nomer->setDbValue($row['nomer']);
     }
 
     // Return a row with default values
@@ -842,12 +843,12 @@ class JurnalView extends Jurnal
     {
         $row = [];
         $row['id'] = $this->id->DefaultValue;
+        $row['createon'] = $this->createon->DefaultValue;
+        $row['nomer'] = $this->nomer->DefaultValue;
         $row['tipejurnal_id'] = $this->tipejurnal_id->DefaultValue;
         $row['period_id'] = $this->period_id->DefaultValue;
-        $row['createon'] = $this->createon->DefaultValue;
         $row['keterangan'] = $this->keterangan->DefaultValue;
         $row['person_id'] = $this->person_id->DefaultValue;
-        $row['nomer'] = $this->nomer->DefaultValue;
         return $row;
     }
 
@@ -871,22 +872,29 @@ class JurnalView extends Jurnal
 
         // id
 
+        // createon
+
+        // nomer
+
         // tipejurnal_id
 
         // period_id
-
-        // createon
 
         // keterangan
 
         // person_id
 
-        // nomer
-
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
             $this->id->ViewValue = $this->id->CurrentValue;
+
+            // createon
+            $this->createon->ViewValue = $this->createon->CurrentValue;
+            $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
+
+            // nomer
+            $this->nomer->ViewValue = $this->nomer->CurrentValue;
 
             // tipejurnal_id
             $curVal = strval($this->tipejurnal_id->CurrentValue);
@@ -912,12 +920,27 @@ class JurnalView extends Jurnal
             }
 
             // period_id
-            $this->period_id->ViewValue = $this->period_id->CurrentValue;
-            $this->period_id->ViewValue = FormatNumber($this->period_id->ViewValue, $this->period_id->formatPattern());
-
-            // createon
-            $this->createon->ViewValue = $this->createon->CurrentValue;
-            $this->createon->ViewValue = FormatDateTime($this->createon->ViewValue, $this->createon->formatPattern());
+            $curVal = strval($this->period_id->CurrentValue);
+            if ($curVal != "") {
+                $this->period_id->ViewValue = $this->period_id->lookupCacheOption($curVal);
+                if ($this->period_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->period_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->period_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->period_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->period_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->period_id->ViewValue = $this->period_id->displayValue($arwrk);
+                    } else {
+                        $this->period_id->ViewValue = FormatNumber($this->period_id->CurrentValue, $this->period_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->period_id->ViewValue = null;
+            }
 
             // keterangan
             $this->keterangan->ViewValue = $this->keterangan->CurrentValue;
@@ -926,8 +949,13 @@ class JurnalView extends Jurnal
             $this->person_id->ViewValue = $this->person_id->CurrentValue;
             $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+            // createon
+            $this->createon->HrefValue = "";
+            $this->createon->TooltipValue = "";
+
             // nomer
-            $this->nomer->ViewValue = $this->nomer->CurrentValue;
+            $this->nomer->HrefValue = "";
+            $this->nomer->TooltipValue = "";
 
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
@@ -937,17 +965,9 @@ class JurnalView extends Jurnal
             $this->period_id->HrefValue = "";
             $this->period_id->TooltipValue = "";
 
-            // createon
-            $this->createon->HrefValue = "";
-            $this->createon->TooltipValue = "";
-
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // nomer
-            $this->nomer->HrefValue = "";
-            $this->nomer->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1010,6 +1030,8 @@ class JurnalView extends Jurnal
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_tipejurnal_id":
+                    break;
+                case "x_period_id":
                     break;
                 default:
                     $lookupFilter = "";

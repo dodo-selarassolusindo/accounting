@@ -145,20 +145,20 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
+<?php if ($Page->createon->Visible) { // createon ?>
+        <th data-name="createon" class="<?= $Page->createon->headerCellClass() ?>"><div id="elh_jurnal_createon" class="jurnal_createon"><?= $Page->renderFieldHeader($Page->createon) ?></div></th>
+<?php } ?>
+<?php if ($Page->nomer->Visible) { // nomer ?>
+        <th data-name="nomer" class="<?= $Page->nomer->headerCellClass() ?>"><div id="elh_jurnal_nomer" class="jurnal_nomer"><?= $Page->renderFieldHeader($Page->nomer) ?></div></th>
+<?php } ?>
 <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
         <th data-name="tipejurnal_id" class="<?= $Page->tipejurnal_id->headerCellClass() ?>"><div id="elh_jurnal_tipejurnal_id" class="jurnal_tipejurnal_id"><?= $Page->renderFieldHeader($Page->tipejurnal_id) ?></div></th>
 <?php } ?>
 <?php if ($Page->period_id->Visible) { // period_id ?>
         <th data-name="period_id" class="<?= $Page->period_id->headerCellClass() ?>"><div id="elh_jurnal_period_id" class="jurnal_period_id"><?= $Page->renderFieldHeader($Page->period_id) ?></div></th>
 <?php } ?>
-<?php if ($Page->createon->Visible) { // createon ?>
-        <th data-name="createon" class="<?= $Page->createon->headerCellClass() ?>"><div id="elh_jurnal_createon" class="jurnal_createon"><?= $Page->renderFieldHeader($Page->createon) ?></div></th>
-<?php } ?>
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
         <th data-name="keterangan" class="<?= $Page->keterangan->headerCellClass() ?>"><div id="elh_jurnal_keterangan" class="jurnal_keterangan"><?= $Page->renderFieldHeader($Page->keterangan) ?></div></th>
-<?php } ?>
-<?php if ($Page->nomer->Visible) { // nomer ?>
-        <th data-name="nomer" class="<?= $Page->nomer->headerCellClass() ?>"><div id="elh_jurnal_nomer" class="jurnal_nomer"><?= $Page->renderFieldHeader($Page->nomer) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -187,6 +187,22 @@ while ($Page->RecordCount < $Page->StopRecord || $Page->RowIndex === '$rowindex$
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
+    <?php if ($Page->createon->Visible) { // createon ?>
+        <td data-name="createon"<?= $Page->createon->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_createon" class="el_jurnal_createon">
+<span<?= $Page->createon->viewAttributes() ?>>
+<?= $Page->createon->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->nomer->Visible) { // nomer ?>
+        <td data-name="nomer"<?= $Page->nomer->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_nomer" class="el_jurnal_nomer">
+<span<?= $Page->nomer->viewAttributes() ?>>
+<?= $Page->nomer->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
     <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
         <td data-name="tipejurnal_id"<?= $Page->tipejurnal_id->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_tipejurnal_id" class="el_jurnal_tipejurnal_id">
@@ -203,27 +219,11 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->createon->Visible) { // createon ?>
-        <td data-name="createon"<?= $Page->createon->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_createon" class="el_jurnal_createon">
-<span<?= $Page->createon->viewAttributes() ?>>
-<?= $Page->createon->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->keterangan->Visible) { // keterangan ?>
         <td data-name="keterangan"<?= $Page->keterangan->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_keterangan" class="el_jurnal_keterangan">
 <span<?= $Page->keterangan->viewAttributes() ?>>
 <?= $Page->keterangan->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->nomer->Visible) { // nomer ?>
-        <td data-name="nomer"<?= $Page->nomer->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_nomer" class="el_jurnal_nomer">
-<span<?= $Page->nomer->viewAttributes() ?>>
-<?= $Page->nomer->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
