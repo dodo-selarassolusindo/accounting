@@ -51,11 +51,6 @@ class Jurnal extends AbstractEntity
     #[Column(name: "person_id", type: "integer", nullable: true)]
     private ?int $personId;
 
-    public function __construct()
-    {
-        $this->nomer = 'JU24';
-    }
-
     public function getId(): int
     {
         return $this->id;

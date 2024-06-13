@@ -670,8 +670,6 @@ class JurnalAdd extends Jurnal
     // Load default values
     protected function loadDefaultValues()
     {
-        $this->nomer->DefaultValue = $this->nomer->getDefault(); // PHP
-        $this->nomer->OldValue = $this->nomer->DefaultValue;
     }
 
     // Load form values

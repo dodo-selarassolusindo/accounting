@@ -170,7 +170,6 @@ class Jurnal extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->nomer->addMethod("getDefault", fn() => 'JU24');
         $this->nomer->InputTextType = "text";
         $this->nomer->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
         $this->Fields['nomer'] = &$this->nomer;
@@ -1697,7 +1696,7 @@ class Jurnal extends DbTable
     {
         // Enter your code here
         if (CurrentPageID() == 'add') {
-            echo '<pre>'.'add'.'</pre>';
+            // echo '<pre>'.'add'.'</pre>';
             // isi nomor jurnal
             $tahunBulan = date('ym');
             $lastNomor = ExecuteScalar("SELECT MAX(nomer) AS lastNomor FROM jurnal WHERE nomer LIKE '%" . $tahunBulan . "%'");
