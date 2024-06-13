@@ -1652,7 +1652,7 @@ class Jurnald extends DbTable
         //var_dump($this-><FieldName>);
 
         // pre($this->RowType);
-        if ($this->RowType == AGGREGATE) {
+        if ($this->RowType == 'AGGREGATE') {
             $this->debet->ViewValue = "<div style='text-align: right; font-weight: bold;'>" . $this->debet->ViewValue . "</div>";
             $this->kredit->ViewValue = "<div style='text-align: right; font-weight: bold;'>" . $this->kredit->ViewValue . "</div>";
         }
