@@ -1650,6 +1650,10 @@ class Jurnald extends DbTable
     {
         // To view properties of field class, use:
         //var_dump($this-><FieldName>);
+        if ($this->RowType == ROWTYPE_AGGREGATE) {
+            $this->debet->ViewValue = "<div style='text-align: right; font-weight: bold;'>" . $this->debet->ViewValue . "</div>";
+            $this->kredit->ViewValue = "<div style='text-align: right; font-weight: bold;'>" . $this->kredit->ViewValue . "</div>";
+        }
     }
 
     // User ID Filtering event
