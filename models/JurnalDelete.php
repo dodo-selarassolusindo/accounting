@@ -129,12 +129,12 @@ class JurnalDelete extends Jurnal
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->tipejurnal_id->setVisibility();
         $this->period_id->setVisibility();
         $this->createon->setVisibility();
         $this->keterangan->setVisibility();
-        $this->person_id->setVisibility();
+        $this->person_id->Visible = false;
         $this->nomer->setVisibility();
     }
 
@@ -409,6 +409,9 @@ class JurnalDelete extends Jurnal
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->tipejurnal_id);
+
         // Set up Breadcrumb
         $this->setupBreadcrumb();
 
@@ -643,8 +646,27 @@ class JurnalDelete extends Jurnal
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // tipejurnal_id
-            $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->CurrentValue;
-            $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->ViewValue, $this->tipejurnal_id->formatPattern());
+            $curVal = strval($this->tipejurnal_id->CurrentValue);
+            if ($curVal != "") {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
+                if ($this->tipejurnal_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->tipejurnal_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->tipejurnal_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->displayValue($arwrk);
+                    } else {
+                        $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->tipejurnal_id->ViewValue = null;
+            }
 
             // period_id
             $this->period_id->ViewValue = $this->period_id->CurrentValue;
@@ -664,10 +686,6 @@ class JurnalDelete extends Jurnal
             // nomer
             $this->nomer->ViewValue = $this->nomer->CurrentValue;
 
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
-
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
             $this->tipejurnal_id->TooltipValue = "";
@@ -683,10 +701,6 @@ class JurnalDelete extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // person_id
-            $this->person_id->HrefValue = "";
-            $this->person_id->TooltipValue = "";
 
             // nomer
             $this->nomer->HrefValue = "";
@@ -827,6 +841,8 @@ class JurnalDelete extends Jurnal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_tipejurnal_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

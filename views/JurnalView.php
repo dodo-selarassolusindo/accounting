@@ -51,17 +51,6 @@ loadjs.ready("head", function () {
 <input type="hidden" name="t" value="jurnal">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
 <table class="<?= $Page->TableClass ?>">
-<?php if ($Page->id->Visible) { // id ?>
-    <tr id="r_id"<?= $Page->id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_id"><?= $Page->id->caption() ?></span></td>
-        <td data-name="id"<?= $Page->id->cellAttributes() ?>>
-<span id="el_jurnal_id">
-<span<?= $Page->id->viewAttributes() ?>>
-<?= $Page->id->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
     <tr id="r_tipejurnal_id"<?= $Page->tipejurnal_id->rowAttributes() ?>>
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_tipejurnal_id"><?= $Page->tipejurnal_id->caption() ?></span></td>
@@ -102,17 +91,6 @@ loadjs.ready("head", function () {
 <span id="el_jurnal_keterangan">
 <span<?= $Page->keterangan->viewAttributes() ?>>
 <?= $Page->keterangan->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
-<?php if ($Page->person_id->Visible) { // person_id ?>
-    <tr id="r_person_id"<?= $Page->person_id->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_person_id"><?= $Page->person_id->caption() ?></span></td>
-        <td data-name="person_id"<?= $Page->person_id->cellAttributes() ?>>
-<span id="el_jurnal_person_id">
-<span<?= $Page->person_id->viewAttributes() ?>>
-<?= $Page->person_id->getViewValue() ?></span>
 </span>
 </td>
     </tr>

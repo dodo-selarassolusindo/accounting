@@ -129,7 +129,7 @@ class JurnalEdit extends Jurnal
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->tipejurnal_id->setVisibility();
         $this->period_id->setVisibility();
         $this->createon->setVisibility();
@@ -520,6 +520,9 @@ class JurnalEdit extends Jurnal
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->tipejurnal_id);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -711,19 +714,13 @@ class JurnalEdit extends Jurnal
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
 
-        // Check field name 'id' first before field var 'x_id'
-        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
-        if (!$this->id->IsDetailKey) {
-            $this->id->setFormValue($val);
-        }
-
         // Check field name 'tipejurnal_id' first before field var 'x_tipejurnal_id'
         $val = $CurrentForm->hasValue("tipejurnal_id") ? $CurrentForm->getValue("tipejurnal_id") : $CurrentForm->getValue("x_tipejurnal_id");
         if (!$this->tipejurnal_id->IsDetailKey) {
             if (IsApi() && $val === null) {
                 $this->tipejurnal_id->Visible = false; // Disable update for API request
             } else {
-                $this->tipejurnal_id->setFormValue($val, true, $validate);
+                $this->tipejurnal_id->setFormValue($val);
             }
         }
 
@@ -743,7 +740,7 @@ class JurnalEdit extends Jurnal
             if (IsApi() && $val === null) {
                 $this->createon->Visible = false; // Disable update for API request
             } else {
-                $this->createon->setFormValue($val, true, $validate);
+                $this->createon->setFormValue($val);
             }
             $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
         }
@@ -776,6 +773,12 @@ class JurnalEdit extends Jurnal
             } else {
                 $this->nomer->setFormValue($val);
             }
+        }
+
+        // Check field name 'id' first before field var 'x_id'
+        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
+        if (!$this->id->IsDetailKey) {
+            $this->id->setFormValue($val);
         }
     }
 
@@ -912,8 +915,27 @@ class JurnalEdit extends Jurnal
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // tipejurnal_id
-            $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->CurrentValue;
-            $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->ViewValue, $this->tipejurnal_id->formatPattern());
+            $curVal = strval($this->tipejurnal_id->CurrentValue);
+            if ($curVal != "") {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
+                if ($this->tipejurnal_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->tipejurnal_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->tipejurnal_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->displayValue($arwrk);
+                    } else {
+                        $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->tipejurnal_id->ViewValue = null;
+            }
 
             // period_id
             $this->period_id->ViewValue = $this->period_id->CurrentValue;
@@ -933,9 +955,6 @@ class JurnalEdit extends Jurnal
             // nomer
             $this->nomer->ViewValue = $this->nomer->CurrentValue;
 
-            // id
-            $this->id->HrefValue = "";
-
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
 
@@ -944,6 +963,7 @@ class JurnalEdit extends Jurnal
 
             // createon
             $this->createon->HrefValue = "";
+            $this->createon->TooltipValue = "";
 
             // keterangan
             $this->keterangan->HrefValue = "";
@@ -954,17 +974,32 @@ class JurnalEdit extends Jurnal
             // nomer
             $this->nomer->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
-            // id
-            $this->id->setupEditAttributes();
-            $this->id->EditValue = $this->id->CurrentValue;
-
             // tipejurnal_id
             $this->tipejurnal_id->setupEditAttributes();
-            $this->tipejurnal_id->EditValue = $this->tipejurnal_id->CurrentValue;
-            $this->tipejurnal_id->PlaceHolder = RemoveHtml($this->tipejurnal_id->caption());
-            if (strval($this->tipejurnal_id->EditValue) != "" && is_numeric($this->tipejurnal_id->EditValue)) {
-                $this->tipejurnal_id->EditValue = FormatNumber($this->tipejurnal_id->EditValue, null);
+            $curVal = trim(strval($this->tipejurnal_id->CurrentValue));
+            if ($curVal != "") {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
+            } else {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->Lookup !== null && is_array($this->tipejurnal_id->lookupOptions()) && count($this->tipejurnal_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->tipejurnal_id->ViewValue !== null) { // Load from cache
+                $this->tipejurnal_id->EditValue = array_values($this->tipejurnal_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->tipejurnal_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->tipejurnal_id->EditValue = $arwrk;
+            }
+            $this->tipejurnal_id->PlaceHolder = RemoveHtml($this->tipejurnal_id->caption());
 
             // period_id
             $this->period_id->setupEditAttributes();
@@ -975,9 +1010,6 @@ class JurnalEdit extends Jurnal
             }
 
             // createon
-            $this->createon->setupEditAttributes();
-            $this->createon->EditValue = HtmlEncode(FormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern()));
-            $this->createon->PlaceHolder = RemoveHtml($this->createon->caption());
 
             // keterangan
             $this->keterangan->setupEditAttributes();
@@ -1005,9 +1037,6 @@ class JurnalEdit extends Jurnal
 
             // Edit refer script
 
-            // id
-            $this->id->HrefValue = "";
-
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
 
@@ -1016,6 +1045,7 @@ class JurnalEdit extends Jurnal
 
             // createon
             $this->createon->HrefValue = "";
+            $this->createon->TooltipValue = "";
 
             // keterangan
             $this->keterangan->HrefValue = "";
@@ -1046,18 +1076,10 @@ class JurnalEdit extends Jurnal
             return true;
         }
         $validateForm = true;
-            if ($this->id->Visible && $this->id->Required) {
-                if (!$this->id->IsDetailKey && EmptyValue($this->id->FormValue)) {
-                    $this->id->addErrorMessage(str_replace("%s", $this->id->caption(), $this->id->RequiredErrorMessage));
-                }
-            }
             if ($this->tipejurnal_id->Visible && $this->tipejurnal_id->Required) {
                 if (!$this->tipejurnal_id->IsDetailKey && EmptyValue($this->tipejurnal_id->FormValue)) {
                     $this->tipejurnal_id->addErrorMessage(str_replace("%s", $this->tipejurnal_id->caption(), $this->tipejurnal_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->tipejurnal_id->FormValue)) {
-                $this->tipejurnal_id->addErrorMessage($this->tipejurnal_id->getErrorMessage(false));
             }
             if ($this->period_id->Visible && $this->period_id->Required) {
                 if (!$this->period_id->IsDetailKey && EmptyValue($this->period_id->FormValue)) {
@@ -1071,9 +1093,6 @@ class JurnalEdit extends Jurnal
                 if (!$this->createon->IsDetailKey && EmptyValue($this->createon->FormValue)) {
                     $this->createon->addErrorMessage(str_replace("%s", $this->createon->caption(), $this->createon->RequiredErrorMessage));
                 }
-            }
-            if (!CheckDate($this->createon->FormValue, $this->createon->formatPattern())) {
-                $this->createon->addErrorMessage($this->createon->getErrorMessage(false));
             }
             if ($this->keterangan->Visible && $this->keterangan->Required) {
                 if (!$this->keterangan->IsDetailKey && EmptyValue($this->keterangan->FormValue)) {
@@ -1225,9 +1244,6 @@ class JurnalEdit extends Jurnal
         // period_id
         $this->period_id->setDbValueDef($rsnew, $this->period_id->CurrentValue, $this->period_id->ReadOnly);
 
-        // createon
-        $this->createon->setDbValueDef($rsnew, UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern()), $this->createon->ReadOnly);
-
         // keterangan
         $this->keterangan->setDbValueDef($rsnew, $this->keterangan->CurrentValue, $this->keterangan->ReadOnly);
 
@@ -1250,9 +1266,6 @@ class JurnalEdit extends Jurnal
         }
         if (isset($row['period_id'])) { // period_id
             $this->period_id->CurrentValue = $row['period_id'];
-        }
-        if (isset($row['createon'])) { // createon
-            $this->createon->CurrentValue = $row['createon'];
         }
         if (isset($row['keterangan'])) { // keterangan
             $this->keterangan->CurrentValue = $row['keterangan'];
@@ -1319,6 +1332,8 @@ class JurnalEdit extends Jurnal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_tipejurnal_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

@@ -153,12 +153,12 @@ class JurnalList extends Jurnal
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
+        $this->id->Visible = false;
         $this->tipejurnal_id->setVisibility();
         $this->period_id->setVisibility();
         $this->createon->setVisibility();
         $this->keterangan->setVisibility();
-        $this->person_id->setVisibility();
+        $this->person_id->Visible = false;
         $this->nomer->setVisibility();
     }
 
@@ -464,6 +464,9 @@ class JurnalList extends Jurnal
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
             $this->id->Visible = false;
         }
+        if ($this->isAddOrEdit()) {
+            $this->createon->Visible = false;
+        }
     }
 
     // Lookup data
@@ -696,6 +699,9 @@ class JurnalList extends Jurnal
 
         // Setup other options
         $this->setupOtherOptions();
+
+        // Set up lookup cache
+        $this->setupLookupOptions($this->tipejurnal_id);
 
         // Update form name to avoid conflict
         if ($this->IsModal) {
@@ -1251,12 +1257,10 @@ class JurnalList extends Jurnal
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id, $ctrl); // id
             $this->updateSort($this->tipejurnal_id, $ctrl); // tipejurnal_id
             $this->updateSort($this->period_id, $ctrl); // period_id
             $this->updateSort($this->createon, $ctrl); // createon
             $this->updateSort($this->keterangan, $ctrl); // keterangan
-            $this->updateSort($this->person_id, $ctrl); // person_id
             $this->updateSort($this->nomer, $ctrl); // nomer
             $this->setStartRecordNumber(1); // Reset start position
         }
@@ -1662,12 +1666,10 @@ class JurnalList extends Jurnal
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "id");
             $this->createColumnOption($option, "tipejurnal_id");
             $this->createColumnOption($option, "period_id");
             $this->createColumnOption($option, "createon");
             $this->createColumnOption($option, "keterangan");
-            $this->createColumnOption($option, "person_id");
             $this->createColumnOption($option, "nomer");
         }
 
@@ -2187,8 +2189,27 @@ class JurnalList extends Jurnal
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // tipejurnal_id
-            $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->CurrentValue;
-            $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->ViewValue, $this->tipejurnal_id->formatPattern());
+            $curVal = strval($this->tipejurnal_id->CurrentValue);
+            if ($curVal != "") {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
+                if ($this->tipejurnal_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->tipejurnal_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->tipejurnal_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->displayValue($arwrk);
+                    } else {
+                        $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->tipejurnal_id->ViewValue = null;
+            }
 
             // period_id
             $this->period_id->ViewValue = $this->period_id->CurrentValue;
@@ -2208,10 +2229,6 @@ class JurnalList extends Jurnal
             // nomer
             $this->nomer->ViewValue = $this->nomer->CurrentValue;
 
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
-
             // tipejurnal_id
             $this->tipejurnal_id->HrefValue = "";
             $this->tipejurnal_id->TooltipValue = "";
@@ -2227,10 +2244,6 @@ class JurnalList extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // person_id
-            $this->person_id->HrefValue = "";
-            $this->person_id->TooltipValue = "";
 
             // nomer
             $this->nomer->HrefValue = "";
@@ -2318,6 +2331,8 @@ class JurnalList extends Jurnal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_tipejurnal_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

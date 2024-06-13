@@ -28,10 +28,9 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
-            ["tipejurnal_id", [fields.tipejurnal_id.visible && fields.tipejurnal_id.required ? ew.Validators.required(fields.tipejurnal_id.caption) : null, ew.Validators.integer], fields.tipejurnal_id.isInvalid],
+            ["tipejurnal_id", [fields.tipejurnal_id.visible && fields.tipejurnal_id.required ? ew.Validators.required(fields.tipejurnal_id.caption) : null], fields.tipejurnal_id.isInvalid],
             ["period_id", [fields.period_id.visible && fields.period_id.required ? ew.Validators.required(fields.period_id.caption) : null, ew.Validators.integer], fields.period_id.isInvalid],
-            ["createon", [fields.createon.visible && fields.createon.required ? ew.Validators.required(fields.createon.caption) : null, ew.Validators.datetime(fields.createon.clientFormatPattern)], fields.createon.isInvalid],
+            ["createon", [fields.createon.visible && fields.createon.required ? ew.Validators.required(fields.createon.caption) : null], fields.createon.isInvalid],
             ["keterangan", [fields.keterangan.visible && fields.keterangan.required ? ew.Validators.required(fields.keterangan.caption) : null], fields.keterangan.isInvalid],
             ["person_id", [fields.person_id.visible && fields.person_id.required ? ew.Validators.required(fields.person_id.caption) : null, ew.Validators.integer], fields.person_id.isInvalid],
             ["nomer", [fields.nomer.visible && fields.nomer.required ? ew.Validators.required(fields.nomer.caption) : null], fields.nomer.isInvalid]
@@ -50,6 +49,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "tipejurnal_id": <?= $Page->tipejurnal_id->toClientList($Page) ?>,
         })
         .build();
     window[form.id] = form;
@@ -74,26 +74,48 @@ loadjs.ready("head", function () {
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
 <div class="ew-edit-div"><!-- page* -->
-<?php if ($Page->id->Visible) { // id ?>
-    <div id="r_id"<?= $Page->id->rowAttributes() ?>>
-        <label id="elh_jurnal_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->id->cellAttributes() ?>>
-<span id="el_jurnal_id">
-<span<?= $Page->id->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id->getDisplayValue($Page->id->EditValue))) ?>"></span>
-<input type="hidden" data-table="jurnal" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
-</span>
-</div></div>
-    </div>
-<?php } ?>
 <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
     <div id="r_tipejurnal_id"<?= $Page->tipejurnal_id->rowAttributes() ?>>
         <label id="elh_jurnal_tipejurnal_id" for="x_tipejurnal_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->tipejurnal_id->caption() ?><?= $Page->tipejurnal_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->tipejurnal_id->cellAttributes() ?>>
 <span id="el_jurnal_tipejurnal_id">
-<input type="<?= $Page->tipejurnal_id->getInputTextType() ?>" name="x_tipejurnal_id" id="x_tipejurnal_id" data-table="jurnal" data-field="x_tipejurnal_id" value="<?= $Page->tipejurnal_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->tipejurnal_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->tipejurnal_id->formatPattern()) ?>"<?= $Page->tipejurnal_id->editAttributes() ?> aria-describedby="x_tipejurnal_id_help">
-<?= $Page->tipejurnal_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->tipejurnal_id->getErrorMessage() ?></div>
+    <select
+        id="x_tipejurnal_id"
+        name="x_tipejurnal_id"
+        class="form-select ew-select<?= $Page->tipejurnal_id->isInvalidClass() ?>"
+        <?php if (!$Page->tipejurnal_id->IsNativeSelect) { ?>
+        data-select2-id="fjurnaledit_x_tipejurnal_id"
+        <?php } ?>
+        data-table="jurnal"
+        data-field="x_tipejurnal_id"
+        data-value-separator="<?= $Page->tipejurnal_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->tipejurnal_id->getPlaceHolder()) ?>"
+        <?= $Page->tipejurnal_id->editAttributes() ?>>
+        <?= $Page->tipejurnal_id->selectOptionListHtml("x_tipejurnal_id") ?>
+    </select>
+    <?= $Page->tipejurnal_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->tipejurnal_id->getErrorMessage() ?></div>
+<?= $Page->tipejurnal_id->Lookup->getParamTag($Page, "p_x_tipejurnal_id") ?>
+<?php if (!$Page->tipejurnal_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fjurnaledit", function() {
+    var options = { name: "x_tipejurnal_id", selectId: "fjurnaledit_x_tipejurnal_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fjurnaledit.lists.tipejurnal_id?.lookupOptions.length) {
+        options.data = { id: "x_tipejurnal_id", form: "fjurnaledit" };
+    } else {
+        options.ajax = { id: "x_tipejurnal_id", form: "fjurnaledit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnal.fields.tipejurnal_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 </div></div>
     </div>
@@ -106,47 +128,6 @@ loadjs.ready("head", function () {
 <input type="<?= $Page->period_id->getInputTextType() ?>" name="x_period_id" id="x_period_id" data-table="jurnal" data-field="x_period_id" value="<?= $Page->period_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->period_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->period_id->formatPattern()) ?>"<?= $Page->period_id->editAttributes() ?> aria-describedby="x_period_id_help">
 <?= $Page->period_id->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->period_id->getErrorMessage() ?></div>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->createon->Visible) { // createon ?>
-    <div id="r_createon"<?= $Page->createon->rowAttributes() ?>>
-        <label id="elh_jurnal_createon" for="x_createon" class="<?= $Page->LeftColumnClass ?>"><?= $Page->createon->caption() ?><?= $Page->createon->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->createon->cellAttributes() ?>>
-<span id="el_jurnal_createon">
-<input type="<?= $Page->createon->getInputTextType() ?>" name="x_createon" id="x_createon" data-table="jurnal" data-field="x_createon" value="<?= $Page->createon->EditValue ?>" placeholder="<?= HtmlEncode($Page->createon->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->createon->formatPattern()) ?>"<?= $Page->createon->editAttributes() ?> aria-describedby="x_createon_help">
-<?= $Page->createon->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->createon->getErrorMessage() ?></div>
-<?php if (!$Page->createon->ReadOnly && !$Page->createon->Disabled && !isset($Page->createon->EditAttrs["readonly"]) && !isset($Page->createon->EditAttrs["disabled"])) { ?>
-<script>
-loadjs.ready(["fjurnaledit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
-        options = {
-            localization: {
-                locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
-                hourCycle: format.match(/H/) ? "h24" : "h12",
-                format,
-                ...ew.language.phrase("datetimepicker")
-            },
-            display: {
-                icons: {
-                    previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
-                    next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
-                },
-                components: {
-                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
-                    hours: !!format.match(/h/i),
-                    minutes: !!format.match(/m/),
-                    seconds: !!format.match(/s/i)
-                },
-                theme: ew.getPreferredTheme()
-            }
-        };
-    ew.createDateTimePicker("fjurnaledit", "x_createon", ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options));
-});
-</script>
-<?php } ?>
 </span>
 </div></div>
     </div>
@@ -188,6 +169,7 @@ loadjs.ready(["fjurnaledit", "datetimepicker"], function () {
     </div>
 <?php } ?>
 </div><!-- /page* -->
+    <input type="hidden" data-table="jurnal" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
 <?php
     if (in_array("jurnald", explode(",", $Page->getCurrentDetailTable())) && $jurnald->DetailEdit) {
 ?>

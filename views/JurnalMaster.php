@@ -10,17 +10,6 @@ $jurnal->TableClass = "table table-bordered table-hover table-sm ew-table ew-mas
 <div class="ew-master-div">
 <table id="tbl_jurnalmaster" class="table ew-view-table ew-master-table ew-vertical">
     <tbody>
-<?php if ($jurnal->id->Visible) { // id ?>
-        <tr id="r_id"<?= $jurnal->id->rowAttributes() ?>>
-            <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->id->caption() ?></td>
-            <td<?= $jurnal->id->cellAttributes() ?>>
-<span id="el_jurnal_id">
-<span<?= $jurnal->id->viewAttributes() ?>>
-<?= $jurnal->id->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
 <?php if ($jurnal->tipejurnal_id->Visible) { // tipejurnal_id ?>
         <tr id="r_tipejurnal_id"<?= $jurnal->tipejurnal_id->rowAttributes() ?>>
             <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->tipejurnal_id->caption() ?></td>
@@ -61,17 +50,6 @@ $jurnal->TableClass = "table table-bordered table-hover table-sm ew-table ew-mas
 <span id="el_jurnal_keterangan">
 <span<?= $jurnal->keterangan->viewAttributes() ?>>
 <?= $jurnal->keterangan->getViewValue() ?></span>
-</span>
-</td>
-        </tr>
-<?php } ?>
-<?php if ($jurnal->person_id->Visible) { // person_id ?>
-        <tr id="r_person_id"<?= $jurnal->person_id->rowAttributes() ?>>
-            <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->person_id->caption() ?></td>
-            <td<?= $jurnal->person_id->cellAttributes() ?>>
-<span id="el_jurnal_person_id">
-<span<?= $jurnal->person_id->viewAttributes() ?>>
-<?= $jurnal->person_id->getViewValue() ?></span>
 </span>
 </td>
         </tr>

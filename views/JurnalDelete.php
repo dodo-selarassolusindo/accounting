@@ -50,9 +50,6 @@ $Page->showMessage();
 <table class="<?= $Page->TableClass ?>">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->id->Visible) { // id ?>
-        <th class="<?= $Page->id->headerCellClass() ?>"><span id="elh_jurnal_id" class="jurnal_id"><?= $Page->id->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
         <th class="<?= $Page->tipejurnal_id->headerCellClass() ?>"><span id="elh_jurnal_tipejurnal_id" class="jurnal_tipejurnal_id"><?= $Page->tipejurnal_id->caption() ?></span></th>
 <?php } ?>
@@ -64,9 +61,6 @@ $Page->showMessage();
 <?php } ?>
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
         <th class="<?= $Page->keterangan->headerCellClass() ?>"><span id="elh_jurnal_keterangan" class="jurnal_keterangan"><?= $Page->keterangan->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->person_id->Visible) { // person_id ?>
-        <th class="<?= $Page->person_id->headerCellClass() ?>"><span id="elh_jurnal_person_id" class="jurnal_person_id"><?= $Page->person_id->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->nomer->Visible) { // nomer ?>
         <th class="<?= $Page->nomer->headerCellClass() ?>"><span id="elh_jurnal_nomer" class="jurnal_nomer"><?= $Page->nomer->caption() ?></span></th>
@@ -92,14 +86,6 @@ while ($Page->fetch()) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->id->Visible) { // id ?>
-        <td<?= $Page->id->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->id->viewAttributes() ?>>
-<?= $Page->id->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->tipejurnal_id->Visible) { // tipejurnal_id ?>
         <td<?= $Page->tipejurnal_id->cellAttributes() ?>>
 <span id="">
@@ -129,14 +115,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->keterangan->viewAttributes() ?>>
 <?= $Page->keterangan->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->person_id->Visible) { // person_id ?>
-        <td<?= $Page->person_id->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->person_id->viewAttributes() ?>>
-<?= $Page->person_id->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

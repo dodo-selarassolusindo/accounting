@@ -134,7 +134,7 @@ class JurnalAdd extends Jurnal
         $this->period_id->setVisibility();
         $this->createon->setVisibility();
         $this->keterangan->setVisibility();
-        $this->person_id->setVisibility();
+        $this->person_id->Visible = false;
         $this->nomer->setVisibility();
     }
 
@@ -514,6 +514,9 @@ class JurnalAdd extends Jurnal
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->tipejurnal_id);
+
         // Load default values for add
         $this->loadDefaultValues();
 
@@ -689,7 +692,7 @@ class JurnalAdd extends Jurnal
             if (IsApi() && $val === null) {
                 $this->tipejurnal_id->Visible = false; // Disable update for API request
             } else {
-                $this->tipejurnal_id->setFormValue($val, true, $validate);
+                $this->tipejurnal_id->setFormValue($val);
             }
         }
 
@@ -709,7 +712,7 @@ class JurnalAdd extends Jurnal
             if (IsApi() && $val === null) {
                 $this->createon->Visible = false; // Disable update for API request
             } else {
-                $this->createon->setFormValue($val, true, $validate);
+                $this->createon->setFormValue($val);
             }
             $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
         }
@@ -721,16 +724,6 @@ class JurnalAdd extends Jurnal
                 $this->keterangan->Visible = false; // Disable update for API request
             } else {
                 $this->keterangan->setFormValue($val);
-            }
-        }
-
-        // Check field name 'person_id' first before field var 'x_person_id'
-        $val = $CurrentForm->hasValue("person_id") ? $CurrentForm->getValue("person_id") : $CurrentForm->getValue("x_person_id");
-        if (!$this->person_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->person_id->Visible = false; // Disable update for API request
-            } else {
-                $this->person_id->setFormValue($val, true, $validate);
             }
         }
 
@@ -757,7 +750,6 @@ class JurnalAdd extends Jurnal
         $this->createon->CurrentValue = $this->createon->FormValue;
         $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
         $this->keterangan->CurrentValue = $this->keterangan->FormValue;
-        $this->person_id->CurrentValue = $this->person_id->FormValue;
         $this->nomer->CurrentValue = $this->nomer->FormValue;
     }
 
@@ -880,8 +872,27 @@ class JurnalAdd extends Jurnal
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // tipejurnal_id
-            $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->CurrentValue;
-            $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->ViewValue, $this->tipejurnal_id->formatPattern());
+            $curVal = strval($this->tipejurnal_id->CurrentValue);
+            if ($curVal != "") {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
+                if ($this->tipejurnal_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->tipejurnal_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->tipejurnal_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->displayValue($arwrk);
+                    } else {
+                        $this->tipejurnal_id->ViewValue = FormatNumber($this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->tipejurnal_id->ViewValue = null;
+            }
 
             // period_id
             $this->period_id->ViewValue = $this->period_id->CurrentValue;
@@ -909,23 +920,40 @@ class JurnalAdd extends Jurnal
 
             // createon
             $this->createon->HrefValue = "";
+            $this->createon->TooltipValue = "";
 
             // keterangan
             $this->keterangan->HrefValue = "";
-
-            // person_id
-            $this->person_id->HrefValue = "";
 
             // nomer
             $this->nomer->HrefValue = "";
         } elseif ($this->RowType == RowType::ADD) {
             // tipejurnal_id
             $this->tipejurnal_id->setupEditAttributes();
-            $this->tipejurnal_id->EditValue = $this->tipejurnal_id->CurrentValue;
-            $this->tipejurnal_id->PlaceHolder = RemoveHtml($this->tipejurnal_id->caption());
-            if (strval($this->tipejurnal_id->EditValue) != "" && is_numeric($this->tipejurnal_id->EditValue)) {
-                $this->tipejurnal_id->EditValue = FormatNumber($this->tipejurnal_id->EditValue, null);
+            $curVal = trim(strval($this->tipejurnal_id->CurrentValue));
+            if ($curVal != "") {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->lookupCacheOption($curVal);
+            } else {
+                $this->tipejurnal_id->ViewValue = $this->tipejurnal_id->Lookup !== null && is_array($this->tipejurnal_id->lookupOptions()) && count($this->tipejurnal_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->tipejurnal_id->ViewValue !== null) { // Load from cache
+                $this->tipejurnal_id->EditValue = array_values($this->tipejurnal_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->tipejurnal_id->CurrentValue, $this->tipejurnal_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->tipejurnal_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->tipejurnal_id->EditValue = $arwrk;
+            }
+            $this->tipejurnal_id->PlaceHolder = RemoveHtml($this->tipejurnal_id->caption());
 
             // period_id
             $this->period_id->setupEditAttributes();
@@ -936,9 +964,6 @@ class JurnalAdd extends Jurnal
             }
 
             // createon
-            $this->createon->setupEditAttributes();
-            $this->createon->EditValue = HtmlEncode(FormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern()));
-            $this->createon->PlaceHolder = RemoveHtml($this->createon->caption());
 
             // keterangan
             $this->keterangan->setupEditAttributes();
@@ -947,14 +972,6 @@ class JurnalAdd extends Jurnal
             }
             $this->keterangan->EditValue = HtmlEncode($this->keterangan->CurrentValue);
             $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
-
-            // person_id
-            $this->person_id->setupEditAttributes();
-            $this->person_id->EditValue = $this->person_id->CurrentValue;
-            $this->person_id->PlaceHolder = RemoveHtml($this->person_id->caption());
-            if (strval($this->person_id->EditValue) != "" && is_numeric($this->person_id->EditValue)) {
-                $this->person_id->EditValue = FormatNumber($this->person_id->EditValue, null);
-            }
 
             // nomer
             $this->nomer->setupEditAttributes();
@@ -977,9 +994,6 @@ class JurnalAdd extends Jurnal
 
             // keterangan
             $this->keterangan->HrefValue = "";
-
-            // person_id
-            $this->person_id->HrefValue = "";
 
             // nomer
             $this->nomer->HrefValue = "";
@@ -1009,9 +1023,6 @@ class JurnalAdd extends Jurnal
                     $this->tipejurnal_id->addErrorMessage(str_replace("%s", $this->tipejurnal_id->caption(), $this->tipejurnal_id->RequiredErrorMessage));
                 }
             }
-            if (!CheckInteger($this->tipejurnal_id->FormValue)) {
-                $this->tipejurnal_id->addErrorMessage($this->tipejurnal_id->getErrorMessage(false));
-            }
             if ($this->period_id->Visible && $this->period_id->Required) {
                 if (!$this->period_id->IsDetailKey && EmptyValue($this->period_id->FormValue)) {
                     $this->period_id->addErrorMessage(str_replace("%s", $this->period_id->caption(), $this->period_id->RequiredErrorMessage));
@@ -1025,21 +1036,10 @@ class JurnalAdd extends Jurnal
                     $this->createon->addErrorMessage(str_replace("%s", $this->createon->caption(), $this->createon->RequiredErrorMessage));
                 }
             }
-            if (!CheckDate($this->createon->FormValue, $this->createon->formatPattern())) {
-                $this->createon->addErrorMessage($this->createon->getErrorMessage(false));
-            }
             if ($this->keterangan->Visible && $this->keterangan->Required) {
                 if (!$this->keterangan->IsDetailKey && EmptyValue($this->keterangan->FormValue)) {
                     $this->keterangan->addErrorMessage(str_replace("%s", $this->keterangan->caption(), $this->keterangan->RequiredErrorMessage));
                 }
-            }
-            if ($this->person_id->Visible && $this->person_id->Required) {
-                if (!$this->person_id->IsDetailKey && EmptyValue($this->person_id->FormValue)) {
-                    $this->person_id->addErrorMessage(str_replace("%s", $this->person_id->caption(), $this->person_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->person_id->FormValue)) {
-                $this->person_id->addErrorMessage($this->person_id->getErrorMessage(false));
             }
             if ($this->nomer->Visible && $this->nomer->Required) {
                 if (!$this->nomer->IsDetailKey && EmptyValue($this->nomer->FormValue)) {
@@ -1167,13 +1167,11 @@ class JurnalAdd extends Jurnal
         $this->period_id->setDbValueDef($rsnew, $this->period_id->CurrentValue, false);
 
         // createon
+        $this->createon->CurrentValue = $this->createon->getAutoUpdateValue(); // PHP
         $this->createon->setDbValueDef($rsnew, UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern()), false);
 
         // keterangan
         $this->keterangan->setDbValueDef($rsnew, $this->keterangan->CurrentValue, false);
-
-        // person_id
-        $this->person_id->setDbValueDef($rsnew, $this->person_id->CurrentValue, false);
 
         // nomer
         $this->nomer->setDbValueDef($rsnew, $this->nomer->CurrentValue, false);
@@ -1197,9 +1195,6 @@ class JurnalAdd extends Jurnal
         }
         if (isset($row['keterangan'])) { // keterangan
             $this->keterangan->setFormValue($row['keterangan']);
-        }
-        if (isset($row['person_id'])) { // person_id
-            $this->person_id->setFormValue($row['person_id']);
         }
         if (isset($row['nomer'])) { // nomer
             $this->nomer->setFormValue($row['nomer']);
@@ -1264,6 +1259,8 @@ class JurnalAdd extends Jurnal
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_tipejurnal_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
