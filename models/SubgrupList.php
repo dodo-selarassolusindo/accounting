@@ -1517,7 +1517,7 @@ class SubgrupList extends Subgrup
         // Set up options default
         foreach ($options as $name => $option) {
             if ($name != "column") { // Always use dropdown for column
-                $option->UseDropDownButton = false;
+                $option->UseDropDownButton = true;
                 $option->UseButtonGroup = true;
             }
             //$option->ButtonClass = ""; // Class for button group
