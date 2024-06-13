@@ -1226,6 +1226,7 @@ class JurnalAdd extends Jurnal
         }
         // format Nomor baru
         $newNomor = 'JU' . $tahunBulan . str_pad($num, 3, '0', STR_PAD_LEFT);
+        $this->nomer->EditValue = $newNomor;
     }
 
     // Page Unload event
