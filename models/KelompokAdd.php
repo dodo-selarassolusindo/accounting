@@ -775,13 +775,13 @@ class KelompokAdd extends Kelompok
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kode
-        $this->kode->RowCssClass = "row";
+        $this->kode->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nama
-        $this->nama->RowCssClass = "row";
+        $this->nama->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

@@ -73,8 +73,16 @@ $Page->showMessage();
 <input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="jurnal">
 <input type="hidden" name="fk_id" value="<?= HtmlEncode($Page->jurnal_id->getSessionValue()) ?>">
 <?php } ?>
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-add-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_jurnaldadd" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->akun_id->Visible) { // akun_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_akun_id"<?= $Page->akun_id->rowAttributes() ?>>
         <label id="elh_jurnald_akun_id" for="x_akun_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->akun_id->caption() ?><?= $Page->akun_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->akun_id->cellAttributes() ?>>
@@ -111,8 +119,47 @@ loadjs.ready("fjurnaldadd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_akun_id"<?= $Page->akun_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnald_akun_id"><?= $Page->akun_id->caption() ?><?= $Page->akun_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->akun_id->cellAttributes() ?>>
+<span id="el_jurnald_akun_id">
+    <select
+        id="x_akun_id"
+        name="x_akun_id"
+        class="form-control ew-select<?= $Page->akun_id->isInvalidClass() ?>"
+        data-select2-id="fjurnaldadd_x_akun_id"
+        data-table="jurnald"
+        data-field="x_akun_id"
+        data-caption="<?= HtmlEncode(RemoveHtml($Page->akun_id->caption())) ?>"
+        data-modal-lookup="true"
+        data-value-separator="<?= $Page->akun_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->akun_id->getPlaceHolder()) ?>"
+        <?= $Page->akun_id->editAttributes() ?>>
+        <?= $Page->akun_id->selectOptionListHtml("x_akun_id") ?>
+    </select>
+    <?= $Page->akun_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->akun_id->getErrorMessage() ?></div>
+<?= $Page->akun_id->Lookup->getParamTag($Page, "p_x_akun_id") ?>
+<script>
+loadjs.ready("fjurnaldadd", function() {
+    var options = { name: "x_akun_id", selectId: "fjurnaldadd_x_akun_id" };
+    if (fjurnaldadd.lists.akun_id?.lookupOptions.length) {
+        options.data = { id: "x_akun_id", form: "fjurnaldadd" };
+    } else {
+        options.ajax = { id: "x_akun_id", form: "fjurnaldadd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options = Object.assign({}, ew.modalLookupOptions, options, ew.vars.tables.jurnald.fields.akun_id.modalLookupOptions);
+    ew.createModalLookup(options);
+});
+</script>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->debet->Visible) { // debet ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_debet"<?= $Page->debet->rowAttributes() ?>>
         <label id="elh_jurnald_debet" for="x_debet" class="<?= $Page->LeftColumnClass ?>"><?= $Page->debet->caption() ?><?= $Page->debet->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->debet->cellAttributes() ?>>
@@ -123,8 +170,21 @@ loadjs.ready("fjurnaldadd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_debet"<?= $Page->debet->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnald_debet"><?= $Page->debet->caption() ?><?= $Page->debet->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->debet->cellAttributes() ?>>
+<span id="el_jurnald_debet">
+<input type="<?= $Page->debet->getInputTextType() ?>" name="x_debet" id="x_debet" data-table="jurnald" data-field="x_debet" value="<?= $Page->debet->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->debet->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->debet->formatPattern()) ?>"<?= $Page->debet->editAttributes() ?> aria-describedby="x_debet_help">
+<?= $Page->debet->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->debet->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->kredit->Visible) { // kredit ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
         <label id="elh_jurnald_kredit" for="x_kredit" class="<?= $Page->LeftColumnClass ?>"><?= $Page->kredit->caption() ?><?= $Page->kredit->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->kredit->cellAttributes() ?>>
@@ -135,8 +195,24 @@ loadjs.ready("fjurnaldadd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnald_kredit"><?= $Page->kredit->caption() ?><?= $Page->kredit->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->kredit->cellAttributes() ?>>
+<span id="el_jurnald_kredit">
+<input type="<?= $Page->kredit->getInputTextType() ?>" name="x_kredit" id="x_kredit" data-table="jurnald" data-field="x_kredit" value="<?= $Page->kredit->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->kredit->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->kredit->formatPattern()) ?>"<?= $Page->kredit->editAttributes() ?> aria-describedby="x_kredit_help">
+<?= $Page->kredit->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->kredit->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
     <?php if (strval($Page->jurnal_id->getSessionValue()) != "") { ?>
     <input type="hidden" name="x_jurnal_id" id="x_jurnal_id" value="<?= HtmlEncode(strval($Page->jurnal_id->getSessionValue())) ?>">
     <?php } ?>
@@ -150,6 +226,9 @@ loadjs.ready("fjurnaldadd", function() {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

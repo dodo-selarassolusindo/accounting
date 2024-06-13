@@ -846,25 +846,25 @@ class JurnalkasAdd extends Jurnalkas
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // tipejurnal_id
-        $this->tipejurnal_id->RowCssClass = "row";
+        $this->tipejurnal_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // period_id
-        $this->period_id->RowCssClass = "row";
+        $this->period_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // createon
-        $this->createon->RowCssClass = "row";
+        $this->createon->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // keterangan
-        $this->keterangan->RowCssClass = "row";
+        $this->keterangan->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // person_id
-        $this->person_id->RowCssClass = "row";
+        $this->person_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nomer
-        $this->nomer->RowCssClass = "row";
+        $this->nomer->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

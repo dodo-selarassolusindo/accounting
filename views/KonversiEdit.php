@@ -75,8 +75,16 @@ loadjs.ready("head", function () {
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-edit-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_konversiedit" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->id->Visible) { // id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_id"<?= $Page->id->rowAttributes() ?>>
         <label id="elh_konversi_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->id->cellAttributes() ?>>
@@ -87,8 +95,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_id"<?= $Page->id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_konversi_id"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->id->cellAttributes() ?>>
+<span id="el_konversi_id">
+<span<?= $Page->id->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id->getDisplayValue($Page->id->EditValue))) ?>"></span>
+<input type="hidden" data-table="konversi" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->satuan_id->Visible) { // satuan_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_satuan_id"<?= $Page->satuan_id->rowAttributes() ?>>
         <label id="elh_konversi_satuan_id" for="x_satuan_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->satuan_id->caption() ?><?= $Page->satuan_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->satuan_id->cellAttributes() ?>>
@@ -99,8 +120,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_satuan_id"<?= $Page->satuan_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_konversi_satuan_id"><?= $Page->satuan_id->caption() ?><?= $Page->satuan_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->satuan_id->cellAttributes() ?>>
+<span id="el_konversi_satuan_id">
+<input type="<?= $Page->satuan_id->getInputTextType() ?>" name="x_satuan_id" id="x_satuan_id" data-table="konversi" data-field="x_satuan_id" value="<?= $Page->satuan_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->satuan_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->satuan_id->formatPattern()) ?>"<?= $Page->satuan_id->editAttributes() ?> aria-describedby="x_satuan_id_help">
+<?= $Page->satuan_id->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->satuan_id->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->nilai->Visible) { // nilai ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_nilai"<?= $Page->nilai->rowAttributes() ?>>
         <label id="elh_konversi_nilai" for="x_nilai" class="<?= $Page->LeftColumnClass ?>"><?= $Page->nilai->caption() ?><?= $Page->nilai->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->nilai->cellAttributes() ?>>
@@ -111,8 +145,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_nilai"<?= $Page->nilai->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_konversi_nilai"><?= $Page->nilai->caption() ?><?= $Page->nilai->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->nilai->cellAttributes() ?>>
+<span id="el_konversi_nilai">
+<input type="<?= $Page->nilai->getInputTextType() ?>" name="x_nilai" id="x_nilai" data-table="konversi" data-field="x_nilai" value="<?= $Page->nilai->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->nilai->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->nilai->formatPattern()) ?>"<?= $Page->nilai->editAttributes() ?> aria-describedby="x_nilai_help">
+<?= $Page->nilai->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->nilai->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->satuan_id2->Visible) { // satuan_id2 ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_satuan_id2"<?= $Page->satuan_id2->rowAttributes() ?>>
         <label id="elh_konversi_satuan_id2" for="x_satuan_id2" class="<?= $Page->LeftColumnClass ?>"><?= $Page->satuan_id2->caption() ?><?= $Page->satuan_id2->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->satuan_id2->cellAttributes() ?>>
@@ -123,8 +170,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_satuan_id2"<?= $Page->satuan_id2->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_konversi_satuan_id2"><?= $Page->satuan_id2->caption() ?><?= $Page->satuan_id2->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->satuan_id2->cellAttributes() ?>>
+<span id="el_konversi_satuan_id2">
+<input type="<?= $Page->satuan_id2->getInputTextType() ?>" name="x_satuan_id2" id="x_satuan_id2" data-table="konversi" data-field="x_satuan_id2" value="<?= $Page->satuan_id2->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->satuan_id2->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->satuan_id2->formatPattern()) ?>"<?= $Page->satuan_id2->editAttributes() ?> aria-describedby="x_satuan_id2_help">
+<?= $Page->satuan_id2->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->satuan_id2->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->operasi->Visible) { // operasi ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_operasi"<?= $Page->operasi->rowAttributes() ?>>
         <label id="elh_konversi_operasi" for="x_operasi" class="<?= $Page->LeftColumnClass ?>"><?= $Page->operasi->caption() ?><?= $Page->operasi->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->operasi->cellAttributes() ?>>
@@ -135,8 +195,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_operasi"<?= $Page->operasi->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_konversi_operasi"><?= $Page->operasi->caption() ?><?= $Page->operasi->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->operasi->cellAttributes() ?>>
+<span id="el_konversi_operasi">
+<input type="<?= $Page->operasi->getInputTextType() ?>" name="x_operasi" id="x_operasi" data-table="konversi" data-field="x_operasi" value="<?= $Page->operasi->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->operasi->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->operasi->formatPattern()) ?>"<?= $Page->operasi->editAttributes() ?> aria-describedby="x_operasi_help">
+<?= $Page->operasi->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->operasi->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->id_FK->Visible) { // id_FK ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_id_FK"<?= $Page->id_FK->rowAttributes() ?>>
         <label id="elh_konversi_id_FK" for="x_id_FK" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id_FK->caption() ?><?= $Page->id_FK->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->id_FK->cellAttributes() ?>>
@@ -147,8 +220,24 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_id_FK"<?= $Page->id_FK->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_konversi_id_FK"><?= $Page->id_FK->caption() ?><?= $Page->id_FK->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->id_FK->cellAttributes() ?>>
+<span id="el_konversi_id_FK">
+<input type="<?= $Page->id_FK->getInputTextType() ?>" name="x_id_FK" id="x_id_FK" data-table="konversi" data-field="x_id_FK" value="<?= $Page->id_FK->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->id_FK->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->id_FK->formatPattern()) ?>"<?= $Page->id_FK->editAttributes() ?> aria-describedby="x_id_FK_help">
+<?= $Page->id_FK->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->id_FK->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fkonversiedit"><?= $Language->phrase("SaveBtn") ?></button>
@@ -159,6 +248,9 @@ loadjs.ready("head", function () {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php if (!$Page->IsModal) { ?>
 <?= $Page->Pager->render() ?>

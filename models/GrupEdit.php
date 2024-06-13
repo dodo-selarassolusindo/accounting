@@ -910,10 +910,10 @@ class GrupEdit extends Grup
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // name
-        $this->name->RowCssClass = "row";
+        $this->name->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

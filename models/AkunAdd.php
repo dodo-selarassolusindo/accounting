@@ -810,22 +810,22 @@ class AkunAdd extends Akun
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // subgrup_id
-        $this->subgrup_id->RowCssClass = "row";
+        $this->subgrup_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kode
-        $this->kode->RowCssClass = "row";
+        $this->kode->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nama
-        $this->nama->RowCssClass = "row";
+        $this->nama->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // user_id
-        $this->user_id->RowCssClass = "row";
+        $this->user_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // matauang_id
-        $this->matauang_id->RowCssClass = "row";
+        $this->matauang_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

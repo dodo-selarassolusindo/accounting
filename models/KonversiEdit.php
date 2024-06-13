@@ -966,22 +966,22 @@ class KonversiEdit extends Konversi
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // satuan_id
-        $this->satuan_id->RowCssClass = "row";
+        $this->satuan_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nilai
-        $this->nilai->RowCssClass = "row";
+        $this->nilai->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // satuan_id2
-        $this->satuan_id2->RowCssClass = "row";
+        $this->satuan_id2->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // operasi
-        $this->operasi->RowCssClass = "row";
+        $this->operasi->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // id_FK
-        $this->id_FK->RowCssClass = "row";
+        $this->id_FK->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

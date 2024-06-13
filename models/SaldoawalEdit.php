@@ -973,25 +973,25 @@ class SaldoawalEdit extends Saldoawal
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // periode_id
-        $this->periode_id->RowCssClass = "row";
+        $this->periode_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // akun_id
-        $this->akun_id->RowCssClass = "row";
+        $this->akun_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // debet
-        $this->debet->RowCssClass = "row";
+        $this->debet->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kredit
-        $this->kredit->RowCssClass = "row";
+        $this->kredit->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // user_id
-        $this->user_id->RowCssClass = "row";
+        $this->user_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // saldo
-        $this->saldo->RowCssClass = "row";
+        $this->saldo->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

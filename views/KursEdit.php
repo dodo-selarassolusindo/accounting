@@ -73,8 +73,16 @@ loadjs.ready("head", function () {
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-edit-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_kursedit" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->id->Visible) { // id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_id"<?= $Page->id->rowAttributes() ?>>
         <label id="elh_kurs_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->id->cellAttributes() ?>>
@@ -85,8 +93,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_id"<?= $Page->id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_kurs_id"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->id->cellAttributes() ?>>
+<span id="el_kurs_id">
+<span<?= $Page->id->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id->getDisplayValue($Page->id->EditValue))) ?>"></span>
+<input type="hidden" data-table="kurs" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->matauang_id->Visible) { // matauang_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_matauang_id"<?= $Page->matauang_id->rowAttributes() ?>>
         <label id="elh_kurs_matauang_id" for="x_matauang_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->matauang_id->caption() ?><?= $Page->matauang_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->matauang_id->cellAttributes() ?>>
@@ -97,8 +118,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_matauang_id"<?= $Page->matauang_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_kurs_matauang_id"><?= $Page->matauang_id->caption() ?><?= $Page->matauang_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->matauang_id->cellAttributes() ?>>
+<span id="el_kurs_matauang_id">
+<input type="<?= $Page->matauang_id->getInputTextType() ?>" name="x_matauang_id" id="x_matauang_id" data-table="kurs" data-field="x_matauang_id" value="<?= $Page->matauang_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->matauang_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->matauang_id->formatPattern()) ?>"<?= $Page->matauang_id->editAttributes() ?> aria-describedby="x_matauang_id_help">
+<?= $Page->matauang_id->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->matauang_id->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->tanggal->Visible) { // tanggal ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_tanggal"<?= $Page->tanggal->rowAttributes() ?>>
         <label id="elh_kurs_tanggal" for="x_tanggal" class="<?= $Page->LeftColumnClass ?>"><?= $Page->tanggal->caption() ?><?= $Page->tanggal->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->tanggal->cellAttributes() ?>>
@@ -109,8 +143,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_tanggal"<?= $Page->tanggal->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_kurs_tanggal"><?= $Page->tanggal->caption() ?><?= $Page->tanggal->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->tanggal->cellAttributes() ?>>
+<span id="el_kurs_tanggal">
+<input type="<?= $Page->tanggal->getInputTextType() ?>" name="x_tanggal" id="x_tanggal" data-table="kurs" data-field="x_tanggal" value="<?= $Page->tanggal->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->tanggal->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->tanggal->formatPattern()) ?>"<?= $Page->tanggal->editAttributes() ?> aria-describedby="x_tanggal_help">
+<?= $Page->tanggal->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->tanggal->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->nilai->Visible) { // nilai ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_nilai"<?= $Page->nilai->rowAttributes() ?>>
         <label id="elh_kurs_nilai" for="x_nilai" class="<?= $Page->LeftColumnClass ?>"><?= $Page->nilai->caption() ?><?= $Page->nilai->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->nilai->cellAttributes() ?>>
@@ -121,8 +168,24 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_nilai"<?= $Page->nilai->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_kurs_nilai"><?= $Page->nilai->caption() ?><?= $Page->nilai->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->nilai->cellAttributes() ?>>
+<span id="el_kurs_nilai">
+<input type="<?= $Page->nilai->getInputTextType() ?>" name="x_nilai" id="x_nilai" data-table="kurs" data-field="x_nilai" value="<?= $Page->nilai->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->nilai->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->nilai->formatPattern()) ?>"<?= $Page->nilai->editAttributes() ?> aria-describedby="x_nilai_help">
+<?= $Page->nilai->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->nilai->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fkursedit"><?= $Language->phrase("SaveBtn") ?></button>
@@ -133,6 +196,9 @@ loadjs.ready("head", function () {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php if (!$Page->IsModal) { ?>
 <?= $Page->Pager->render() ?>

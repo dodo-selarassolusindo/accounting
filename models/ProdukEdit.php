@@ -1190,70 +1190,70 @@ class ProdukEdit extends Produk
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kode
-        $this->kode->RowCssClass = "row";
+        $this->kode->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nama
-        $this->nama->RowCssClass = "row";
+        $this->nama->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kelompok_id
-        $this->kelompok_id->RowCssClass = "row";
+        $this->kelompok_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // satuan_id
-        $this->satuan_id->RowCssClass = "row";
+        $this->satuan_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // satuan_id2
-        $this->satuan_id2->RowCssClass = "row";
+        $this->satuan_id2->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // gudang_id
-        $this->gudang_id->RowCssClass = "row";
+        $this->gudang_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // minstok
-        $this->minstok->RowCssClass = "row";
+        $this->minstok->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // minorder
-        $this->minorder->RowCssClass = "row";
+        $this->minorder->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // akunhpp
-        $this->akunhpp->RowCssClass = "row";
+        $this->akunhpp->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // akunjual
-        $this->akunjual->RowCssClass = "row";
+        $this->akunjual->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // akunpersediaan
-        $this->akunpersediaan->RowCssClass = "row";
+        $this->akunpersediaan->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // akunreturjual
-        $this->akunreturjual->RowCssClass = "row";
+        $this->akunreturjual->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // hargapokok
-        $this->hargapokok->RowCssClass = "row";
+        $this->hargapokok->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // p
-        $this->p->RowCssClass = "row";
+        $this->p->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // l
-        $this->l->RowCssClass = "row";
+        $this->l->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // t
-        $this->_t->RowCssClass = "row";
+        $this->_t->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // berat
-        $this->berat->RowCssClass = "row";
+        $this->berat->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // supplier_id
-        $this->supplier_id->RowCssClass = "row";
+        $this->supplier_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // waktukirim
-        $this->waktukirim->RowCssClass = "row";
+        $this->waktukirim->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // aktif
-        $this->aktif->RowCssClass = "row";
+        $this->aktif->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // id_FK
-        $this->id_FK->RowCssClass = "row";
+        $this->id_FK->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

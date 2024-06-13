@@ -875,34 +875,34 @@ class AudittrailAdd extends Audittrail
         // Common render codes for all row types
 
         // Id
-        $this->Id->RowCssClass = "row";
+        $this->Id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // DateTime
-        $this->DateTime->RowCssClass = "row";
+        $this->DateTime->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Script
-        $this->Script->RowCssClass = "row";
+        $this->Script->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // User
-        $this->User->RowCssClass = "row";
+        $this->User->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Action
-        $this->_Action->RowCssClass = "row";
+        $this->_Action->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Table
-        $this->_Table->RowCssClass = "row";
+        $this->_Table->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Field
-        $this->Field->RowCssClass = "row";
+        $this->Field->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // KeyValue
-        $this->KeyValue->RowCssClass = "row";
+        $this->KeyValue->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // OldValue
-        $this->OldValue->RowCssClass = "row";
+        $this->OldValue->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // NewValue
-        $this->NewValue->RowCssClass = "row";
+        $this->NewValue->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

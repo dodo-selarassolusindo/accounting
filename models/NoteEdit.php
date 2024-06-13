@@ -943,16 +943,16 @@ class NoteEdit extends Note
         // Common render codes for all row types
 
         // NoteID
-        $this->NoteID->RowCssClass = "row";
+        $this->NoteID->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Tanggal
-        $this->Tanggal->RowCssClass = "row";
+        $this->Tanggal->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Catatan
-        $this->Catatan->RowCssClass = "row";
+        $this->Catatan->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // Status
-        $this->Status->RowCssClass = "row";
+        $this->Status->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

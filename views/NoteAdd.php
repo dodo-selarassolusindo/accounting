@@ -69,8 +69,16 @@ $Page->showMessage();
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-add-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_noteadd" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->Catatan->Visible) { // Catatan ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_Catatan"<?= $Page->Catatan->rowAttributes() ?>>
         <label id="elh_note_Catatan" for="x_Catatan" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->Catatan->cellAttributes() ?>>
@@ -81,8 +89,21 @@ $Page->showMessage();
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_Catatan"<?= $Page->Catatan->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_note_Catatan"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->Catatan->cellAttributes() ?>>
+<span id="el_note_Catatan">
+<textarea data-table="note" data-field="x_Catatan" name="x_Catatan" id="x_Catatan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->Catatan->getPlaceHolder()) ?>"<?= $Page->Catatan->editAttributes() ?> aria-describedby="x_Catatan_help"><?= $Page->Catatan->EditValue ?></textarea>
+<?= $Page->Catatan->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->Catatan->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->Status->Visible) { // Status ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_Status"<?= $Page->Status->rowAttributes() ?>>
         <label id="elh_note_Status" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Status->caption() ?><?= $Page->Status->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->Status->cellAttributes() ?>>
@@ -112,8 +133,43 @@ $Page->showMessage();
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_Status"<?= $Page->Status->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_note_Status"><?= $Page->Status->caption() ?><?= $Page->Status->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->Status->cellAttributes() ?>>
+<span id="el_note_Status">
+<template id="tp_x_Status">
+    <div class="form-check">
+        <input type="radio" class="form-check-input" data-table="note" data-field="x_Status" name="x_Status" id="x_Status"<?= $Page->Status->editAttributes() ?>>
+        <label class="form-check-label"></label>
+    </div>
+</template>
+<div id="dsl_x_Status" class="ew-item-list"></div>
+<selection-list hidden
+    id="x_Status"
+    name="x_Status"
+    value="<?= HtmlEncode($Page->Status->CurrentValue) ?>"
+    data-type="select-one"
+    data-template="tp_x_Status"
+    data-target="dsl_x_Status"
+    data-repeatcolumn="5"
+    class="form-control<?= $Page->Status->isInvalidClass() ?>"
+    data-table="note"
+    data-field="x_Status"
+    data-value-separator="<?= $Page->Status->displayValueSeparatorAttribute() ?>"
+    <?= $Page->Status->editAttributes() ?>></selection-list>
+<?= $Page->Status->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->Status->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fnoteadd"><?= $Language->phrase("AddBtn") ?></button>
@@ -124,6 +180,9 @@ $Page->showMessage();
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

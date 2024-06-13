@@ -948,19 +948,19 @@ class PeriodeEdit extends Periode
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // start
-        $this->start->RowCssClass = "row";
+        $this->start->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // end
-        $this->end->RowCssClass = "row";
+        $this->end->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // isaktif
-        $this->isaktif->RowCssClass = "row";
+        $this->isaktif->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // user_id
-        $this->user_id->RowCssClass = "row";
+        $this->user_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

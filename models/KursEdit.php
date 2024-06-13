@@ -938,16 +938,16 @@ class KursEdit extends Kurs
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // matauang_id
-        $this->matauang_id->RowCssClass = "row";
+        $this->matauang_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // tanggal
-        $this->tanggal->RowCssClass = "row";
+        $this->tanggal->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nilai
-        $this->nilai->RowCssClass = "row";
+        $this->nilai->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

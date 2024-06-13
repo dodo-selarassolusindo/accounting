@@ -75,8 +75,16 @@ loadjs.ready("head", function () {
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-edit-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_akunedit" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->subgrup_id->Visible) { // subgrup_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_subgrup_id"<?= $Page->subgrup_id->rowAttributes() ?>>
         <label id="elh_akun_subgrup_id" for="x_subgrup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->subgrup_id->caption() ?><?= $Page->subgrup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->subgrup_id->cellAttributes() ?>>
@@ -121,8 +129,55 @@ loadjs.ready("fakunedit", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_subgrup_id"<?= $Page->subgrup_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_akun_subgrup_id"><?= $Page->subgrup_id->caption() ?><?= $Page->subgrup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->subgrup_id->cellAttributes() ?>>
+<span id="el_akun_subgrup_id">
+    <select
+        id="x_subgrup_id"
+        name="x_subgrup_id"
+        class="form-select ew-select<?= $Page->subgrup_id->isInvalidClass() ?>"
+        <?php if (!$Page->subgrup_id->IsNativeSelect) { ?>
+        data-select2-id="fakunedit_x_subgrup_id"
+        <?php } ?>
+        data-table="akun"
+        data-field="x_subgrup_id"
+        data-value-separator="<?= $Page->subgrup_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->subgrup_id->getPlaceHolder()) ?>"
+        <?= $Page->subgrup_id->editAttributes() ?>>
+        <?= $Page->subgrup_id->selectOptionListHtml("x_subgrup_id") ?>
+    </select>
+    <?= $Page->subgrup_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->subgrup_id->getErrorMessage() ?></div>
+<?= $Page->subgrup_id->Lookup->getParamTag($Page, "p_x_subgrup_id") ?>
+<?php if (!$Page->subgrup_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fakunedit", function() {
+    var options = { name: "x_subgrup_id", selectId: "fakunedit_x_subgrup_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fakunedit.lists.subgrup_id?.lookupOptions.length) {
+        options.data = { id: "x_subgrup_id", form: "fakunedit" };
+    } else {
+        options.ajax = { id: "x_subgrup_id", form: "fakunedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.akun.fields.subgrup_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->kode->Visible) { // kode ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_kode"<?= $Page->kode->rowAttributes() ?>>
         <label id="elh_akun_kode" for="x_kode" class="<?= $Page->LeftColumnClass ?>"><?= $Page->kode->caption() ?><?= $Page->kode->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->kode->cellAttributes() ?>>
@@ -133,8 +188,21 @@ loadjs.ready("fakunedit", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_kode"<?= $Page->kode->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_akun_kode"><?= $Page->kode->caption() ?><?= $Page->kode->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->kode->cellAttributes() ?>>
+<span id="el_akun_kode">
+<input type="<?= $Page->kode->getInputTextType() ?>" name="x_kode" id="x_kode" data-table="akun" data-field="x_kode" value="<?= $Page->kode->EditValue ?>" size="30" maxlength="50" placeholder="<?= HtmlEncode($Page->kode->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->kode->formatPattern()) ?>"<?= $Page->kode->editAttributes() ?> aria-describedby="x_kode_help">
+<?= $Page->kode->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->kode->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->nama->Visible) { // nama ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_nama"<?= $Page->nama->rowAttributes() ?>>
         <label id="elh_akun_nama" for="x_nama" class="<?= $Page->LeftColumnClass ?>"><?= $Page->nama->caption() ?><?= $Page->nama->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->nama->cellAttributes() ?>>
@@ -145,8 +213,21 @@ loadjs.ready("fakunedit", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_nama"<?= $Page->nama->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_akun_nama"><?= $Page->nama->caption() ?><?= $Page->nama->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->nama->cellAttributes() ?>>
+<span id="el_akun_nama">
+<input type="<?= $Page->nama->getInputTextType() ?>" name="x_nama" id="x_nama" data-table="akun" data-field="x_nama" value="<?= $Page->nama->EditValue ?>" size="30" maxlength="50" placeholder="<?= HtmlEncode($Page->nama->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->nama->formatPattern()) ?>"<?= $Page->nama->editAttributes() ?> aria-describedby="x_nama_help">
+<?= $Page->nama->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->nama->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->matauang_id->Visible) { // matauang_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_matauang_id"<?= $Page->matauang_id->rowAttributes() ?>>
         <label id="elh_akun_matauang_id" for="x_matauang_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->matauang_id->caption() ?><?= $Page->matauang_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->matauang_id->cellAttributes() ?>>
@@ -191,8 +272,58 @@ loadjs.ready("fakunedit", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_matauang_id"<?= $Page->matauang_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_akun_matauang_id"><?= $Page->matauang_id->caption() ?><?= $Page->matauang_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->matauang_id->cellAttributes() ?>>
+<span id="el_akun_matauang_id">
+    <select
+        id="x_matauang_id"
+        name="x_matauang_id"
+        class="form-select ew-select<?= $Page->matauang_id->isInvalidClass() ?>"
+        <?php if (!$Page->matauang_id->IsNativeSelect) { ?>
+        data-select2-id="fakunedit_x_matauang_id"
+        <?php } ?>
+        data-table="akun"
+        data-field="x_matauang_id"
+        data-value-separator="<?= $Page->matauang_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->matauang_id->getPlaceHolder()) ?>"
+        <?= $Page->matauang_id->editAttributes() ?>>
+        <?= $Page->matauang_id->selectOptionListHtml("x_matauang_id") ?>
+    </select>
+    <?= $Page->matauang_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->matauang_id->getErrorMessage() ?></div>
+<?= $Page->matauang_id->Lookup->getParamTag($Page, "p_x_matauang_id") ?>
+<?php if (!$Page->matauang_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fakunedit", function() {
+    var options = { name: "x_matauang_id", selectId: "fakunedit_x_matauang_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fakunedit.lists.matauang_id?.lookupOptions.length) {
+        options.data = { id: "x_matauang_id", form: "fakunedit" };
+    } else {
+        options.ajax = { id: "x_matauang_id", form: "fakunedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.akun.fields.matauang_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
 <?php } ?>
+</span>
+</td>
+    </tr>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
     <input type="hidden" data-table="akun" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
@@ -204,6 +335,9 @@ loadjs.ready("fakunedit", function() {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php if (!$Page->IsModal) { ?>
 <?= $Page->Pager->render() ?>

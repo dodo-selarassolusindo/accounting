@@ -71,8 +71,16 @@ loadjs.ready("head", function () {
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-edit-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_grupedit" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->id->Visible) { // id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_id"<?= $Page->id->rowAttributes() ?>>
         <label id="elh_grup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->id->cellAttributes() ?>>
@@ -83,8 +91,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_id"<?= $Page->id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_grup_id"><?= $Page->id->caption() ?><?= $Page->id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->id->cellAttributes() ?>>
+<span id="el_grup_id">
+<span<?= $Page->id->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id->getDisplayValue($Page->id->EditValue))) ?>"></span>
+<input type="hidden" data-table="grup" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->name->Visible) { // name ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_name"<?= $Page->name->rowAttributes() ?>>
         <label id="elh_grup_name" for="x_name" class="<?= $Page->LeftColumnClass ?>"><?= $Page->name->caption() ?><?= $Page->name->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->name->cellAttributes() ?>>
@@ -95,8 +116,24 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_name"<?= $Page->name->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_grup_name"><?= $Page->name->caption() ?><?= $Page->name->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->name->cellAttributes() ?>>
+<span id="el_grup_name">
+<input type="<?= $Page->name->getInputTextType() ?>" name="x_name" id="x_name" data-table="grup" data-field="x_name" value="<?= $Page->name->EditValue ?>" size="30" maxlength="50" placeholder="<?= HtmlEncode($Page->name->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->name->formatPattern()) ?>"<?= $Page->name->editAttributes() ?> aria-describedby="x_name_help">
+<?= $Page->name->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->name->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fgrupedit"><?= $Language->phrase("SaveBtn") ?></button>
@@ -107,6 +144,9 @@ loadjs.ready("head", function () {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php if (!$Page->IsModal) { ?>
 <?= $Page->Pager->render() ?>

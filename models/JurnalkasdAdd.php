@@ -807,19 +807,19 @@ class JurnalkasdAdd extends Jurnalkasd
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // jurnal_id
-        $this->jurnal_id->RowCssClass = "row";
+        $this->jurnal_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // akun_id
-        $this->akun_id->RowCssClass = "row";
+        $this->akun_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // debet
-        $this->debet->RowCssClass = "row";
+        $this->debet->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kredit
-        $this->kredit->RowCssClass = "row";
+        $this->kredit->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

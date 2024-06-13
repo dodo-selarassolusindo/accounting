@@ -1162,64 +1162,64 @@ class PersonEdit extends Person
         // Common render codes for all row types
 
         // id
-        $this->id->RowCssClass = "row";
+        $this->id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kode
-        $this->kode->RowCssClass = "row";
+        $this->kode->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // nama
-        $this->nama->RowCssClass = "row";
+        $this->nama->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kontak
-        $this->kontak->RowCssClass = "row";
+        $this->kontak->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // type_id
-        $this->type_id->RowCssClass = "row";
+        $this->type_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // telp1
-        $this->telp1->RowCssClass = "row";
+        $this->telp1->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // matauang_id
-        $this->matauang_id->RowCssClass = "row";
+        $this->matauang_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // username
-        $this->_username->RowCssClass = "row";
+        $this->_username->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // password
-        $this->_password->RowCssClass = "row";
+        $this->_password->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // telp2
-        $this->telp2->RowCssClass = "row";
+        $this->telp2->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // fax
-        $this->fax->RowCssClass = "row";
+        $this->fax->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // hp
-        $this->hp->RowCssClass = "row";
+        $this->hp->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // email
-        $this->_email->RowCssClass = "row";
+        $this->_email->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // website
-        $this->website->RowCssClass = "row";
+        $this->website->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // npwp
-        $this->npwp->RowCssClass = "row";
+        $this->npwp->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // alamat
-        $this->alamat->RowCssClass = "row";
+        $this->alamat->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // kota
-        $this->kota->RowCssClass = "row";
+        $this->kota->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // zip
-        $this->zip->RowCssClass = "row";
+        $this->zip->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // klasifikasi_id
-        $this->klasifikasi_id->RowCssClass = "row";
+        $this->klasifikasi_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // id_FK
-        $this->id_FK->RowCssClass = "row";
+        $this->id_FK->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {

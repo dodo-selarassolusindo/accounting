@@ -72,8 +72,16 @@ $Page->showMessage();
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-add-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_saldoawaladd" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->periode_id->Visible) { // periode_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_periode_id"<?= $Page->periode_id->rowAttributes() ?>>
         <label id="elh_saldoawal_periode_id" for="x_periode_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->periode_id->caption() ?><?= $Page->periode_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->periode_id->cellAttributes() ?>>
@@ -118,8 +126,55 @@ loadjs.ready("fsaldoawaladd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_periode_id"<?= $Page->periode_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_saldoawal_periode_id"><?= $Page->periode_id->caption() ?><?= $Page->periode_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->periode_id->cellAttributes() ?>>
+<span id="el_saldoawal_periode_id">
+    <select
+        id="x_periode_id"
+        name="x_periode_id"
+        class="form-select ew-select<?= $Page->periode_id->isInvalidClass() ?>"
+        <?php if (!$Page->periode_id->IsNativeSelect) { ?>
+        data-select2-id="fsaldoawaladd_x_periode_id"
+        <?php } ?>
+        data-table="saldoawal"
+        data-field="x_periode_id"
+        data-value-separator="<?= $Page->periode_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->periode_id->getPlaceHolder()) ?>"
+        <?= $Page->periode_id->editAttributes() ?>>
+        <?= $Page->periode_id->selectOptionListHtml("x_periode_id") ?>
+    </select>
+    <?= $Page->periode_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->periode_id->getErrorMessage() ?></div>
+<?= $Page->periode_id->Lookup->getParamTag($Page, "p_x_periode_id") ?>
+<?php if (!$Page->periode_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fsaldoawaladd", function() {
+    var options = { name: "x_periode_id", selectId: "fsaldoawaladd_x_periode_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fsaldoawaladd.lists.periode_id?.lookupOptions.length) {
+        options.data = { id: "x_periode_id", form: "fsaldoawaladd" };
+    } else {
+        options.ajax = { id: "x_periode_id", form: "fsaldoawaladd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.saldoawal.fields.periode_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->akun_id->Visible) { // akun_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_akun_id"<?= $Page->akun_id->rowAttributes() ?>>
         <label id="elh_saldoawal_akun_id" for="x_akun_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->akun_id->caption() ?><?= $Page->akun_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->akun_id->cellAttributes() ?>>
@@ -164,8 +219,55 @@ loadjs.ready("fsaldoawaladd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_akun_id"<?= $Page->akun_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_saldoawal_akun_id"><?= $Page->akun_id->caption() ?><?= $Page->akun_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->akun_id->cellAttributes() ?>>
+<span id="el_saldoawal_akun_id">
+    <select
+        id="x_akun_id"
+        name="x_akun_id"
+        class="form-select ew-select<?= $Page->akun_id->isInvalidClass() ?>"
+        <?php if (!$Page->akun_id->IsNativeSelect) { ?>
+        data-select2-id="fsaldoawaladd_x_akun_id"
+        <?php } ?>
+        data-table="saldoawal"
+        data-field="x_akun_id"
+        data-value-separator="<?= $Page->akun_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->akun_id->getPlaceHolder()) ?>"
+        <?= $Page->akun_id->editAttributes() ?>>
+        <?= $Page->akun_id->selectOptionListHtml("x_akun_id") ?>
+    </select>
+    <?= $Page->akun_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->akun_id->getErrorMessage() ?></div>
+<?= $Page->akun_id->Lookup->getParamTag($Page, "p_x_akun_id") ?>
+<?php if (!$Page->akun_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fsaldoawaladd", function() {
+    var options = { name: "x_akun_id", selectId: "fsaldoawaladd_x_akun_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fsaldoawaladd.lists.akun_id?.lookupOptions.length) {
+        options.data = { id: "x_akun_id", form: "fsaldoawaladd" };
+    } else {
+        options.ajax = { id: "x_akun_id", form: "fsaldoawaladd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.saldoawal.fields.akun_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->debet->Visible) { // debet ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_debet"<?= $Page->debet->rowAttributes() ?>>
         <label id="elh_saldoawal_debet" for="x_debet" class="<?= $Page->LeftColumnClass ?>"><?= $Page->debet->caption() ?><?= $Page->debet->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->debet->cellAttributes() ?>>
@@ -176,8 +278,21 @@ loadjs.ready("fsaldoawaladd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_debet"<?= $Page->debet->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_saldoawal_debet"><?= $Page->debet->caption() ?><?= $Page->debet->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->debet->cellAttributes() ?>>
+<span id="el_saldoawal_debet">
+<input type="<?= $Page->debet->getInputTextType() ?>" name="x_debet" id="x_debet" data-table="saldoawal" data-field="x_debet" value="<?= $Page->debet->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->debet->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->debet->formatPattern()) ?>"<?= $Page->debet->editAttributes() ?> aria-describedby="x_debet_help">
+<?= $Page->debet->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->debet->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->kredit->Visible) { // kredit ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
         <label id="elh_saldoawal_kredit" for="x_kredit" class="<?= $Page->LeftColumnClass ?>"><?= $Page->kredit->caption() ?><?= $Page->kredit->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->kredit->cellAttributes() ?>>
@@ -188,8 +303,21 @@ loadjs.ready("fsaldoawaladd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_saldoawal_kredit"><?= $Page->kredit->caption() ?><?= $Page->kredit->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->kredit->cellAttributes() ?>>
+<span id="el_saldoawal_kredit">
+<input type="<?= $Page->kredit->getInputTextType() ?>" name="x_kredit" id="x_kredit" data-table="saldoawal" data-field="x_kredit" value="<?= $Page->kredit->EditValue ?>" size="30" maxlength="255" placeholder="<?= HtmlEncode($Page->kredit->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->kredit->formatPattern()) ?>"<?= $Page->kredit->editAttributes() ?> aria-describedby="x_kredit_help">
+<?= $Page->kredit->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->kredit->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->saldo->Visible) { // saldo ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_saldo"<?= $Page->saldo->rowAttributes() ?>>
         <label id="elh_saldoawal_saldo" for="x_saldo" class="<?= $Page->LeftColumnClass ?>"><?= $Page->saldo->caption() ?><?= $Page->saldo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->saldo->cellAttributes() ?>>
@@ -200,8 +328,24 @@ loadjs.ready("fsaldoawaladd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_saldo"<?= $Page->saldo->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_saldoawal_saldo"><?= $Page->saldo->caption() ?><?= $Page->saldo->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->saldo->cellAttributes() ?>>
+<span id="el_saldoawal_saldo">
+<input type="<?= $Page->saldo->getInputTextType() ?>" name="x_saldo" id="x_saldo" data-table="saldoawal" data-field="x_saldo" value="<?= $Page->saldo->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->saldo->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->saldo->formatPattern()) ?>"<?= $Page->saldo->editAttributes() ?> aria-describedby="x_saldo_help">
+<?= $Page->saldo->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->saldo->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fsaldoawaladd"><?= $Language->phrase("AddBtn") ?></button>
@@ -212,6 +356,9 @@ loadjs.ready("fsaldoawaladd", function() {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

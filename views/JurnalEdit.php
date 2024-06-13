@@ -72,8 +72,16 @@ loadjs.ready("head", function () {
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-edit-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_jurnaledit" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->nomer->Visible) { // nomer ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_nomer"<?= $Page->nomer->rowAttributes() ?>>
         <label id="elh_jurnal_nomer" for="x_nomer" class="<?= $Page->LeftColumnClass ?>"><?= $Page->nomer->caption() ?><?= $Page->nomer->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->nomer->cellAttributes() ?>>
@@ -84,8 +92,21 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_nomer"<?= $Page->nomer->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_nomer"><?= $Page->nomer->caption() ?><?= $Page->nomer->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->nomer->cellAttributes() ?>>
+<span id="el_jurnal_nomer">
+<span<?= $Page->nomer->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->nomer->getDisplayValue($Page->nomer->EditValue))) ?>"></span>
+<input type="hidden" data-table="jurnal" data-field="x_nomer" data-hidden="1" name="x_nomer" id="x_nomer" value="<?= HtmlEncode($Page->nomer->CurrentValue) ?>">
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_keterangan"<?= $Page->keterangan->rowAttributes() ?>>
         <label id="elh_jurnal_keterangan" for="x_keterangan" class="<?= $Page->LeftColumnClass ?>"><?= $Page->keterangan->caption() ?><?= $Page->keterangan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->keterangan->cellAttributes() ?>>
@@ -96,8 +117,24 @@ loadjs.ready("head", function () {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_keterangan"<?= $Page->keterangan->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_keterangan"><?= $Page->keterangan->caption() ?><?= $Page->keterangan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->keterangan->cellAttributes() ?>>
+<span id="el_jurnal_keterangan">
+<textarea data-table="jurnal" data-field="x_keterangan" name="x_keterangan" id="x_keterangan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->keterangan->getPlaceHolder()) ?>"<?= $Page->keterangan->editAttributes() ?> aria-describedby="x_keterangan_help"><?= $Page->keterangan->EditValue ?></textarea>
+<?= $Page->keterangan->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->keterangan->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
     <input type="hidden" data-table="jurnal" data-field="x_id" data-hidden="1" name="x_id" id="x_id" value="<?= HtmlEncode($Page->id->CurrentValue) ?>">
 <?php
     if (in_array("jurnald", explode(",", $Page->getCurrentDetailTable())) && $jurnald->DetailEdit) {
@@ -117,6 +154,9 @@ loadjs.ready("head", function () {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php if (!$Page->IsModal) { ?>
 <?= $Page->Pager->render() ?>

@@ -69,8 +69,16 @@ $Page->showMessage();
 <input type="hidden" name="json" value="1">
 <?php } ?>
 <input type="hidden" name="<?= $Page->OldKeyName ?>" value="<?= $Page->OldKey ?>">
+<?php if (!$Page->IsMobileOrModal) { ?>
+<div class="ew-desktop"><!-- desktop -->
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 <div class="ew-add-div"><!-- page* -->
+<?php } else { ?>
+<table id="tbl_subgrupadd" class="<?= $Page->TableClass ?>"><!-- table* -->
+<?php } ?>
 <?php if ($Page->grup_id->Visible) { // grup_id ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_grup_id"<?= $Page->grup_id->rowAttributes() ?>>
         <label id="elh_subgrup_grup_id" for="x_grup_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->grup_id->caption() ?><?= $Page->grup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->grup_id->cellAttributes() ?>>
@@ -115,8 +123,55 @@ loadjs.ready("fsubgrupadd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_grup_id"<?= $Page->grup_id->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_subgrup_grup_id"><?= $Page->grup_id->caption() ?><?= $Page->grup_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->grup_id->cellAttributes() ?>>
+<span id="el_subgrup_grup_id">
+    <select
+        id="x_grup_id"
+        name="x_grup_id"
+        class="form-select ew-select<?= $Page->grup_id->isInvalidClass() ?>"
+        <?php if (!$Page->grup_id->IsNativeSelect) { ?>
+        data-select2-id="fsubgrupadd_x_grup_id"
+        <?php } ?>
+        data-table="subgrup"
+        data-field="x_grup_id"
+        data-value-separator="<?= $Page->grup_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->grup_id->getPlaceHolder()) ?>"
+        <?= $Page->grup_id->editAttributes() ?>>
+        <?= $Page->grup_id->selectOptionListHtml("x_grup_id") ?>
+    </select>
+    <?= $Page->grup_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->grup_id->getErrorMessage() ?></div>
+<?= $Page->grup_id->Lookup->getParamTag($Page, "p_x_grup_id") ?>
+<?php if (!$Page->grup_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fsubgrupadd", function() {
+    var options = { name: "x_grup_id", selectId: "fsubgrupadd_x_grup_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fsubgrupadd.lists.grup_id?.lookupOptions.length) {
+        options.data = { id: "x_grup_id", form: "fsubgrupadd" };
+    } else {
+        options.ajax = { id: "x_grup_id", form: "fsubgrupadd", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.subgrup.fields.grup_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->kode->Visible) { // kode ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_kode"<?= $Page->kode->rowAttributes() ?>>
         <label id="elh_subgrup_kode" for="x_kode" class="<?= $Page->LeftColumnClass ?>"><?= $Page->kode->caption() ?><?= $Page->kode->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->kode->cellAttributes() ?>>
@@ -127,8 +182,21 @@ loadjs.ready("fsubgrupadd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_kode"<?= $Page->kode->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_subgrup_kode"><?= $Page->kode->caption() ?><?= $Page->kode->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->kode->cellAttributes() ?>>
+<span id="el_subgrup_kode">
+<input type="<?= $Page->kode->getInputTextType() ?>" name="x_kode" id="x_kode" data-table="subgrup" data-field="x_kode" value="<?= $Page->kode->EditValue ?>" size="30" maxlength="50" placeholder="<?= HtmlEncode($Page->kode->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->kode->formatPattern()) ?>"<?= $Page->kode->editAttributes() ?> aria-describedby="x_kode_help">
+<?= $Page->kode->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->kode->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php } ?>
 <?php if ($Page->nama->Visible) { // nama ?>
+<?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_nama"<?= $Page->nama->rowAttributes() ?>>
         <label id="elh_subgrup_nama" for="x_nama" class="<?= $Page->LeftColumnClass ?>"><?= $Page->nama->caption() ?><?= $Page->nama->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->nama->cellAttributes() ?>>
@@ -139,8 +207,24 @@ loadjs.ready("fsubgrupadd", function() {
 </span>
 </div></div>
     </div>
+<?php } else { ?>
+    <tr id="r_nama"<?= $Page->nama->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_subgrup_nama"><?= $Page->nama->caption() ?><?= $Page->nama->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->nama->cellAttributes() ?>>
+<span id="el_subgrup_nama">
+<input type="<?= $Page->nama->getInputTextType() ?>" name="x_nama" id="x_nama" data-table="subgrup" data-field="x_nama" value="<?= $Page->nama->EditValue ?>" size="30" maxlength="50" placeholder="<?= HtmlEncode($Page->nama->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->nama->formatPattern()) ?>"<?= $Page->nama->editAttributes() ?> aria-describedby="x_nama_help">
+<?= $Page->nama->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->nama->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->IsMobileOrModal) { ?>
 </div><!-- /page* -->
+<?php } else { ?>
+</table><!-- /table* -->
+<?php } ?>
 <?= $Page->IsModal ? '<template class="ew-modal-buttons">' : '<div class="row ew-buttons">' ?><!-- buttons .row -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->
 <button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit" form="fsubgrupadd"><?= $Language->phrase("AddBtn") ?></button>
@@ -151,6 +235,9 @@ loadjs.ready("fsubgrupadd", function() {
 <?php } ?>
     </div><!-- /buttons offset -->
 <?= $Page->IsModal ? "</template>" : "</div>" ?><!-- /buttons .row -->
+<?php if (!$Page->IsMobileOrModal) { ?>
+</div><!-- /desktop -->
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();
