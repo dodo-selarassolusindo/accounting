@@ -1696,7 +1696,7 @@ class Jurnal extends DbTable
     public function rowRendering()
     {
         // Enter your code here
-        if ($this->CurrentAction == 'add') {
+        if (CurrentPageID() == 'add') {
             echo '<pre>'.'add'.'</pre>';
             // isi nomor jurnal
             $tahunBulan = date('ym');
