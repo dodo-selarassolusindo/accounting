@@ -129,8 +129,8 @@ class JurnaldEdit extends Jurnald
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
-        $this->jurnal_id->setVisibility();
+        $this->id->Visible = false;
+        $this->jurnal_id->Visible = false;
         $this->akun_id->setVisibility();
         $this->debet->setVisibility();
         $this->kredit->setVisibility();
@@ -518,6 +518,9 @@ class JurnaldEdit extends Jurnald
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->akun_id);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -699,29 +702,13 @@ class JurnaldEdit extends Jurnald
         global $CurrentForm;
         $validate = !Config("SERVER_VALIDATE");
 
-        // Check field name 'id' first before field var 'x_id'
-        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
-        if (!$this->id->IsDetailKey) {
-            $this->id->setFormValue($val);
-        }
-
-        // Check field name 'jurnal_id' first before field var 'x_jurnal_id'
-        $val = $CurrentForm->hasValue("jurnal_id") ? $CurrentForm->getValue("jurnal_id") : $CurrentForm->getValue("x_jurnal_id");
-        if (!$this->jurnal_id->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->jurnal_id->Visible = false; // Disable update for API request
-            } else {
-                $this->jurnal_id->setFormValue($val, true, $validate);
-            }
-        }
-
         // Check field name 'akun_id' first before field var 'x_akun_id'
         $val = $CurrentForm->hasValue("akun_id") ? $CurrentForm->getValue("akun_id") : $CurrentForm->getValue("x_akun_id");
         if (!$this->akun_id->IsDetailKey) {
             if (IsApi() && $val === null) {
                 $this->akun_id->Visible = false; // Disable update for API request
             } else {
-                $this->akun_id->setFormValue($val, true, $validate);
+                $this->akun_id->setFormValue($val);
             }
         }
 
@@ -744,6 +731,12 @@ class JurnaldEdit extends Jurnald
                 $this->kredit->setFormValue($val, true, $validate);
             }
         }
+
+        // Check field name 'id' first before field var 'x_id'
+        $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
+        if (!$this->id->IsDetailKey) {
+            $this->id->setFormValue($val);
+        }
     }
 
     // Restore form values
@@ -751,7 +744,6 @@ class JurnaldEdit extends Jurnald
     {
         global $CurrentForm;
         $this->id->CurrentValue = $this->id->FormValue;
-        $this->jurnal_id->CurrentValue = $this->jurnal_id->FormValue;
         $this->akun_id->CurrentValue = $this->akun_id->FormValue;
         $this->debet->CurrentValue = $this->debet->FormValue;
         $this->kredit->CurrentValue = $this->kredit->FormValue;
@@ -870,22 +862,37 @@ class JurnaldEdit extends Jurnald
             $this->jurnal_id->ViewValue = FormatNumber($this->jurnal_id->ViewValue, $this->jurnal_id->formatPattern());
 
             // akun_id
-            $this->akun_id->ViewValue = $this->akun_id->CurrentValue;
-            $this->akun_id->ViewValue = FormatNumber($this->akun_id->ViewValue, $this->akun_id->formatPattern());
+            $curVal = strval($this->akun_id->CurrentValue);
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+                if ($this->akun_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->akun_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                    } else {
+                        $this->akun_id->ViewValue = FormatNumber($this->akun_id->CurrentValue, $this->akun_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->akun_id->ViewValue = null;
+            }
 
             // debet
             $this->debet->ViewValue = $this->debet->CurrentValue;
             $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+            $this->debet->CellCssStyle .= "text-align: right;";
 
             // kredit
             $this->kredit->ViewValue = $this->kredit->CurrentValue;
             $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
-
-            // id
-            $this->id->HrefValue = "";
-
-            // jurnal_id
-            $this->jurnal_id->HrefValue = "";
+            $this->kredit->CellCssStyle .= "text-align: right;";
 
             // akun_id
             $this->akun_id->HrefValue = "";
@@ -896,31 +903,32 @@ class JurnaldEdit extends Jurnald
             // kredit
             $this->kredit->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
-            // id
-            $this->id->setupEditAttributes();
-            $this->id->EditValue = $this->id->CurrentValue;
-
-            // jurnal_id
-            $this->jurnal_id->setupEditAttributes();
-            if ($this->jurnal_id->getSessionValue() != "") {
-                $this->jurnal_id->CurrentValue = GetForeignKeyValue($this->jurnal_id->getSessionValue());
-                $this->jurnal_id->ViewValue = $this->jurnal_id->CurrentValue;
-                $this->jurnal_id->ViewValue = FormatNumber($this->jurnal_id->ViewValue, $this->jurnal_id->formatPattern());
-            } else {
-                $this->jurnal_id->EditValue = $this->jurnal_id->CurrentValue;
-                $this->jurnal_id->PlaceHolder = RemoveHtml($this->jurnal_id->caption());
-                if (strval($this->jurnal_id->EditValue) != "" && is_numeric($this->jurnal_id->EditValue)) {
-                    $this->jurnal_id->EditValue = FormatNumber($this->jurnal_id->EditValue, null);
-                }
-            }
-
             // akun_id
             $this->akun_id->setupEditAttributes();
-            $this->akun_id->EditValue = $this->akun_id->CurrentValue;
-            $this->akun_id->PlaceHolder = RemoveHtml($this->akun_id->caption());
-            if (strval($this->akun_id->EditValue) != "" && is_numeric($this->akun_id->EditValue)) {
-                $this->akun_id->EditValue = FormatNumber($this->akun_id->EditValue, null);
+            $curVal = trim(strval($this->akun_id->CurrentValue));
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+            } else {
+                $this->akun_id->ViewValue = $this->akun_id->Lookup !== null && is_array($this->akun_id->lookupOptions()) && count($this->akun_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->akun_id->ViewValue !== null) { // Load from cache
+                $this->akun_id->EditValue = array_values($this->akun_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->akun_id->CurrentValue, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                }
+                $sqlWrk = $this->akun_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->akun_id->EditValue = $arwrk;
+            }
+            $this->akun_id->PlaceHolder = RemoveHtml($this->akun_id->caption());
 
             // debet
             $this->debet->setupEditAttributes();
@@ -939,12 +947,6 @@ class JurnaldEdit extends Jurnald
             }
 
             // Edit refer script
-
-            // id
-            $this->id->HrefValue = "";
-
-            // jurnal_id
-            $this->jurnal_id->HrefValue = "";
 
             // akun_id
             $this->akun_id->HrefValue = "";
@@ -975,26 +977,10 @@ class JurnaldEdit extends Jurnald
             return true;
         }
         $validateForm = true;
-            if ($this->id->Visible && $this->id->Required) {
-                if (!$this->id->IsDetailKey && EmptyValue($this->id->FormValue)) {
-                    $this->id->addErrorMessage(str_replace("%s", $this->id->caption(), $this->id->RequiredErrorMessage));
-                }
-            }
-            if ($this->jurnal_id->Visible && $this->jurnal_id->Required) {
-                if (!$this->jurnal_id->IsDetailKey && EmptyValue($this->jurnal_id->FormValue)) {
-                    $this->jurnal_id->addErrorMessage(str_replace("%s", $this->jurnal_id->caption(), $this->jurnal_id->RequiredErrorMessage));
-                }
-            }
-            if (!CheckInteger($this->jurnal_id->FormValue)) {
-                $this->jurnal_id->addErrorMessage($this->jurnal_id->getErrorMessage(false));
-            }
             if ($this->akun_id->Visible && $this->akun_id->Required) {
                 if (!$this->akun_id->IsDetailKey && EmptyValue($this->akun_id->FormValue)) {
                     $this->akun_id->addErrorMessage(str_replace("%s", $this->akun_id->caption(), $this->akun_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->akun_id->FormValue)) {
-                $this->akun_id->addErrorMessage($this->akun_id->getErrorMessage(false));
             }
             if ($this->debet->Visible && $this->debet->Required) {
                 if (!$this->debet->IsDetailKey && EmptyValue($this->debet->FormValue)) {
@@ -1119,12 +1105,6 @@ class JurnaldEdit extends Jurnald
         global $Security;
         $rsnew = [];
 
-        // jurnal_id
-        if ($this->jurnal_id->getSessionValue() != "") {
-            $this->jurnal_id->ReadOnly = true;
-        }
-        $this->jurnal_id->setDbValueDef($rsnew, $this->jurnal_id->CurrentValue, $this->jurnal_id->ReadOnly);
-
         // akun_id
         $this->akun_id->setDbValueDef($rsnew, $this->akun_id->CurrentValue, $this->akun_id->ReadOnly);
 
@@ -1142,9 +1122,6 @@ class JurnaldEdit extends Jurnald
      */
     protected function restoreEditFormFromRow($row)
     {
-        if (isset($row['jurnal_id'])) { // jurnal_id
-            $this->jurnal_id->CurrentValue = $row['jurnal_id'];
-        }
         if (isset($row['akun_id'])) { // akun_id
             $this->akun_id->CurrentValue = $row['akun_id'];
         }
@@ -1253,6 +1230,8 @@ class JurnaldEdit extends Jurnald
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_akun_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
@@ -1320,6 +1299,7 @@ class JurnaldEdit extends Jurnald
     public function pageLoad()
     {
         //Log("Page Load");
+        $this->akun_id->DisplayValueSeparator = ' - ';
     }
 
     // Page Unload event

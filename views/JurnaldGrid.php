@@ -23,9 +23,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Add fields
         .setFields([
-            ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
-            ["jurnal_id", [fields.jurnal_id.visible && fields.jurnal_id.required ? ew.Validators.required(fields.jurnal_id.caption) : null, ew.Validators.integer], fields.jurnal_id.isInvalid],
-            ["akun_id", [fields.akun_id.visible && fields.akun_id.required ? ew.Validators.required(fields.akun_id.caption) : null, ew.Validators.integer], fields.akun_id.isInvalid],
+            ["akun_id", [fields.akun_id.visible && fields.akun_id.required ? ew.Validators.required(fields.akun_id.caption) : null], fields.akun_id.isInvalid],
             ["debet", [fields.debet.visible && fields.debet.required ? ew.Validators.required(fields.debet.caption) : null, ew.Validators.float], fields.debet.isInvalid],
             ["kredit", [fields.kredit.visible && fields.kredit.required ? ew.Validators.required(fields.kredit.caption) : null, ew.Validators.float], fields.kredit.isInvalid]
         ])
@@ -34,7 +32,7 @@ loadjs.ready(["wrapper", "head"], function () {
         .setEmptyRow(
             function (rowIndex) {
                 let fobj = this.getForm(),
-                    fields = [["jurnal_id",false],["akun_id",false],["debet",false],["kredit",false]];
+                    fields = [["akun_id",false],["debet",false],["kredit",false]];
                 if (fields.some(field => ew.valueChanged(fobj, rowIndex, ...field)))
                     return false;
                 return true;
@@ -54,6 +52,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "akun_id": <?= $Grid->akun_id->toClientList($Grid) ?>,
         })
         .build();
     window[form.id] = form;
@@ -88,12 +87,6 @@ $Grid->renderListOptions();
 // Render list options (header, left)
 $Grid->ListOptions->render("header", "left");
 ?>
-<?php if ($Grid->id->Visible) { // id ?>
-        <th data-name="id" class="<?= $Grid->id->headerCellClass() ?>"><div id="elh_jurnald_id" class="jurnald_id"><?= $Grid->renderFieldHeader($Grid->id) ?></div></th>
-<?php } ?>
-<?php if ($Grid->jurnal_id->Visible) { // jurnal_id ?>
-        <th data-name="jurnal_id" class="<?= $Grid->jurnal_id->headerCellClass() ?>"><div id="elh_jurnald_jurnal_id" class="jurnald_jurnal_id"><?= $Grid->renderFieldHeader($Grid->jurnal_id) ?></div></th>
-<?php } ?>
 <?php if ($Grid->akun_id->Visible) { // akun_id ?>
         <th data-name="akun_id" class="<?= $Grid->akun_id->headerCellClass() ?>"><div id="elh_jurnald_akun_id" class="jurnald_akun_id"><?= $Grid->renderFieldHeader($Grid->akun_id) ?></div></th>
 <?php } ?>
@@ -138,85 +131,87 @@ while ($Grid->RecordCount < $Grid->StopRecord || $Grid->RowIndex === '$rowindex$
 // Render list options (body, left)
 $Grid->ListOptions->render("body", "left", $Grid->RowCount);
 ?>
-    <?php if ($Grid->id->Visible) { // id ?>
-        <td data-name="id"<?= $Grid->id->cellAttributes() ?>>
-<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_id" class="el_jurnald_id"></span>
-<input type="hidden" data-table="jurnald" data-field="x_id" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_id" id="o<?= $Grid->RowIndex ?>_id" value="<?= HtmlEncode($Grid->id->OldValue) ?>">
-<?php } ?>
-<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_id" class="el_jurnald_id">
-<span<?= $Grid->id->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Grid->id->getDisplayValue($Grid->id->EditValue))) ?>"></span>
-<input type="hidden" data-table="jurnald" data-field="x_id" data-hidden="1" name="x<?= $Grid->RowIndex ?>_id" id="x<?= $Grid->RowIndex ?>_id" value="<?= HtmlEncode($Grid->id->CurrentValue) ?>">
-</span>
-<?php } ?>
-<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_id" class="el_jurnald_id">
-<span<?= $Grid->id->viewAttributes() ?>>
-<?= $Grid->id->getViewValue() ?></span>
-</span>
-<?php if ($Grid->isConfirm()) { ?>
-<input type="hidden" data-table="jurnald" data-field="x_id" data-hidden="1" name="fjurnaldgrid$x<?= $Grid->RowIndex ?>_id" id="fjurnaldgrid$x<?= $Grid->RowIndex ?>_id" value="<?= HtmlEncode($Grid->id->FormValue) ?>">
-<input type="hidden" data-table="jurnald" data-field="x_id" data-hidden="1" data-old name="fjurnaldgrid$o<?= $Grid->RowIndex ?>_id" id="fjurnaldgrid$o<?= $Grid->RowIndex ?>_id" value="<?= HtmlEncode($Grid->id->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-    <?php } else { ?>
-            <input type="hidden" data-table="jurnald" data-field="x_id" data-hidden="1" name="x<?= $Grid->RowIndex ?>_id" id="x<?= $Grid->RowIndex ?>_id" value="<?= HtmlEncode($Grid->id->CurrentValue) ?>">
-    <?php } ?>
-    <?php if ($Grid->jurnal_id->Visible) { // jurnal_id ?>
-        <td data-name="jurnal_id"<?= $Grid->jurnal_id->cellAttributes() ?>>
-<?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
-<?php if ($Grid->jurnal_id->getSessionValue() != "") { ?>
-<span<?= $Grid->jurnal_id->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Grid->jurnal_id->getDisplayValue($Grid->jurnal_id->ViewValue))) ?>"></span>
-<input type="hidden" id="x<?= $Grid->RowIndex ?>_jurnal_id" name="x<?= $Grid->RowIndex ?>_jurnal_id" value="<?= HtmlEncode($Grid->jurnal_id->CurrentValue) ?>" data-hidden="1">
-<?php } else { ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_jurnal_id" class="el_jurnald_jurnal_id">
-<input type="<?= $Grid->jurnal_id->getInputTextType() ?>" name="x<?= $Grid->RowIndex ?>_jurnal_id" id="x<?= $Grid->RowIndex ?>_jurnal_id" data-table="jurnald" data-field="x_jurnal_id" value="<?= $Grid->jurnal_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Grid->jurnal_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Grid->jurnal_id->formatPattern()) ?>"<?= $Grid->jurnal_id->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Grid->jurnal_id->getErrorMessage() ?></div>
-</span>
-<?php } ?>
-<input type="hidden" data-table="jurnald" data-field="x_jurnal_id" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_jurnal_id" id="o<?= $Grid->RowIndex ?>_jurnal_id" value="<?= HtmlEncode($Grid->jurnal_id->OldValue) ?>">
-<?php } ?>
-<?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
-<?php if ($Grid->jurnal_id->getSessionValue() != "") { ?>
-<span<?= $Grid->jurnal_id->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Grid->jurnal_id->getDisplayValue($Grid->jurnal_id->ViewValue))) ?>"></span>
-<input type="hidden" id="x<?= $Grid->RowIndex ?>_jurnal_id" name="x<?= $Grid->RowIndex ?>_jurnal_id" value="<?= HtmlEncode($Grid->jurnal_id->CurrentValue) ?>" data-hidden="1">
-<?php } else { ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_jurnal_id" class="el_jurnald_jurnal_id">
-<input type="<?= $Grid->jurnal_id->getInputTextType() ?>" name="x<?= $Grid->RowIndex ?>_jurnal_id" id="x<?= $Grid->RowIndex ?>_jurnal_id" data-table="jurnald" data-field="x_jurnal_id" value="<?= $Grid->jurnal_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Grid->jurnal_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Grid->jurnal_id->formatPattern()) ?>"<?= $Grid->jurnal_id->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Grid->jurnal_id->getErrorMessage() ?></div>
-</span>
-<?php } ?>
-<?php } ?>
-<?php if ($Grid->RowType == RowType::VIEW) { // View record ?>
-<span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_jurnal_id" class="el_jurnald_jurnal_id">
-<span<?= $Grid->jurnal_id->viewAttributes() ?>>
-<?= $Grid->jurnal_id->getViewValue() ?></span>
-</span>
-<?php if ($Grid->isConfirm()) { ?>
-<input type="hidden" data-table="jurnald" data-field="x_jurnal_id" data-hidden="1" name="fjurnaldgrid$x<?= $Grid->RowIndex ?>_jurnal_id" id="fjurnaldgrid$x<?= $Grid->RowIndex ?>_jurnal_id" value="<?= HtmlEncode($Grid->jurnal_id->FormValue) ?>">
-<input type="hidden" data-table="jurnald" data-field="x_jurnal_id" data-hidden="1" data-old name="fjurnaldgrid$o<?= $Grid->RowIndex ?>_jurnal_id" id="fjurnaldgrid$o<?= $Grid->RowIndex ?>_jurnal_id" value="<?= HtmlEncode($Grid->jurnal_id->OldValue) ?>">
-<?php } ?>
-<?php } ?>
-</td>
-    <?php } ?>
     <?php if ($Grid->akun_id->Visible) { // akun_id ?>
         <td data-name="akun_id"<?= $Grid->akun_id->cellAttributes() ?>>
 <?php if ($Grid->RowType == RowType::ADD) { // Add record ?>
 <span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_akun_id" class="el_jurnald_akun_id">
-<input type="<?= $Grid->akun_id->getInputTextType() ?>" name="x<?= $Grid->RowIndex ?>_akun_id" id="x<?= $Grid->RowIndex ?>_akun_id" data-table="jurnald" data-field="x_akun_id" value="<?= $Grid->akun_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Grid->akun_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Grid->akun_id->formatPattern()) ?>"<?= $Grid->akun_id->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Grid->akun_id->getErrorMessage() ?></div>
+    <select
+        id="x<?= $Grid->RowIndex ?>_akun_id"
+        name="x<?= $Grid->RowIndex ?>_akun_id"
+        class="form-select ew-select<?= $Grid->akun_id->isInvalidClass() ?>"
+        <?php if (!$Grid->akun_id->IsNativeSelect) { ?>
+        data-select2-id="fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id"
+        <?php } ?>
+        data-table="jurnald"
+        data-field="x_akun_id"
+        data-value-separator="<?= $Grid->akun_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Grid->akun_id->getPlaceHolder()) ?>"
+        <?= $Grid->akun_id->editAttributes() ?>>
+        <?= $Grid->akun_id->selectOptionListHtml("x{$Grid->RowIndex}_akun_id") ?>
+    </select>
+    <div class="invalid-feedback"><?= $Grid->akun_id->getErrorMessage() ?></div>
+<?= $Grid->akun_id->Lookup->getParamTag($Grid, "p_x" . $Grid->RowIndex . "_akun_id") ?>
+<?php if (!$Grid->akun_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fjurnaldgrid", function() {
+    var options = { name: "x<?= $Grid->RowIndex ?>_akun_id", selectId: "fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fjurnaldgrid.lists.akun_id?.lookupOptions.length) {
+        options.data = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid" };
+    } else {
+        options.ajax = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnald.fields.akun_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 <input type="hidden" data-table="jurnald" data-field="x_akun_id" data-hidden="1" data-old name="o<?= $Grid->RowIndex ?>_akun_id" id="o<?= $Grid->RowIndex ?>_akun_id" value="<?= HtmlEncode($Grid->akun_id->OldValue) ?>">
 <?php } ?>
 <?php if ($Grid->RowType == RowType::EDIT) { // Edit record ?>
 <span id="el<?= $Grid->RowIndex == '$rowindex$' ? '$rowindex$' : $Grid->RowCount ?>_jurnald_akun_id" class="el_jurnald_akun_id">
-<input type="<?= $Grid->akun_id->getInputTextType() ?>" name="x<?= $Grid->RowIndex ?>_akun_id" id="x<?= $Grid->RowIndex ?>_akun_id" data-table="jurnald" data-field="x_akun_id" value="<?= $Grid->akun_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Grid->akun_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Grid->akun_id->formatPattern()) ?>"<?= $Grid->akun_id->editAttributes() ?>>
-<div class="invalid-feedback"><?= $Grid->akun_id->getErrorMessage() ?></div>
+    <select
+        id="x<?= $Grid->RowIndex ?>_akun_id"
+        name="x<?= $Grid->RowIndex ?>_akun_id"
+        class="form-select ew-select<?= $Grid->akun_id->isInvalidClass() ?>"
+        <?php if (!$Grid->akun_id->IsNativeSelect) { ?>
+        data-select2-id="fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id"
+        <?php } ?>
+        data-table="jurnald"
+        data-field="x_akun_id"
+        data-value-separator="<?= $Grid->akun_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Grid->akun_id->getPlaceHolder()) ?>"
+        <?= $Grid->akun_id->editAttributes() ?>>
+        <?= $Grid->akun_id->selectOptionListHtml("x{$Grid->RowIndex}_akun_id") ?>
+    </select>
+    <div class="invalid-feedback"><?= $Grid->akun_id->getErrorMessage() ?></div>
+<?= $Grid->akun_id->Lookup->getParamTag($Grid, "p_x" . $Grid->RowIndex . "_akun_id") ?>
+<?php if (!$Grid->akun_id->IsNativeSelect) { ?>
+<script>
+loadjs.ready("fjurnaldgrid", function() {
+    var options = { name: "x<?= $Grid->RowIndex ?>_akun_id", selectId: "fjurnaldgrid_x<?= $Grid->RowIndex ?>_akun_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fjurnaldgrid.lists.akun_id?.lookupOptions.length) {
+        options.data = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid" };
+    } else {
+        options.ajax = { id: "x<?= $Grid->RowIndex ?>_akun_id", form: "fjurnaldgrid", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.jurnald.fields.akun_id.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+<?php } ?>
 </span>
 <?php } ?>
 <?php if ($Grid->RowType == RowType::VIEW) { // View record ?>

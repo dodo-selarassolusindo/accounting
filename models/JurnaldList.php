@@ -153,8 +153,8 @@ class JurnaldList extends Jurnald
     // Set field visibility
     public function setVisibility()
     {
-        $this->id->setVisibility();
-        $this->jurnal_id->setVisibility();
+        $this->id->Visible = false;
+        $this->jurnal_id->Visible = false;
         $this->akun_id->setVisibility();
         $this->debet->setVisibility();
         $this->kredit->setVisibility();
@@ -698,6 +698,9 @@ class JurnaldList extends Jurnald
         // Setup other options
         $this->setupOtherOptions();
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->akun_id);
+
         // Update form name to avoid conflict
         if ($this->IsModal) {
             $this->FormName = "fjurnaldgrid";
@@ -1003,8 +1006,6 @@ class JurnaldList extends Jurnald
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id, $ctrl); // id
-            $this->updateSort($this->jurnal_id, $ctrl); // jurnal_id
             $this->updateSort($this->akun_id, $ctrl); // akun_id
             $this->updateSort($this->debet, $ctrl); // debet
             $this->updateSort($this->kredit, $ctrl); // kredit
@@ -1289,8 +1290,6 @@ class JurnaldList extends Jurnald
             $item = &$option->addGroupOption();
             $item->Body = "";
             $item->Visible = $this->UseColumnVisibility;
-            $this->createColumnOption($option, "id");
-            $this->createColumnOption($option, "jurnal_id");
             $this->createColumnOption($option, "akun_id");
             $this->createColumnOption($option, "debet");
             $this->createColumnOption($option, "kredit");
@@ -1798,24 +1797,37 @@ class JurnaldList extends Jurnald
             $this->jurnal_id->ViewValue = FormatNumber($this->jurnal_id->ViewValue, $this->jurnal_id->formatPattern());
 
             // akun_id
-            $this->akun_id->ViewValue = $this->akun_id->CurrentValue;
-            $this->akun_id->ViewValue = FormatNumber($this->akun_id->ViewValue, $this->akun_id->formatPattern());
+            $curVal = strval($this->akun_id->CurrentValue);
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+                if ($this->akun_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->akun_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                    } else {
+                        $this->akun_id->ViewValue = FormatNumber($this->akun_id->CurrentValue, $this->akun_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->akun_id->ViewValue = null;
+            }
 
             // debet
             $this->debet->ViewValue = $this->debet->CurrentValue;
             $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+            $this->debet->CellCssStyle .= "text-align: right;";
 
             // kredit
             $this->kredit->ViewValue = $this->kredit->CurrentValue;
             $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
-
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
-
-            // jurnal_id
-            $this->jurnal_id->HrefValue = "";
-            $this->jurnal_id->TooltipValue = "";
+            $this->kredit->CellCssStyle .= "text-align: right;";
 
             // akun_id
             $this->akun_id->HrefValue = "";
@@ -1980,6 +1992,8 @@ class JurnaldList extends Jurnald
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_akun_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
@@ -2151,6 +2165,7 @@ class JurnaldList extends Jurnald
     public function pageLoad()
     {
         //Log("Page Load");
+        $this->akun_id->DisplayValueSeparator = ' - ';
     }
 
     // Page Unload event

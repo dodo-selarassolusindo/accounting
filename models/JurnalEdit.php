@@ -1321,6 +1321,7 @@ class JurnalEdit extends Jurnal
     public function pageLoad()
     {
         //Log("Page Load");
+        $this->period_id->DisplayValueSeparator = ' - ';
     }
 
     // Page Unload event

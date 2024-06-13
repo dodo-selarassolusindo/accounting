@@ -537,6 +537,9 @@ class JurnaldView extends Jurnald
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->akun_id);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -795,24 +798,37 @@ class JurnaldView extends Jurnald
             $this->jurnal_id->ViewValue = FormatNumber($this->jurnal_id->ViewValue, $this->jurnal_id->formatPattern());
 
             // akun_id
-            $this->akun_id->ViewValue = $this->akun_id->CurrentValue;
-            $this->akun_id->ViewValue = FormatNumber($this->akun_id->ViewValue, $this->akun_id->formatPattern());
+            $curVal = strval($this->akun_id->CurrentValue);
+            if ($curVal != "") {
+                $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+                if ($this->akun_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                    $sqlWrk = $this->akun_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $config = $conn->getConfiguration();
+                    $config->setResultCache($this->Cache);
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                    } else {
+                        $this->akun_id->ViewValue = FormatNumber($this->akun_id->CurrentValue, $this->akun_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->akun_id->ViewValue = null;
+            }
 
             // debet
             $this->debet->ViewValue = $this->debet->CurrentValue;
             $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+            $this->debet->CellCssStyle .= "text-align: right;";
 
             // kredit
             $this->kredit->ViewValue = $this->kredit->CurrentValue;
             $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
-
-            // id
-            $this->id->HrefValue = "";
-            $this->id->TooltipValue = "";
-
-            // jurnal_id
-            $this->jurnal_id->HrefValue = "";
-            $this->jurnal_id->TooltipValue = "";
+            $this->kredit->CellCssStyle .= "text-align: right;";
 
             // akun_id
             $this->akun_id->HrefValue = "";
@@ -930,6 +946,8 @@ class JurnaldView extends Jurnald
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_akun_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
@@ -997,6 +1015,7 @@ class JurnaldView extends Jurnald
     public function pageLoad()
     {
         //Log("Page Load");
+        $this->akun_id->DisplayValueSeparator = ' - ';
     }
 
     // Page Unload event

@@ -173,12 +173,16 @@ class Jurnald extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->akun_id->InputTextType = "text";
         $this->akun_id->Raw = true;
+        $this->akun_id->setSelectMultiple(false); // Select one
+        $this->akun_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->akun_id->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->akun_id->Lookup = new Lookup($this->akun_id, 'akun', false, 'id', ["kode","nama","",""], '', '', [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`kode`, ''),'" . ValueSeparator(1, $this->akun_id) . "',COALESCE(`nama`,''))");
         $this->akun_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->akun_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->akun_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['akun_id'] = &$this->akun_id;
 
         // debet
@@ -1285,16 +1289,37 @@ class Jurnald extends DbTable
         $this->jurnal_id->ViewValue = FormatNumber($this->jurnal_id->ViewValue, $this->jurnal_id->formatPattern());
 
         // akun_id
-        $this->akun_id->ViewValue = $this->akun_id->CurrentValue;
-        $this->akun_id->ViewValue = FormatNumber($this->akun_id->ViewValue, $this->akun_id->formatPattern());
+        $curVal = strval($this->akun_id->CurrentValue);
+        if ($curVal != "") {
+            $this->akun_id->ViewValue = $this->akun_id->lookupCacheOption($curVal);
+            if ($this->akun_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->akun_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->akun_id->Lookup->getTable()->Fields["id"]->searchDataType(), "");
+                $sqlWrk = $this->akun_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $config = $conn->getConfiguration();
+                $config->setResultCache($this->Cache);
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->CacheProfile)->fetchAll();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->akun_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->akun_id->ViewValue = $this->akun_id->displayValue($arwrk);
+                } else {
+                    $this->akun_id->ViewValue = FormatNumber($this->akun_id->CurrentValue, $this->akun_id->formatPattern());
+                }
+            }
+        } else {
+            $this->akun_id->ViewValue = null;
+        }
 
         // debet
         $this->debet->ViewValue = $this->debet->CurrentValue;
         $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+        $this->debet->CellCssStyle .= "text-align: right;";
 
         // kredit
         $this->kredit->ViewValue = $this->kredit->CurrentValue;
         $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+        $this->kredit->CellCssStyle .= "text-align: right;";
 
         // id
         $this->id->HrefValue = "";
@@ -1351,11 +1376,7 @@ class Jurnald extends DbTable
 
         // akun_id
         $this->akun_id->setupEditAttributes();
-        $this->akun_id->EditValue = $this->akun_id->CurrentValue;
         $this->akun_id->PlaceHolder = RemoveHtml($this->akun_id->caption());
-        if (strval($this->akun_id->EditValue) != "" && is_numeric($this->akun_id->EditValue)) {
-            $this->akun_id->EditValue = FormatNumber($this->akun_id->EditValue, null);
-        }
 
         // debet
         $this->debet->setupEditAttributes();
@@ -1401,8 +1422,6 @@ class Jurnald extends DbTable
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->id);
-                    $doc->exportCaption($this->jurnal_id);
                     $doc->exportCaption($this->akun_id);
                     $doc->exportCaption($this->debet);
                     $doc->exportCaption($this->kredit);
@@ -1438,8 +1457,6 @@ class Jurnald extends DbTable
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->id);
-                        $doc->exportField($this->jurnal_id);
                         $doc->exportField($this->akun_id);
                         $doc->exportField($this->debet);
                         $doc->exportField($this->kredit);
