@@ -148,6 +148,7 @@ class NoteList extends Note
         $this->NoteID->setVisibility();
         $this->Tanggal->setVisibility();
         $this->Catatan->setVisibility();
+        $this->Status->setVisibility();
     }
 
     // Constructor
@@ -691,6 +692,9 @@ class NoteList extends Note
         // Setup other options
         $this->setupOtherOptions();
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->Status);
+
         // Update form name to avoid conflict
         if ($this->IsModal) {
             $this->FormName = "fnotegrid";
@@ -1021,6 +1025,7 @@ class NoteList extends Note
         $filterList = Concat($filterList, $this->NoteID->AdvancedSearch->toJson(), ","); // Field NoteID
         $filterList = Concat($filterList, $this->Tanggal->AdvancedSearch->toJson(), ","); // Field Tanggal
         $filterList = Concat($filterList, $this->Catatan->AdvancedSearch->toJson(), ","); // Field Catatan
+        $filterList = Concat($filterList, $this->Status->AdvancedSearch->toJson(), ","); // Field Status
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1083,6 +1088,14 @@ class NoteList extends Note
         $this->Catatan->AdvancedSearch->SearchValue2 = @$filter["y_Catatan"];
         $this->Catatan->AdvancedSearch->SearchOperator2 = @$filter["w_Catatan"];
         $this->Catatan->AdvancedSearch->save();
+
+        // Field Status
+        $this->Status->AdvancedSearch->SearchValue = @$filter["x_Status"];
+        $this->Status->AdvancedSearch->SearchOperator = @$filter["z_Status"];
+        $this->Status->AdvancedSearch->SearchCondition = @$filter["v_Status"];
+        $this->Status->AdvancedSearch->SearchValue2 = @$filter["y_Status"];
+        $this->Status->AdvancedSearch->SearchOperator2 = @$filter["w_Status"];
+        $this->Status->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
     }
@@ -1204,6 +1217,7 @@ class NoteList extends Note
             $this->updateSort($this->NoteID, $ctrl); // NoteID
             $this->updateSort($this->Tanggal, $ctrl); // Tanggal
             $this->updateSort($this->Catatan, $ctrl); // Catatan
+            $this->updateSort($this->Status, $ctrl); // Status
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1231,6 +1245,7 @@ class NoteList extends Note
                 $this->NoteID->setSort("");
                 $this->Tanggal->setSort("");
                 $this->Catatan->setSort("");
+                $this->Status->setSort("");
             }
 
             // Reset start position
@@ -1483,6 +1498,7 @@ class NoteList extends Note
             $this->createColumnOption($option, "NoteID");
             $this->createColumnOption($option, "Tanggal");
             $this->createColumnOption($option, "Catatan");
+            $this->createColumnOption($option, "Status");
         }
 
         // Set up custom actions
@@ -1924,6 +1940,7 @@ class NoteList extends Note
         $this->NoteID->setDbValue($row['NoteID']);
         $this->Tanggal->setDbValue($row['Tanggal']);
         $this->Catatan->setDbValue($row['Catatan']);
+        $this->Status->setDbValue($row['Status']);
     }
 
     // Return a row with default values
@@ -1933,6 +1950,7 @@ class NoteList extends Note
         $row['NoteID'] = $this->NoteID->DefaultValue;
         $row['Tanggal'] = $this->Tanggal->DefaultValue;
         $row['Catatan'] = $this->Catatan->DefaultValue;
+        $row['Status'] = $this->Status->DefaultValue;
         return $row;
     }
 
@@ -1979,6 +1997,8 @@ class NoteList extends Note
 
         // Catatan
 
+        // Status
+
         // View row
         if ($this->RowType == RowType::VIEW) {
             // NoteID
@@ -1991,6 +2011,13 @@ class NoteList extends Note
             // Catatan
             $this->Catatan->ViewValue = $this->Catatan->CurrentValue;
 
+            // Status
+            if (strval($this->Status->CurrentValue) != "") {
+                $this->Status->ViewValue = $this->Status->optionCaption($this->Status->CurrentValue);
+            } else {
+                $this->Status->ViewValue = null;
+            }
+
             // NoteID
             $this->NoteID->HrefValue = "";
             $this->NoteID->TooltipValue = "";
@@ -2002,6 +2029,10 @@ class NoteList extends Note
             // Catatan
             $this->Catatan->HrefValue = "";
             $this->Catatan->TooltipValue = "";
+
+            // Status
+            $this->Status->HrefValue = "";
+            $this->Status->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -2246,6 +2277,8 @@ class NoteList extends Note
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_Status":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

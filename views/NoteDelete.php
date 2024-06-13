@@ -59,6 +59,9 @@ $Page->showMessage();
 <?php if ($Page->Catatan->Visible) { // Catatan ?>
         <th class="<?= $Page->Catatan->headerCellClass() ?>"><span id="elh_note_Catatan" class="note_Catatan"><?= $Page->Catatan->caption() ?></span></th>
 <?php } ?>
+<?php if ($Page->Status->Visible) { // Status ?>
+        <th class="<?= $Page->Status->headerCellClass() ?>"><span id="elh_note_Status" class="note_Status"><?= $Page->Status->caption() ?></span></th>
+<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -101,6 +104,14 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->Catatan->viewAttributes() ?>>
 <?= $Page->Catatan->getViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($Page->Status->Visible) { // Status ?>
+        <td<?= $Page->Status->cellAttributes() ?>>
+<span id="">
+<span<?= $Page->Status->viewAttributes() ?>>
+<?= $Page->Status->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

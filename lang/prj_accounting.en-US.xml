@@ -346,6 +346,15 @@
       <field id="catatan">
         <phrase id="fldcaption" value="Catatan" />
       </field>
+      <field id="status">
+        <phrase id="fldcaption" value="Status" />
+        <phrase id="fldtagvalue1" value="Terkonfirmasi" />
+        <phrase id="fldtagcaption1" value="Terkonfirmasi" />
+        <phrase id="fldtagvalue2" value="Sedang Dikerjakan" />
+        <phrase id="fldtagcaption2" value="Sedang Dikerjakan" />
+        <phrase id="fldtagvalue3" value="Selesai" />
+        <phrase id="fldtagcaption3" value="Selesai" />
+      </field>
     </table>
     <table id="pajak">
       <phrase id="tblcaption" value="pajak" />

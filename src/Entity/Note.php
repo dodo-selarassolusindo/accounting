@@ -39,6 +39,9 @@ class Note extends AbstractEntity
     #[Column(name: "Catatan", type: "text")]
     private string $catatan;
 
+    #[Column(name: "Status", type: "string")]
+    private string $status;
+
     public function getNoteId(): int
     {
         return $this->noteId;
@@ -69,6 +72,20 @@ class Note extends AbstractEntity
     public function setCatatan(string $value): static
     {
         $this->catatan = RemoveXss($value);
+        return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $value): static
+    {
+        if (!in_array($value, ["Terkonfirmasi", "Sedang Dikerjakan", "Selesai"])) {
+            throw new \InvalidArgumentException("Invalid 'Status' value");
+        }
+        $this->status = $value;
         return $this;
     }
 }

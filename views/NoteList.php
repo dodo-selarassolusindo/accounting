@@ -164,6 +164,9 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->Catatan->Visible) { // Catatan ?>
         <th data-name="Catatan" class="<?= $Page->Catatan->headerCellClass() ?>"><div id="elh_note_Catatan" class="note_Catatan"><?= $Page->renderFieldHeader($Page->Catatan) ?></div></th>
 <?php } ?>
+<?php if ($Page->Status->Visible) { // Status ?>
+        <th data-name="Status" class="<?= $Page->Status->headerCellClass() ?>"><div id="elh_note_Status" class="note_Status"><?= $Page->renderFieldHeader($Page->Status) ?></div></th>
+<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -212,6 +215,14 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_note_Catatan" class="el_note_Catatan">
 <span<?= $Page->Catatan->viewAttributes() ?>>
 <?= $Page->Catatan->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->Status->Visible) { // Status ?>
+        <td data-name="Status"<?= $Page->Status->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_note_Status" class="el_note_Status">
+<span<?= $Page->Status->viewAttributes() ?>>
+<?= $Page->Status->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

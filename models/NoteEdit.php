@@ -124,6 +124,7 @@ class NoteEdit extends Note
         $this->NoteID->setVisibility();
         $this->Tanggal->setVisibility();
         $this->Catatan->setVisibility();
+        $this->Status->setVisibility();
     }
 
     // Constructor
@@ -508,6 +509,9 @@ class NoteEdit extends Note
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->Status);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -774,6 +778,16 @@ class NoteEdit extends Note
                 $this->Catatan->setFormValue($val);
             }
         }
+
+        // Check field name 'Status' first before field var 'x_Status'
+        $val = $CurrentForm->hasValue("Status") ? $CurrentForm->getValue("Status") : $CurrentForm->getValue("x_Status");
+        if (!$this->Status->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->Status->Visible = false; // Disable update for API request
+            } else {
+                $this->Status->setFormValue($val);
+            }
+        }
     }
 
     // Restore form values
@@ -784,6 +798,7 @@ class NoteEdit extends Note
         $this->Tanggal->CurrentValue = $this->Tanggal->FormValue;
         $this->Tanggal->CurrentValue = UnFormatDateTime($this->Tanggal->CurrentValue, $this->Tanggal->formatPattern());
         $this->Catatan->CurrentValue = $this->Catatan->FormValue;
+        $this->Status->CurrentValue = $this->Status->FormValue;
     }
 
     /**
@@ -882,6 +897,7 @@ class NoteEdit extends Note
         $this->NoteID->setDbValue($row['NoteID']);
         $this->Tanggal->setDbValue($row['Tanggal']);
         $this->Catatan->setDbValue($row['Catatan']);
+        $this->Status->setDbValue($row['Status']);
     }
 
     // Return a row with default values
@@ -891,6 +907,7 @@ class NoteEdit extends Note
         $row['NoteID'] = $this->NoteID->DefaultValue;
         $row['Tanggal'] = $this->Tanggal->DefaultValue;
         $row['Catatan'] = $this->Catatan->DefaultValue;
+        $row['Status'] = $this->Status->DefaultValue;
         return $row;
     }
 
@@ -934,6 +951,9 @@ class NoteEdit extends Note
         // Catatan
         $this->Catatan->RowCssClass = "row";
 
+        // Status
+        $this->Status->RowCssClass = "row";
+
         // View row
         if ($this->RowType == RowType::VIEW) {
             // NoteID
@@ -946,6 +966,13 @@ class NoteEdit extends Note
             // Catatan
             $this->Catatan->ViewValue = $this->Catatan->CurrentValue;
 
+            // Status
+            if (strval($this->Status->CurrentValue) != "") {
+                $this->Status->ViewValue = $this->Status->optionCaption($this->Status->CurrentValue);
+            } else {
+                $this->Status->ViewValue = null;
+            }
+
             // NoteID
             $this->NoteID->HrefValue = "";
 
@@ -954,6 +981,9 @@ class NoteEdit extends Note
 
             // Catatan
             $this->Catatan->HrefValue = "";
+
+            // Status
+            $this->Status->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
             // NoteID
             $this->NoteID->setupEditAttributes();
@@ -966,6 +996,10 @@ class NoteEdit extends Note
             $this->Catatan->EditValue = HtmlEncode($this->Catatan->CurrentValue);
             $this->Catatan->PlaceHolder = RemoveHtml($this->Catatan->caption());
 
+            // Status
+            $this->Status->EditValue = $this->Status->options(false);
+            $this->Status->PlaceHolder = RemoveHtml($this->Status->caption());
+
             // Edit refer script
 
             // NoteID
@@ -976,6 +1010,9 @@ class NoteEdit extends Note
 
             // Catatan
             $this->Catatan->HrefValue = "";
+
+            // Status
+            $this->Status->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1010,6 +1047,11 @@ class NoteEdit extends Note
             if ($this->Catatan->Visible && $this->Catatan->Required) {
                 if (!$this->Catatan->IsDetailKey && EmptyValue($this->Catatan->FormValue)) {
                     $this->Catatan->addErrorMessage(str_replace("%s", $this->Catatan->caption(), $this->Catatan->RequiredErrorMessage));
+                }
+            }
+            if ($this->Status->Visible && $this->Status->Required) {
+                if ($this->Status->FormValue == "") {
+                    $this->Status->addErrorMessage(str_replace("%s", $this->Status->caption(), $this->Status->RequiredErrorMessage));
                 }
             }
 
@@ -1107,6 +1149,9 @@ class NoteEdit extends Note
 
         // Catatan
         $this->Catatan->setDbValueDef($rsnew, $this->Catatan->CurrentValue, $this->Catatan->ReadOnly);
+
+        // Status
+        $this->Status->setDbValueDef($rsnew, $this->Status->CurrentValue, $this->Status->ReadOnly);
         return $rsnew;
     }
 
@@ -1121,6 +1166,9 @@ class NoteEdit extends Note
         }
         if (isset($row['Catatan'])) { // Catatan
             $this->Catatan->CurrentValue = $row['Catatan'];
+        }
+        if (isset($row['Status'])) { // Status
+            $this->Status->CurrentValue = $row['Status'];
         }
     }
 
@@ -1148,6 +1196,8 @@ class NoteEdit extends Note
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_Status":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

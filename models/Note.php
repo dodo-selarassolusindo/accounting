@@ -49,6 +49,7 @@ class Note extends DbTable
     public $NoteID;
     public $Tanggal;
     public $Catatan;
+    public $Status;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -171,6 +172,33 @@ class Note extends DbTable
         $this->Catatan->Required = true; // Required field
         $this->Catatan->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY"];
         $this->Fields['Catatan'] = &$this->Catatan;
+
+        // Status
+        $this->Status = new DbField(
+            $this, // Table
+            'x_Status', // Variable name
+            'Status', // Name
+            '`Status`', // Expression
+            '`Status`', // Basic search expression
+            200, // Type
+            17, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`Status`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'RADIO' // Edit Tag
+        );
+        $this->Status->InputTextType = "text";
+        $this->Status->Raw = true;
+        $this->Status->Nullable = false; // NOT NULL field
+        $this->Status->Required = true; // Required field
+        $this->Status->Lookup = new Lookup($this->Status, 'note', false, '', ["","","",""], '', '', [], [], [], [], [], [], false, '', '', "");
+        $this->Status->OptionCount = 3;
+        $this->Status->SearchOperators = ["=", "<>"];
+        $this->Fields['Status'] = &$this->Status;
 
         // Add Doctrine Cache
         $this->Cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
@@ -714,6 +742,7 @@ class Note extends DbTable
         $this->NoteID->DbValue = $row['NoteID'];
         $this->Tanggal->DbValue = $row['Tanggal'];
         $this->Catatan->DbValue = $row['Catatan'];
+        $this->Status->DbValue = $row['Status'];
     }
 
     // Delete uploaded files
@@ -1076,6 +1105,7 @@ class Note extends DbTable
         $this->NoteID->setDbValue($row['NoteID']);
         $this->Tanggal->setDbValue($row['Tanggal']);
         $this->Catatan->setDbValue($row['Catatan']);
+        $this->Status->setDbValue($row['Status']);
     }
 
     // Render list content
@@ -1112,6 +1142,8 @@ class Note extends DbTable
 
         // Catatan
 
+        // Status
+
         // NoteID
         $this->NoteID->ViewValue = $this->NoteID->CurrentValue;
 
@@ -1121,6 +1153,13 @@ class Note extends DbTable
 
         // Catatan
         $this->Catatan->ViewValue = $this->Catatan->CurrentValue;
+
+        // Status
+        if (strval($this->Status->CurrentValue) != "") {
+            $this->Status->ViewValue = $this->Status->optionCaption($this->Status->CurrentValue);
+        } else {
+            $this->Status->ViewValue = null;
+        }
 
         // NoteID
         $this->NoteID->HrefValue = "";
@@ -1133,6 +1172,10 @@ class Note extends DbTable
         // Catatan
         $this->Catatan->HrefValue = "";
         $this->Catatan->TooltipValue = "";
+
+        // Status
+        $this->Status->HrefValue = "";
+        $this->Status->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1159,6 +1202,10 @@ class Note extends DbTable
         $this->Catatan->setupEditAttributes();
         $this->Catatan->EditValue = $this->Catatan->CurrentValue;
         $this->Catatan->PlaceHolder = RemoveHtml($this->Catatan->caption());
+
+        // Status
+        $this->Status->EditValue = $this->Status->options(false);
+        $this->Status->PlaceHolder = RemoveHtml($this->Status->caption());
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1191,10 +1238,12 @@ class Note extends DbTable
                     $doc->exportCaption($this->NoteID);
                     $doc->exportCaption($this->Tanggal);
                     $doc->exportCaption($this->Catatan);
+                    $doc->exportCaption($this->Status);
                 } else {
                     $doc->exportCaption($this->NoteID);
                     $doc->exportCaption($this->Tanggal);
                     $doc->exportCaption($this->Catatan);
+                    $doc->exportCaption($this->Status);
                 }
                 $doc->endExportRow();
             }
@@ -1224,10 +1273,12 @@ class Note extends DbTable
                         $doc->exportField($this->NoteID);
                         $doc->exportField($this->Tanggal);
                         $doc->exportField($this->Catatan);
+                        $doc->exportField($this->Status);
                     } else {
                         $doc->exportField($this->NoteID);
                         $doc->exportField($this->Tanggal);
                         $doc->exportField($this->Catatan);
+                        $doc->exportField($this->Status);
                     }
                     $doc->endExportRow($rowCnt);
                 }

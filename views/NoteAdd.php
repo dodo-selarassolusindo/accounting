@@ -23,7 +23,8 @@ loadjs.ready(["wrapper", "head"], function () {
         // Add fields
         .setFields([
             ["Tanggal", [fields.Tanggal.visible && fields.Tanggal.required ? ew.Validators.required(fields.Tanggal.caption) : null], fields.Tanggal.isInvalid],
-            ["Catatan", [fields.Catatan.visible && fields.Catatan.required ? ew.Validators.required(fields.Catatan.caption) : null], fields.Catatan.isInvalid]
+            ["Catatan", [fields.Catatan.visible && fields.Catatan.required ? ew.Validators.required(fields.Catatan.caption) : null], fields.Catatan.isInvalid],
+            ["Status", [fields.Status.visible && fields.Status.required ? ew.Validators.required(fields.Status.caption) : null], fields.Status.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -39,6 +40,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "Status": <?= $Page->Status->toClientList($Page) ?>,
         })
         .build();
     window[form.id] = form;
@@ -76,6 +78,37 @@ $Page->showMessage();
 <textarea data-table="note" data-field="x_Catatan" name="x_Catatan" id="x_Catatan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->Catatan->getPlaceHolder()) ?>"<?= $Page->Catatan->editAttributes() ?> aria-describedby="x_Catatan_help"><?= $Page->Catatan->EditValue ?></textarea>
 <?= $Page->Catatan->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->Catatan->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->Status->Visible) { // Status ?>
+    <div id="r_Status"<?= $Page->Status->rowAttributes() ?>>
+        <label id="elh_note_Status" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Status->caption() ?><?= $Page->Status->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->Status->cellAttributes() ?>>
+<span id="el_note_Status">
+<template id="tp_x_Status">
+    <div class="form-check">
+        <input type="radio" class="form-check-input" data-table="note" data-field="x_Status" name="x_Status" id="x_Status"<?= $Page->Status->editAttributes() ?>>
+        <label class="form-check-label"></label>
+    </div>
+</template>
+<div id="dsl_x_Status" class="ew-item-list"></div>
+<selection-list hidden
+    id="x_Status"
+    name="x_Status"
+    value="<?= HtmlEncode($Page->Status->CurrentValue) ?>"
+    data-type="select-one"
+    data-template="tp_x_Status"
+    data-target="dsl_x_Status"
+    data-repeatcolumn="5"
+    class="form-control<?= $Page->Status->isInvalidClass() ?>"
+    data-table="note"
+    data-field="x_Status"
+    data-value-separator="<?= $Page->Status->displayValueSeparatorAttribute() ?>"
+    <?= $Page->Status->editAttributes() ?>></selection-list>
+<?= $Page->Status->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->Status->getErrorMessage() ?></div>
 </span>
 </div></div>
     </div>

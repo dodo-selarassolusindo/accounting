@@ -89,6 +89,17 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->Status->Visible) { // Status ?>
+    <tr id="r_Status"<?= $Page->Status->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_note_Status"><?= $Page->Status->caption() ?></span></td>
+        <td data-name="Status"<?= $Page->Status->cellAttributes() ?>>
+<span id="el_note_Status">
+<span<?= $Page->Status->viewAttributes() ?>>
+<?= $Page->Status->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 </table>
 </form>
 <?php if (!$Page->IsModal) { ?>

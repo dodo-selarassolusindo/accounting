@@ -142,6 +142,7 @@ class NoteView extends Note
         $this->NoteID->setVisibility();
         $this->Tanggal->setVisibility();
         $this->Catatan->setVisibility();
+        $this->Status->setVisibility();
     }
 
     // Constructor
@@ -541,6 +542,9 @@ class NoteView extends Note
             $this->InlineDelete = true;
         }
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->Status);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -848,6 +852,7 @@ class NoteView extends Note
         $this->NoteID->setDbValue($row['NoteID']);
         $this->Tanggal->setDbValue($row['Tanggal']);
         $this->Catatan->setDbValue($row['Catatan']);
+        $this->Status->setDbValue($row['Status']);
     }
 
     // Return a row with default values
@@ -857,6 +862,7 @@ class NoteView extends Note
         $row['NoteID'] = $this->NoteID->DefaultValue;
         $row['Tanggal'] = $this->Tanggal->DefaultValue;
         $row['Catatan'] = $this->Catatan->DefaultValue;
+        $row['Status'] = $this->Status->DefaultValue;
         return $row;
     }
 
@@ -884,6 +890,8 @@ class NoteView extends Note
 
         // Catatan
 
+        // Status
+
         // View row
         if ($this->RowType == RowType::VIEW) {
             // NoteID
@@ -896,6 +904,13 @@ class NoteView extends Note
             // Catatan
             $this->Catatan->ViewValue = $this->Catatan->CurrentValue;
 
+            // Status
+            if (strval($this->Status->CurrentValue) != "") {
+                $this->Status->ViewValue = $this->Status->optionCaption($this->Status->CurrentValue);
+            } else {
+                $this->Status->ViewValue = null;
+            }
+
             // NoteID
             $this->NoteID->HrefValue = "";
             $this->NoteID->TooltipValue = "";
@@ -907,6 +922,10 @@ class NoteView extends Note
             // Catatan
             $this->Catatan->HrefValue = "";
             $this->Catatan->TooltipValue = "";
+
+            // Status
+            $this->Status->HrefValue = "";
+            $this->Status->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1096,6 +1115,8 @@ class NoteView extends Note
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_Status":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
