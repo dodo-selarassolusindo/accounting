@@ -68,6 +68,11 @@ loadjs.ready(["wrapper", "head"], function () {
 <div id="ew-list">
 <?php if ($Grid->TotalRecords > 0 || $Grid->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?= $Grid->isAddOrEdit() ? " ew-grid-add-edit" : "" ?> <?= $Grid->TableGridClass ?>">
+<?php if ($Grid->ShowOtherOptions) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php $Grid->OtherOptions->render("body") ?>
+</div>
+<?php } ?>
 <div id="fjurnaldgrid" class="ew-form ew-list-form">
 <div id="gmp_jurnald" class="card-body ew-grid-middle-panel <?= $Grid->TableContainerClass ?>" style="<?= $Grid->TableContainerStyle ?>">
 <table id="tbl_jurnaldgrid" class="<?= $Grid->TableClass ?>"><!-- .ew-table -->
@@ -324,11 +329,6 @@ loadjs.ready(["fjurnaldgrid","load"], () => fjurnaldgrid.updateLists(<?= $Grid->
 // Close result set
 $Grid->Recordset?->free();
 ?>
-<?php if ($Grid->ShowOtherOptions) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php $Grid->OtherOptions->render("body", "bottom") ?>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } else { ?>
 <div class="ew-list-other-options">
