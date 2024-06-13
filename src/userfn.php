@@ -172,6 +172,13 @@ function Container_Build($builder)
     // ]);
 }
 
+function pre($value)
+{
+    echo '<pre>';
+    print_r($value);
+    echo '</pre>';
+}
+
 // Add listeners
 AddListener(DatabaseConnectingEvent::NAME, fn(DatabaseConnectingEvent $event) => Database_Connecting($event));
 AddListener(DatabaseConnectedEvent::NAME, fn(DatabaseConnectedEvent $event) => Database_Connected($event->getConnection()));
