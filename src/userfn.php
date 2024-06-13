@@ -171,6 +171,7 @@ function Container_Build($builder)
     //    }
     // ]);
 }
+date_default_timezone_set('Asia/Jakarta');
 
 // Add listeners
 AddListener(DatabaseConnectingEvent::NAME, fn(DatabaseConnectingEvent $event) => Database_Connecting($event));
