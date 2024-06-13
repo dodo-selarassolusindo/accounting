@@ -1696,6 +1696,7 @@ class Jurnal extends DbTable
     {
         // Enter your code here
         if ($this->CurrentAction == 'add') {
+            echo '<pre>'.'add'.'</pre>';
             // isi nomor jurnal
             $tahunBulan = date('ym');
             $lastNomor = ExecuteScalar("SELECT MAX(nomer) AS lastNomor FROM jurnal WHERE nomer LIKE '%" . $tahunBulan . "%'");
