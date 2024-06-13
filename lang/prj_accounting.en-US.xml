@@ -95,6 +95,9 @@
     <menu id="7">
       <phrase id="menutext" value="kelompok" />
     </menu>
+    <menu id="60">
+      <phrase id="menutext" value="Note" />
+    </menu>
     <table id="akun">
       <phrase id="tblcaption" value="Detail" />
       <field id="id">
@@ -330,6 +333,18 @@
       </field>
       <field id="nama">
         <phrase id="fldcaption" value="nama" />
+      </field>
+    </table>
+    <table id="note">
+      <phrase id="tblcaption" value="Note" />
+      <field id="noteid">
+        <phrase id="fldcaption" value="Note ID" />
+      </field>
+      <field id="tanggal">
+        <phrase id="fldcaption" value="Tanggal" />
+      </field>
+      <field id="catatan">
+        <phrase id="fldcaption" value="Catatan" />
       </field>
     </table>
     <table id="pajak">

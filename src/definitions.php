@@ -93,6 +93,7 @@ return [
     "konversi" => \DI\create(Konversi::class),
     "kurs" => \DI\create(Kurs::class),
     "matauang" => \DI\create(Matauang::class),
+    "note" => \DI\create(Note::class),
     "pajak" => \DI\create(Pajak::class),
     "pengiriman" => \DI\create(Pengiriman::class),
     "periode" => \DI\create(Periode::class),

@@ -63,6 +63,11 @@
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
+        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
+        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
+        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
+        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
+        clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
         clone ($p['PHPMaker2024\\prj_accounting\\Attributes\\Get'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('PHPMaker2024\\prj_accounting\\Attributes\\Get')),
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Get'],
         clone $p['PHPMaker2024\\prj_accounting\\Attributes\\Map'],
@@ -130,6 +135,31 @@
     [
         'PHPMaker2024\\prj_accounting\\Attributes\\Map' => [
             'methods' => [
+                [
+                    'GET',
+                    'POST',
+                    'OPTIONS',
+                ],
+                [
+                    'GET',
+                    'POST',
+                    'OPTIONS',
+                ],
+                [
+                    'GET',
+                    'POST',
+                    'OPTIONS',
+                ],
+                [
+                    'GET',
+                    'POST',
+                    'OPTIONS',
+                ],
+                [
+                    'GET',
+                    'POST',
+                    'OPTIONS',
+                ],
                 [
                     'GET',
                     'POST',
@@ -816,6 +846,11 @@
                 '/matauangview[/{id}]',
                 '/matauangedit[/{id}]',
                 '/matauangdelete[/{id}]',
+                '/notelist[/{NoteID}]',
+                '/noteadd[/{NoteID}]',
+                '/noteview[/{NoteID}]',
+                '/noteedit[/{NoteID}]',
+                '/notedelete[/{NoteID}]',
                 '/swagger/swagger',
                 '/[index]',
                 '/pajaklist[/{id}]',
@@ -943,6 +978,11 @@
                 'PHPMaker2024\\prj_accounting\\MatauangController:view',
                 'PHPMaker2024\\prj_accounting\\MatauangController:edit',
                 'PHPMaker2024\\prj_accounting\\MatauangController:delete',
+                'PHPMaker2024\\prj_accounting\\NoteController:list',
+                'PHPMaker2024\\prj_accounting\\NoteController:add',
+                'PHPMaker2024\\prj_accounting\\NoteController:view',
+                'PHPMaker2024\\prj_accounting\\NoteController:edit',
+                'PHPMaker2024\\prj_accounting\\NoteController:delete',
                 'PHPMaker2024\\prj_accounting\\OthersController:swagger',
                 'PHPMaker2024\\prj_accounting\\OthersController:index',
                 'PHPMaker2024\\prj_accounting\\PajakController:list',
@@ -1007,6 +1047,21 @@
                 'PHPMaker2024\\prj_accounting\\TypeController:delete',
             ],
             'middleware' => [
+                [
+                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
+                ],
+                [
+                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
+                ],
+                [
+                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
+                ],
+                [
+                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
+                ],
+                [
+                    'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
+                ],
                 [
                     'PHPMaker2024\\prj_accounting\\PermissionMiddleware',
                 ],
@@ -1445,6 +1500,11 @@
                 'view.matauang',
                 'edit.matauang',
                 'delete.matauang',
+                'list.note',
+                'add.note',
+                'view.note',
+                'edit.note',
+                'delete.note',
                 'swagger',
                 'index',
                 'list.pajak',
@@ -1509,6 +1569,11 @@
                 'delete.type',
             ],
             'options' => [
+                [],
+                [],
+                [],
+                [],
+                [],
                 [],
                 [],
                 [],
@@ -1763,6 +1828,11 @@
         $o[122],
         $o[123],
         $o[124],
+        $o[125],
+        $o[126],
+        $o[127],
+        $o[128],
+        $o[129],
     ],
     []
 );

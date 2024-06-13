@@ -33,6 +33,7 @@ $topMenu->addMenuItem(13, "mi_pengiriman", $Language->menuPhrase("13", "MenuText
 $topMenu->addMenuItem(9, "mi_konversi", $Language->menuPhrase("9", "MenuText"), "konversilist", 25, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(8, "mi_klasifikasi", $Language->menuPhrase("8", "MenuText"), "klasifikasilist", 25, "", true, false, false, "", "", true, false);
 $topMenu->addMenuItem(7, "mi_kelompok", $Language->menuPhrase("7", "MenuText"), "kelompoklist", 25, "", true, false, false, "", "", true, false);
+$topMenu->addMenuItem(60, "mi_note", $Language->menuPhrase("60", "MenuText"), "notelist", -1, "", true, false, false, "", "", true, false);
 echo $topMenu->toScript();
 
 // Sidebar menu
@@ -66,4 +67,5 @@ $sideMenu->addMenuItem(13, "mi_pengiriman", $Language->menuPhrase("13", "MenuTex
 $sideMenu->addMenuItem(9, "mi_konversi", $Language->menuPhrase("9", "MenuText"), "konversilist", 25, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(8, "mi_klasifikasi", $Language->menuPhrase("8", "MenuText"), "klasifikasilist", 25, "", true, false, false, "", "", true, true);
 $sideMenu->addMenuItem(7, "mi_kelompok", $Language->menuPhrase("7", "MenuText"), "kelompoklist", 25, "", true, false, false, "", "", true, true);
+$sideMenu->addMenuItem(60, "mi_note", $Language->menuPhrase("60", "MenuText"), "notelist", -1, "", true, false, false, "", "", true, true);
 echo $sideMenu->toScript();
