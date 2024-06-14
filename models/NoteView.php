@@ -903,6 +903,9 @@ class NoteView extends Note
 
             // Catatan
             $this->Catatan->ViewValue = $this->Catatan->CurrentValue;
+            if ($this->Catatan->ViewValue != null) {
+                $this->Catatan->ViewValue = str_replace(["\r\n", "\n", "\r"], "<br>", $this->Catatan->ViewValue);
+            }
 
             // Status
             if (strval($this->Status->CurrentValue) != "") {
