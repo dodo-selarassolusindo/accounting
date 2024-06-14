@@ -53,6 +53,9 @@ class Jurnal extends DbTable
     public $period_id;
     public $keterangan;
     public $person_id;
+    public $debet;
+    public $kredit;
+    public $selisih;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -275,6 +278,84 @@ class Jurnal extends DbTable
         $this->person_id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->person_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['person_id'] = &$this->person_id;
+
+        // debet
+        $this->debet = new DbField(
+            $this, // Table
+            'x_debet', // Variable name
+            'debet', // Name
+            '`debet`', // Expression
+            '`debet`', // Basic search expression
+            4, // Type
+            15, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`debet`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->debet->addMethod("getDefault", fn() => 0.000);
+        $this->debet->InputTextType = "text";
+        $this->debet->Raw = true;
+        $this->debet->Nullable = false; // NOT NULL field
+        $this->debet->DefaultErrorMessage = $Language->phrase("IncorrectFloat");
+        $this->debet->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->Fields['debet'] = &$this->debet;
+
+        // kredit
+        $this->kredit = new DbField(
+            $this, // Table
+            'x_kredit', // Variable name
+            'kredit', // Name
+            '`kredit`', // Expression
+            '`kredit`', // Basic search expression
+            4, // Type
+            15, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`kredit`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->kredit->addMethod("getDefault", fn() => 0.000);
+        $this->kredit->InputTextType = "text";
+        $this->kredit->Raw = true;
+        $this->kredit->Nullable = false; // NOT NULL field
+        $this->kredit->DefaultErrorMessage = $Language->phrase("IncorrectFloat");
+        $this->kredit->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->Fields['kredit'] = &$this->kredit;
+
+        // selisih
+        $this->selisih = new DbField(
+            $this, // Table
+            'x_selisih', // Variable name
+            'selisih', // Name
+            '`selisih`', // Expression
+            '`selisih`', // Basic search expression
+            4, // Type
+            15, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`selisih`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->selisih->addMethod("getDefault", fn() => 0.000);
+        $this->selisih->InputTextType = "text";
+        $this->selisih->Raw = true;
+        $this->selisih->Nullable = false; // NOT NULL field
+        $this->selisih->DefaultErrorMessage = $Language->phrase("IncorrectFloat");
+        $this->selisih->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->Fields['selisih'] = &$this->selisih;
 
         // Add Doctrine Cache
         $this->Cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
@@ -899,6 +980,9 @@ class Jurnal extends DbTable
         $this->period_id->DbValue = $row['period_id'];
         $this->keterangan->DbValue = $row['keterangan'];
         $this->person_id->DbValue = $row['person_id'];
+        $this->debet->DbValue = $row['debet'];
+        $this->kredit->DbValue = $row['kredit'];
+        $this->selisih->DbValue = $row['selisih'];
     }
 
     // Delete uploaded files
@@ -1273,6 +1357,9 @@ class Jurnal extends DbTable
         $this->period_id->setDbValue($row['period_id']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
+        $this->debet->setDbValue($row['debet']);
+        $this->kredit->setDbValue($row['kredit']);
+        $this->selisih->setDbValue($row['selisih']);
     }
 
     // Render list content
@@ -1316,6 +1403,12 @@ class Jurnal extends DbTable
         // keterangan
 
         // person_id
+
+        // debet
+
+        // kredit
+
+        // selisih
 
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
@@ -1380,6 +1473,18 @@ class Jurnal extends DbTable
         $this->person_id->ViewValue = $this->person_id->CurrentValue;
         $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+        // debet
+        $this->debet->ViewValue = $this->debet->CurrentValue;
+        $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+
+        // kredit
+        $this->kredit->ViewValue = $this->kredit->CurrentValue;
+        $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+
+        // selisih
+        $this->selisih->ViewValue = $this->selisih->CurrentValue;
+        $this->selisih->ViewValue = FormatNumber($this->selisih->ViewValue, $this->selisih->formatPattern());
+
         // id
         $this->id->HrefValue = "";
         $this->id->TooltipValue = "";
@@ -1407,6 +1512,18 @@ class Jurnal extends DbTable
         // person_id
         $this->person_id->HrefValue = "";
         $this->person_id->TooltipValue = "";
+
+        // debet
+        $this->debet->HrefValue = "";
+        $this->debet->TooltipValue = "";
+
+        // kredit
+        $this->kredit->HrefValue = "";
+        $this->kredit->TooltipValue = "";
+
+        // selisih
+        $this->selisih->HrefValue = "";
+        $this->selisih->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1454,6 +1571,30 @@ class Jurnal extends DbTable
             $this->person_id->EditValue = FormatNumber($this->person_id->EditValue, null);
         }
 
+        // debet
+        $this->debet->setupEditAttributes();
+        $this->debet->EditValue = $this->debet->CurrentValue;
+        $this->debet->PlaceHolder = RemoveHtml($this->debet->caption());
+        if (strval($this->debet->EditValue) != "" && is_numeric($this->debet->EditValue)) {
+            $this->debet->EditValue = FormatNumber($this->debet->EditValue, null);
+        }
+
+        // kredit
+        $this->kredit->setupEditAttributes();
+        $this->kredit->EditValue = $this->kredit->CurrentValue;
+        $this->kredit->PlaceHolder = RemoveHtml($this->kredit->caption());
+        if (strval($this->kredit->EditValue) != "" && is_numeric($this->kredit->EditValue)) {
+            $this->kredit->EditValue = FormatNumber($this->kredit->EditValue, null);
+        }
+
+        // selisih
+        $this->selisih->setupEditAttributes();
+        $this->selisih->EditValue = $this->selisih->CurrentValue;
+        $this->selisih->PlaceHolder = RemoveHtml($this->selisih->caption());
+        if (strval($this->selisih->EditValue) != "" && is_numeric($this->selisih->EditValue)) {
+            $this->selisih->EditValue = FormatNumber($this->selisih->EditValue, null);
+        }
+
         // Call Row Rendered event
         $this->rowRendered();
     }
@@ -1485,6 +1626,9 @@ class Jurnal extends DbTable
                     $doc->exportCaption($this->createon);
                     $doc->exportCaption($this->nomer);
                     $doc->exportCaption($this->keterangan);
+                    $doc->exportCaption($this->debet);
+                    $doc->exportCaption($this->kredit);
+                    $doc->exportCaption($this->selisih);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->createon);
@@ -1493,6 +1637,9 @@ class Jurnal extends DbTable
                     $doc->exportCaption($this->period_id);
                     $doc->exportCaption($this->keterangan);
                     $doc->exportCaption($this->person_id);
+                    $doc->exportCaption($this->debet);
+                    $doc->exportCaption($this->kredit);
+                    $doc->exportCaption($this->selisih);
                 }
                 $doc->endExportRow();
             }
@@ -1522,6 +1669,9 @@ class Jurnal extends DbTable
                         $doc->exportField($this->createon);
                         $doc->exportField($this->nomer);
                         $doc->exportField($this->keterangan);
+                        $doc->exportField($this->debet);
+                        $doc->exportField($this->kredit);
+                        $doc->exportField($this->selisih);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->createon);
@@ -1530,6 +1680,9 @@ class Jurnal extends DbTable
                         $doc->exportField($this->period_id);
                         $doc->exportField($this->keterangan);
                         $doc->exportField($this->person_id);
+                        $doc->exportField($this->debet);
+                        $doc->exportField($this->kredit);
+                        $doc->exportField($this->selisih);
                     }
                     $doc->endExportRow($rowCnt);
                 }

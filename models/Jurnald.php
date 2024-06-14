@@ -1559,6 +1559,8 @@ class Jurnald extends DbTable
     public function rowInserted($rsold, $rsnew)
     {
         //Log("Row Inserted");
+        $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsnew["jurnal_id"]."");
+        ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."");
     }
 
     // Row Updating event
@@ -1573,6 +1575,8 @@ class Jurnald extends DbTable
     public function rowUpdated($rsold, $rsnew)
     {
         //Log("Row Updated");
+        $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsold["jurnal_id"]."");
+        ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsold["jurnal_id"]."");
     }
 
     // Row Update Conflict event
@@ -1623,6 +1627,13 @@ class Jurnald extends DbTable
     public function rowDeleted($rs)
     {
         //Log("Row Deleted");
+        $recCountDetail = ExecuteScalar("SELECT COUNT(id) FROM jurnald WHERE jurnal_id = ".$rs["jurnal_id"]."");
+        if ($recCountDetail > 0) {
+            $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rs["jurnal_id"]."");
+            ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rs["jurnal_id"]."");
+        } else {
+            ExecuteStatement("UPDATE jurnal SET debet = 0 WHERE id = ".$rs["jurnal_id"]."");
+        }
     }
 
     // Email Sending event

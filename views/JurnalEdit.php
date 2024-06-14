@@ -33,7 +33,10 @@ loadjs.ready(["wrapper", "head"], function () {
         .setFields([
             ["createon", [fields.createon.visible && fields.createon.required ? ew.Validators.required(fields.createon.caption) : null], fields.createon.isInvalid],
             ["nomer", [fields.nomer.visible && fields.nomer.required ? ew.Validators.required(fields.nomer.caption) : null], fields.nomer.isInvalid],
-            ["keterangan", [fields.keterangan.visible && fields.keterangan.required ? ew.Validators.required(fields.keterangan.caption) : null], fields.keterangan.isInvalid]
+            ["keterangan", [fields.keterangan.visible && fields.keterangan.required ? ew.Validators.required(fields.keterangan.caption) : null], fields.keterangan.isInvalid],
+            ["debet", [fields.debet.visible && fields.debet.required ? ew.Validators.required(fields.debet.caption) : null, ew.Validators.float], fields.debet.isInvalid],
+            ["kredit", [fields.kredit.visible && fields.kredit.required ? ew.Validators.required(fields.kredit.caption) : null, ew.Validators.float], fields.kredit.isInvalid],
+            ["selisih", [fields.selisih.visible && fields.selisih.required ? ew.Validators.required(fields.selisih.caption) : null, ew.Validators.float], fields.selisih.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -125,6 +128,81 @@ loadjs.ready("head", function () {
 <textarea data-table="jurnal" data-field="x_keterangan" name="x_keterangan" id="x_keterangan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->keterangan->getPlaceHolder()) ?>"<?= $Page->keterangan->editAttributes() ?> aria-describedby="x_keterangan_help"><?= $Page->keterangan->EditValue ?></textarea>
 <?= $Page->keterangan->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->keterangan->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->debet->Visible) { // debet ?>
+<?php if ($Page->IsMobileOrModal) { ?>
+    <div id="r_debet"<?= $Page->debet->rowAttributes() ?>>
+        <label id="elh_jurnal_debet" for="x_debet" class="<?= $Page->LeftColumnClass ?>"><?= $Page->debet->caption() ?><?= $Page->debet->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->debet->cellAttributes() ?>>
+<span id="el_jurnal_debet">
+<input type="<?= $Page->debet->getInputTextType() ?>" name="x_debet" id="x_debet" data-table="jurnal" data-field="x_debet" value="<?= $Page->debet->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->debet->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->debet->formatPattern()) ?>"<?= $Page->debet->editAttributes() ?> aria-describedby="x_debet_help">
+<?= $Page->debet->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->debet->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } else { ?>
+    <tr id="r_debet"<?= $Page->debet->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_debet"><?= $Page->debet->caption() ?><?= $Page->debet->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->debet->cellAttributes() ?>>
+<span id="el_jurnal_debet">
+<input type="<?= $Page->debet->getInputTextType() ?>" name="x_debet" id="x_debet" data-table="jurnal" data-field="x_debet" value="<?= $Page->debet->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->debet->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->debet->formatPattern()) ?>"<?= $Page->debet->editAttributes() ?> aria-describedby="x_debet_help">
+<?= $Page->debet->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->debet->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { // kredit ?>
+<?php if ($Page->IsMobileOrModal) { ?>
+    <div id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
+        <label id="elh_jurnal_kredit" for="x_kredit" class="<?= $Page->LeftColumnClass ?>"><?= $Page->kredit->caption() ?><?= $Page->kredit->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->kredit->cellAttributes() ?>>
+<span id="el_jurnal_kredit">
+<input type="<?= $Page->kredit->getInputTextType() ?>" name="x_kredit" id="x_kredit" data-table="jurnal" data-field="x_kredit" value="<?= $Page->kredit->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->kredit->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->kredit->formatPattern()) ?>"<?= $Page->kredit->editAttributes() ?> aria-describedby="x_kredit_help">
+<?= $Page->kredit->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->kredit->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } else { ?>
+    <tr id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_kredit"><?= $Page->kredit->caption() ?><?= $Page->kredit->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->kredit->cellAttributes() ?>>
+<span id="el_jurnal_kredit">
+<input type="<?= $Page->kredit->getInputTextType() ?>" name="x_kredit" id="x_kredit" data-table="jurnal" data-field="x_kredit" value="<?= $Page->kredit->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->kredit->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->kredit->formatPattern()) ?>"<?= $Page->kredit->editAttributes() ?> aria-describedby="x_kredit_help">
+<?= $Page->kredit->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->kredit->getErrorMessage() ?></div>
+</span>
+</td>
+    </tr>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->selisih->Visible) { // selisih ?>
+<?php if ($Page->IsMobileOrModal) { ?>
+    <div id="r_selisih"<?= $Page->selisih->rowAttributes() ?>>
+        <label id="elh_jurnal_selisih" for="x_selisih" class="<?= $Page->LeftColumnClass ?>"><?= $Page->selisih->caption() ?><?= $Page->selisih->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->selisih->cellAttributes() ?>>
+<span id="el_jurnal_selisih">
+<input type="<?= $Page->selisih->getInputTextType() ?>" name="x_selisih" id="x_selisih" data-table="jurnal" data-field="x_selisih" value="<?= $Page->selisih->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->selisih->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->selisih->formatPattern()) ?>"<?= $Page->selisih->editAttributes() ?> aria-describedby="x_selisih_help">
+<?= $Page->selisih->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->selisih->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } else { ?>
+    <tr id="r_selisih"<?= $Page->selisih->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_selisih"><?= $Page->selisih->caption() ?><?= $Page->selisih->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
+        <td<?= $Page->selisih->cellAttributes() ?>>
+<span id="el_jurnal_selisih">
+<input type="<?= $Page->selisih->getInputTextType() ?>" name="x_selisih" id="x_selisih" data-table="jurnal" data-field="x_selisih" value="<?= $Page->selisih->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->selisih->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->selisih->formatPattern()) ?>"<?= $Page->selisih->editAttributes() ?> aria-describedby="x_selisih_help">
+<?= $Page->selisih->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->selisih->getErrorMessage() ?></div>
 </span>
 </td>
     </tr>

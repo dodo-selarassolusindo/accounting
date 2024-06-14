@@ -128,6 +128,9 @@ class JurnalEdit extends Jurnal
         $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
+        $this->debet->setVisibility();
+        $this->kredit->setVisibility();
+        $this->selisih->setVisibility();
     }
 
     // Constructor
@@ -800,6 +803,36 @@ class JurnalEdit extends Jurnal
             }
         }
 
+        // Check field name 'debet' first before field var 'x_debet'
+        $val = $CurrentForm->hasValue("debet") ? $CurrentForm->getValue("debet") : $CurrentForm->getValue("x_debet");
+        if (!$this->debet->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->debet->Visible = false; // Disable update for API request
+            } else {
+                $this->debet->setFormValue($val, true, $validate);
+            }
+        }
+
+        // Check field name 'kredit' first before field var 'x_kredit'
+        $val = $CurrentForm->hasValue("kredit") ? $CurrentForm->getValue("kredit") : $CurrentForm->getValue("x_kredit");
+        if (!$this->kredit->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->kredit->Visible = false; // Disable update for API request
+            } else {
+                $this->kredit->setFormValue($val, true, $validate);
+            }
+        }
+
+        // Check field name 'selisih' first before field var 'x_selisih'
+        $val = $CurrentForm->hasValue("selisih") ? $CurrentForm->getValue("selisih") : $CurrentForm->getValue("x_selisih");
+        if (!$this->selisih->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->selisih->Visible = false; // Disable update for API request
+            } else {
+                $this->selisih->setFormValue($val, true, $validate);
+            }
+        }
+
         // Check field name 'id' first before field var 'x_id'
         $val = $CurrentForm->hasValue("id") ? $CurrentForm->getValue("id") : $CurrentForm->getValue("x_id");
         if (!$this->id->IsDetailKey) {
@@ -816,6 +849,9 @@ class JurnalEdit extends Jurnal
         $this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, $this->createon->formatPattern());
         $this->nomer->CurrentValue = $this->nomer->FormValue;
         $this->keterangan->CurrentValue = $this->keterangan->FormValue;
+        $this->debet->CurrentValue = $this->debet->FormValue;
+        $this->kredit->CurrentValue = $this->kredit->FormValue;
+        $this->selisih->CurrentValue = $this->selisih->FormValue;
     }
 
     /**
@@ -918,6 +954,9 @@ class JurnalEdit extends Jurnal
         $this->period_id->setDbValue($row['period_id']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
+        $this->debet->setDbValue($row['debet']);
+        $this->kredit->setDbValue($row['kredit']);
+        $this->selisih->setDbValue($row['selisih']);
     }
 
     // Return a row with default values
@@ -931,6 +970,9 @@ class JurnalEdit extends Jurnal
         $row['period_id'] = $this->period_id->DefaultValue;
         $row['keterangan'] = $this->keterangan->DefaultValue;
         $row['person_id'] = $this->person_id->DefaultValue;
+        $row['debet'] = $this->debet->DefaultValue;
+        $row['kredit'] = $this->kredit->DefaultValue;
+        $row['selisih'] = $this->selisih->DefaultValue;
         return $row;
     }
 
@@ -985,6 +1027,15 @@ class JurnalEdit extends Jurnal
 
         // person_id
         $this->person_id->RowCssClass = $this->IsMobileOrModal ? "row" : "";
+
+        // debet
+        $this->debet->RowCssClass = $this->IsMobileOrModal ? "row" : "";
+
+        // kredit
+        $this->kredit->RowCssClass = $this->IsMobileOrModal ? "row" : "";
+
+        // selisih
+        $this->selisih->RowCssClass = $this->IsMobileOrModal ? "row" : "";
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -1051,6 +1102,18 @@ class JurnalEdit extends Jurnal
             $this->person_id->ViewValue = $this->person_id->CurrentValue;
             $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+            // debet
+            $this->debet->ViewValue = $this->debet->CurrentValue;
+            $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+
+            // kredit
+            $this->kredit->ViewValue = $this->kredit->CurrentValue;
+            $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+
+            // selisih
+            $this->selisih->ViewValue = $this->selisih->CurrentValue;
+            $this->selisih->ViewValue = FormatNumber($this->selisih->ViewValue, $this->selisih->formatPattern());
+
             // createon
             $this->createon->HrefValue = "";
             $this->createon->TooltipValue = "";
@@ -1061,6 +1124,15 @@ class JurnalEdit extends Jurnal
 
             // keterangan
             $this->keterangan->HrefValue = "";
+
+            // debet
+            $this->debet->HrefValue = "";
+
+            // kredit
+            $this->kredit->HrefValue = "";
+
+            // selisih
+            $this->selisih->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
             // createon
 
@@ -1072,6 +1144,30 @@ class JurnalEdit extends Jurnal
             $this->keterangan->setupEditAttributes();
             $this->keterangan->EditValue = HtmlEncode($this->keterangan->CurrentValue);
             $this->keterangan->PlaceHolder = RemoveHtml($this->keterangan->caption());
+
+            // debet
+            $this->debet->setupEditAttributes();
+            $this->debet->EditValue = $this->debet->CurrentValue;
+            $this->debet->PlaceHolder = RemoveHtml($this->debet->caption());
+            if (strval($this->debet->EditValue) != "" && is_numeric($this->debet->EditValue)) {
+                $this->debet->EditValue = FormatNumber($this->debet->EditValue, null);
+            }
+
+            // kredit
+            $this->kredit->setupEditAttributes();
+            $this->kredit->EditValue = $this->kredit->CurrentValue;
+            $this->kredit->PlaceHolder = RemoveHtml($this->kredit->caption());
+            if (strval($this->kredit->EditValue) != "" && is_numeric($this->kredit->EditValue)) {
+                $this->kredit->EditValue = FormatNumber($this->kredit->EditValue, null);
+            }
+
+            // selisih
+            $this->selisih->setupEditAttributes();
+            $this->selisih->EditValue = $this->selisih->CurrentValue;
+            $this->selisih->PlaceHolder = RemoveHtml($this->selisih->caption());
+            if (strval($this->selisih->EditValue) != "" && is_numeric($this->selisih->EditValue)) {
+                $this->selisih->EditValue = FormatNumber($this->selisih->EditValue, null);
+            }
 
             // Edit refer script
 
@@ -1085,6 +1181,15 @@ class JurnalEdit extends Jurnal
 
             // keterangan
             $this->keterangan->HrefValue = "";
+
+            // debet
+            $this->debet->HrefValue = "";
+
+            // kredit
+            $this->kredit->HrefValue = "";
+
+            // selisih
+            $this->selisih->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1120,6 +1225,30 @@ class JurnalEdit extends Jurnal
                 if (!$this->keterangan->IsDetailKey && EmptyValue($this->keterangan->FormValue)) {
                     $this->keterangan->addErrorMessage(str_replace("%s", $this->keterangan->caption(), $this->keterangan->RequiredErrorMessage));
                 }
+            }
+            if ($this->debet->Visible && $this->debet->Required) {
+                if (!$this->debet->IsDetailKey && EmptyValue($this->debet->FormValue)) {
+                    $this->debet->addErrorMessage(str_replace("%s", $this->debet->caption(), $this->debet->RequiredErrorMessage));
+                }
+            }
+            if (!CheckNumber($this->debet->FormValue)) {
+                $this->debet->addErrorMessage($this->debet->getErrorMessage(false));
+            }
+            if ($this->kredit->Visible && $this->kredit->Required) {
+                if (!$this->kredit->IsDetailKey && EmptyValue($this->kredit->FormValue)) {
+                    $this->kredit->addErrorMessage(str_replace("%s", $this->kredit->caption(), $this->kredit->RequiredErrorMessage));
+                }
+            }
+            if (!CheckNumber($this->kredit->FormValue)) {
+                $this->kredit->addErrorMessage($this->kredit->getErrorMessage(false));
+            }
+            if ($this->selisih->Visible && $this->selisih->Required) {
+                if (!$this->selisih->IsDetailKey && EmptyValue($this->selisih->FormValue)) {
+                    $this->selisih->addErrorMessage(str_replace("%s", $this->selisih->caption(), $this->selisih->RequiredErrorMessage));
+                }
+            }
+            if (!CheckNumber($this->selisih->FormValue)) {
+                $this->selisih->addErrorMessage($this->selisih->getErrorMessage(false));
             }
 
         // Validate detail grid
@@ -1249,6 +1378,15 @@ class JurnalEdit extends Jurnal
 
         // keterangan
         $this->keterangan->setDbValueDef($rsnew, $this->keterangan->CurrentValue, $this->keterangan->ReadOnly);
+
+        // debet
+        $this->debet->setDbValueDef($rsnew, $this->debet->CurrentValue, $this->debet->ReadOnly);
+
+        // kredit
+        $this->kredit->setDbValueDef($rsnew, $this->kredit->CurrentValue, $this->kredit->ReadOnly);
+
+        // selisih
+        $this->selisih->setDbValueDef($rsnew, $this->selisih->CurrentValue, $this->selisih->ReadOnly);
         return $rsnew;
     }
 
@@ -1260,6 +1398,15 @@ class JurnalEdit extends Jurnal
     {
         if (isset($row['keterangan'])) { // keterangan
             $this->keterangan->CurrentValue = $row['keterangan'];
+        }
+        if (isset($row['debet'])) { // debet
+            $this->debet->CurrentValue = $row['debet'];
+        }
+        if (isset($row['kredit'])) { // kredit
+            $this->kredit->CurrentValue = $row['kredit'];
+        }
+        if (isset($row['selisih'])) { // selisih
+            $this->selisih->CurrentValue = $row['selisih'];
         }
     }
 

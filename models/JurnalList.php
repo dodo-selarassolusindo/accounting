@@ -152,6 +152,9 @@ class JurnalList extends Jurnal
         $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
+        $this->debet->setVisibility();
+        $this->kredit->setVisibility();
+        $this->selisih->setVisibility();
     }
 
     // Constructor
@@ -1033,6 +1036,9 @@ class JurnalList extends Jurnal
         $filterList = Concat($filterList, $this->period_id->AdvancedSearch->toJson(), ","); // Field period_id
         $filterList = Concat($filterList, $this->keterangan->AdvancedSearch->toJson(), ","); // Field keterangan
         $filterList = Concat($filterList, $this->person_id->AdvancedSearch->toJson(), ","); // Field person_id
+        $filterList = Concat($filterList, $this->debet->AdvancedSearch->toJson(), ","); // Field debet
+        $filterList = Concat($filterList, $this->kredit->AdvancedSearch->toJson(), ","); // Field kredit
+        $filterList = Concat($filterList, $this->selisih->AdvancedSearch->toJson(), ","); // Field selisih
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1127,6 +1133,30 @@ class JurnalList extends Jurnal
         $this->person_id->AdvancedSearch->SearchValue2 = @$filter["y_person_id"];
         $this->person_id->AdvancedSearch->SearchOperator2 = @$filter["w_person_id"];
         $this->person_id->AdvancedSearch->save();
+
+        // Field debet
+        $this->debet->AdvancedSearch->SearchValue = @$filter["x_debet"];
+        $this->debet->AdvancedSearch->SearchOperator = @$filter["z_debet"];
+        $this->debet->AdvancedSearch->SearchCondition = @$filter["v_debet"];
+        $this->debet->AdvancedSearch->SearchValue2 = @$filter["y_debet"];
+        $this->debet->AdvancedSearch->SearchOperator2 = @$filter["w_debet"];
+        $this->debet->AdvancedSearch->save();
+
+        // Field kredit
+        $this->kredit->AdvancedSearch->SearchValue = @$filter["x_kredit"];
+        $this->kredit->AdvancedSearch->SearchOperator = @$filter["z_kredit"];
+        $this->kredit->AdvancedSearch->SearchCondition = @$filter["v_kredit"];
+        $this->kredit->AdvancedSearch->SearchValue2 = @$filter["y_kredit"];
+        $this->kredit->AdvancedSearch->SearchOperator2 = @$filter["w_kredit"];
+        $this->kredit->AdvancedSearch->save();
+
+        // Field selisih
+        $this->selisih->AdvancedSearch->SearchValue = @$filter["x_selisih"];
+        $this->selisih->AdvancedSearch->SearchOperator = @$filter["z_selisih"];
+        $this->selisih->AdvancedSearch->SearchCondition = @$filter["v_selisih"];
+        $this->selisih->AdvancedSearch->SearchValue2 = @$filter["y_selisih"];
+        $this->selisih->AdvancedSearch->SearchOperator2 = @$filter["w_selisih"];
+        $this->selisih->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
     }
@@ -1249,6 +1279,9 @@ class JurnalList extends Jurnal
             $this->updateSort($this->createon, $ctrl); // createon
             $this->updateSort($this->nomer, $ctrl); // nomer
             $this->updateSort($this->keterangan, $ctrl); // keterangan
+            $this->updateSort($this->debet, $ctrl); // debet
+            $this->updateSort($this->kredit, $ctrl); // kredit
+            $this->updateSort($this->selisih, $ctrl); // selisih
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1280,6 +1313,9 @@ class JurnalList extends Jurnal
                 $this->period_id->setSort("");
                 $this->keterangan->setSort("");
                 $this->person_id->setSort("");
+                $this->debet->setSort("");
+                $this->kredit->setSort("");
+                $this->selisih->setSort("");
             }
 
             // Reset start position
@@ -1656,6 +1692,9 @@ class JurnalList extends Jurnal
             $this->createColumnOption($option, "createon");
             $this->createColumnOption($option, "nomer");
             $this->createColumnOption($option, "keterangan");
+            $this->createColumnOption($option, "debet");
+            $this->createColumnOption($option, "kredit");
+            $this->createColumnOption($option, "selisih");
         }
 
         // Set up custom actions
@@ -2101,6 +2140,9 @@ class JurnalList extends Jurnal
         $this->period_id->setDbValue($row['period_id']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
+        $this->debet->setDbValue($row['debet']);
+        $this->kredit->setDbValue($row['kredit']);
+        $this->selisih->setDbValue($row['selisih']);
     }
 
     // Return a row with default values
@@ -2114,6 +2156,9 @@ class JurnalList extends Jurnal
         $row['period_id'] = $this->period_id->DefaultValue;
         $row['keterangan'] = $this->keterangan->DefaultValue;
         $row['person_id'] = $this->person_id->DefaultValue;
+        $row['debet'] = $this->debet->DefaultValue;
+        $row['kredit'] = $this->kredit->DefaultValue;
+        $row['selisih'] = $this->selisih->DefaultValue;
         return $row;
     }
 
@@ -2167,6 +2212,12 @@ class JurnalList extends Jurnal
         // keterangan
 
         // person_id
+
+        // debet
+
+        // kredit
+
+        // selisih
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -2233,6 +2284,18 @@ class JurnalList extends Jurnal
             $this->person_id->ViewValue = $this->person_id->CurrentValue;
             $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+            // debet
+            $this->debet->ViewValue = $this->debet->CurrentValue;
+            $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+
+            // kredit
+            $this->kredit->ViewValue = $this->kredit->CurrentValue;
+            $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+
+            // selisih
+            $this->selisih->ViewValue = $this->selisih->CurrentValue;
+            $this->selisih->ViewValue = FormatNumber($this->selisih->ViewValue, $this->selisih->formatPattern());
+
             // createon
             $this->createon->HrefValue = "";
             $this->createon->TooltipValue = "";
@@ -2244,6 +2307,18 @@ class JurnalList extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
+
+            // debet
+            $this->debet->HrefValue = "";
+            $this->debet->TooltipValue = "";
+
+            // kredit
+            $this->kredit->HrefValue = "";
+            $this->kredit->TooltipValue = "";
+
+            // selisih
+            $this->selisih->HrefValue = "";
+            $this->selisih->TooltipValue = "";
         }
 
         // Call Row Rendered event

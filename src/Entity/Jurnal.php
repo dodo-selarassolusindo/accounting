@@ -51,6 +51,22 @@ class Jurnal extends AbstractEntity
     #[Column(name: "person_id", type: "integer", nullable: true)]
     private ?int $personId;
 
+    #[Column(type: "float")]
+    private float $debet;
+
+    #[Column(type: "float")]
+    private float $kredit;
+
+    #[Column(type: "float")]
+    private float $selisih;
+
+    public function __construct()
+    {
+        $this->debet = 0.000;
+        $this->kredit = 0.000;
+        $this->selisih = 0.000;
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -125,6 +141,39 @@ class Jurnal extends AbstractEntity
     public function setPersonId(?int $value): static
     {
         $this->personId = $value;
+        return $this;
+    }
+
+    public function getDebet(): float
+    {
+        return $this->debet;
+    }
+
+    public function setDebet(float $value): static
+    {
+        $this->debet = $value;
+        return $this;
+    }
+
+    public function getKredit(): float
+    {
+        return $this->kredit;
+    }
+
+    public function setKredit(float $value): static
+    {
+        $this->kredit = $value;
+        return $this;
+    }
+
+    public function getSelisih(): float
+    {
+        return $this->selisih;
+    }
+
+    public function setSelisih(float $value): static
+    {
+        $this->selisih = $value;
         return $this;
     }
 }

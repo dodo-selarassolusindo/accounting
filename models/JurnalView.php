@@ -146,6 +146,9 @@ class JurnalView extends Jurnal
         $this->period_id->setVisibility();
         $this->keterangan->setVisibility();
         $this->person_id->setVisibility();
+        $this->debet->setVisibility();
+        $this->kredit->setVisibility();
+        $this->selisih->setVisibility();
     }
 
     // Constructor
@@ -948,6 +951,9 @@ class JurnalView extends Jurnal
         $this->period_id->setDbValue($row['period_id']);
         $this->keterangan->setDbValue($row['keterangan']);
         $this->person_id->setDbValue($row['person_id']);
+        $this->debet->setDbValue($row['debet']);
+        $this->kredit->setDbValue($row['kredit']);
+        $this->selisih->setDbValue($row['selisih']);
     }
 
     // Return a row with default values
@@ -961,6 +967,9 @@ class JurnalView extends Jurnal
         $row['period_id'] = $this->period_id->DefaultValue;
         $row['keterangan'] = $this->keterangan->DefaultValue;
         $row['person_id'] = $this->person_id->DefaultValue;
+        $row['debet'] = $this->debet->DefaultValue;
+        $row['kredit'] = $this->kredit->DefaultValue;
+        $row['selisih'] = $this->selisih->DefaultValue;
         return $row;
     }
 
@@ -995,6 +1004,12 @@ class JurnalView extends Jurnal
         // keterangan
 
         // person_id
+
+        // debet
+
+        // kredit
+
+        // selisih
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -1061,6 +1076,18 @@ class JurnalView extends Jurnal
             $this->person_id->ViewValue = $this->person_id->CurrentValue;
             $this->person_id->ViewValue = FormatNumber($this->person_id->ViewValue, $this->person_id->formatPattern());
 
+            // debet
+            $this->debet->ViewValue = $this->debet->CurrentValue;
+            $this->debet->ViewValue = FormatNumber($this->debet->ViewValue, $this->debet->formatPattern());
+
+            // kredit
+            $this->kredit->ViewValue = $this->kredit->CurrentValue;
+            $this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, $this->kredit->formatPattern());
+
+            // selisih
+            $this->selisih->ViewValue = $this->selisih->CurrentValue;
+            $this->selisih->ViewValue = FormatNumber($this->selisih->ViewValue, $this->selisih->formatPattern());
+
             // createon
             $this->createon->HrefValue = "";
             $this->createon->TooltipValue = "";
@@ -1072,6 +1099,18 @@ class JurnalView extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
+
+            // debet
+            $this->debet->HrefValue = "";
+            $this->debet->TooltipValue = "";
+
+            // kredit
+            $this->kredit->HrefValue = "";
+            $this->kredit->TooltipValue = "";
+
+            // selisih
+            $this->selisih->HrefValue = "";
+            $this->selisih->TooltipValue = "";
         }
 
         // Call Row Rendered event

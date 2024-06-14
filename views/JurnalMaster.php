@@ -43,6 +43,39 @@ $jurnal->TableClass = "table table-bordered table-hover table-sm ew-table ew-mas
 </td>
         </tr>
 <?php } ?>
+<?php if ($jurnal->debet->Visible) { // debet ?>
+        <tr id="r_debet"<?= $jurnal->debet->rowAttributes() ?>>
+            <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->debet->caption() ?></td>
+            <td<?= $jurnal->debet->cellAttributes() ?>>
+<span id="el_jurnal_debet">
+<span<?= $jurnal->debet->viewAttributes() ?>>
+<?= $jurnal->debet->getViewValue() ?></span>
+</span>
+</td>
+        </tr>
+<?php } ?>
+<?php if ($jurnal->kredit->Visible) { // kredit ?>
+        <tr id="r_kredit"<?= $jurnal->kredit->rowAttributes() ?>>
+            <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->kredit->caption() ?></td>
+            <td<?= $jurnal->kredit->cellAttributes() ?>>
+<span id="el_jurnal_kredit">
+<span<?= $jurnal->kredit->viewAttributes() ?>>
+<?= $jurnal->kredit->getViewValue() ?></span>
+</span>
+</td>
+        </tr>
+<?php } ?>
+<?php if ($jurnal->selisih->Visible) { // selisih ?>
+        <tr id="r_selisih"<?= $jurnal->selisih->rowAttributes() ?>>
+            <td class="<?= $jurnal->TableLeftColumnClass ?>"><?= $jurnal->selisih->caption() ?></td>
+            <td<?= $jurnal->selisih->cellAttributes() ?>>
+<span id="el_jurnal_selisih">
+<span<?= $jurnal->selisih->viewAttributes() ?>>
+<?= $jurnal->selisih->getViewValue() ?></span>
+</span>
+</td>
+        </tr>
+<?php } ?>
     </tbody>
 </table>
 </div>

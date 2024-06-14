@@ -173,6 +173,15 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
         <th data-name="keterangan" class="<?= $Page->keterangan->headerCellClass() ?>"><div id="elh_jurnal_keterangan" class="jurnal_keterangan"><?= $Page->renderFieldHeader($Page->keterangan) ?></div></th>
 <?php } ?>
+<?php if ($Page->debet->Visible) { // debet ?>
+        <th data-name="debet" class="<?= $Page->debet->headerCellClass() ?>"><div id="elh_jurnal_debet" class="jurnal_debet"><?= $Page->renderFieldHeader($Page->debet) ?></div></th>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { // kredit ?>
+        <th data-name="kredit" class="<?= $Page->kredit->headerCellClass() ?>"><div id="elh_jurnal_kredit" class="jurnal_kredit"><?= $Page->renderFieldHeader($Page->kredit) ?></div></th>
+<?php } ?>
+<?php if ($Page->selisih->Visible) { // selisih ?>
+        <th data-name="selisih" class="<?= $Page->selisih->headerCellClass() ?>"><div id="elh_jurnal_selisih" class="jurnal_selisih"><?= $Page->renderFieldHeader($Page->selisih) ?></div></th>
+<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -221,6 +230,30 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_keterangan" class="el_jurnal_keterangan">
 <span<?= $Page->keterangan->viewAttributes() ?>>
 <?= $Page->keterangan->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->debet->Visible) { // debet ?>
+        <td data-name="debet"<?= $Page->debet->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_debet" class="el_jurnal_debet">
+<span<?= $Page->debet->viewAttributes() ?>>
+<?= $Page->debet->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->kredit->Visible) { // kredit ?>
+        <td data-name="kredit"<?= $Page->kredit->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_kredit" class="el_jurnal_kredit">
+<span<?= $Page->kredit->viewAttributes() ?>>
+<?= $Page->kredit->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->selisih->Visible) { // selisih ?>
+        <td data-name="selisih"<?= $Page->selisih->cellAttributes() ?>>
+<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_jurnal_selisih" class="el_jurnal_selisih">
+<span<?= $Page->selisih->viewAttributes() ?>>
+<?= $Page->selisih->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
