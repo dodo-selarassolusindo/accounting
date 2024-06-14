@@ -84,12 +84,18 @@ loadjs.ready("head", function () {
 <?php if ($Page->Catatan->Visible) { // Catatan ?>
 <?php if ($Page->IsMobileOrModal) { ?>
     <div id="r_Catatan"<?= $Page->Catatan->rowAttributes() ?>>
-        <label id="elh_note_Catatan" for="x_Catatan" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <label id="elh_note_Catatan" class="<?= $Page->LeftColumnClass ?>"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->Catatan->cellAttributes() ?>>
 <span id="el_note_Catatan">
+<?php $Page->Catatan->EditAttrs->appendClass("editor"); ?>
 <textarea data-table="note" data-field="x_Catatan" name="x_Catatan" id="x_Catatan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->Catatan->getPlaceHolder()) ?>"<?= $Page->Catatan->editAttributes() ?> aria-describedby="x_Catatan_help"><?= $Page->Catatan->EditValue ?></textarea>
 <?= $Page->Catatan->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->Catatan->getErrorMessage() ?></div>
+<script>
+loadjs.ready(["fnoteedit", "editor"], function() {
+    ew.createEditor("fnoteedit", "x_Catatan", 0, 0, <?= $Page->Catatan->ReadOnly || false ? "true" : "false" ?>);
+});
+</script>
 </span>
 </div></div>
     </div>
@@ -98,9 +104,15 @@ loadjs.ready("head", function () {
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_note_Catatan"><?= $Page->Catatan->caption() ?><?= $Page->Catatan->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></span></td>
         <td<?= $Page->Catatan->cellAttributes() ?>>
 <span id="el_note_Catatan">
+<?php $Page->Catatan->EditAttrs->appendClass("editor"); ?>
 <textarea data-table="note" data-field="x_Catatan" name="x_Catatan" id="x_Catatan" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->Catatan->getPlaceHolder()) ?>"<?= $Page->Catatan->editAttributes() ?> aria-describedby="x_Catatan_help"><?= $Page->Catatan->EditValue ?></textarea>
 <?= $Page->Catatan->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->Catatan->getErrorMessage() ?></div>
+<script>
+loadjs.ready(["fnoteedit", "editor"], function() {
+    ew.createEditor("fnoteedit", "x_Catatan", 0, 0, <?= $Page->Catatan->ReadOnly || false ? "true" : "false" ?>);
+});
+</script>
 </span>
 </td>
     </tr>
