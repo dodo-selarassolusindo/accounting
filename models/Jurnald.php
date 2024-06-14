@@ -1560,9 +1560,9 @@ class Jurnald extends DbTable
     {
         //Log("Row Inserted");
         $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsnew["id"]."");
-        ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["id"]."");
+        $rowAffected = ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["id"]."");
         $totalKredit = ExecuteScalar("SELECT SUM(kredit) FROM jurnald WHERE jurnal_id = ".$rsnew["id"]."");
-        ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rsnew["id"]."");
+        $rowAffected = ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rsnew["id"]."");
     }
 
     // Row Updating event
