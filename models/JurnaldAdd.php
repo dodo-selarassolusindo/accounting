@@ -658,6 +658,10 @@ class JurnaldAdd extends Jurnald
     // Load default values
     protected function loadDefaultValues()
     {
+        $this->debet->DefaultValue = $this->debet->getDefault(); // PHP
+        $this->debet->OldValue = $this->debet->DefaultValue;
+        $this->kredit->DefaultValue = $this->kredit->getDefault(); // PHP
+        $this->kredit->OldValue = $this->kredit->DefaultValue;
     }
 
     // Load form values

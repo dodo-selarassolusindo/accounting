@@ -195,6 +195,7 @@ class Jurnald extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
+        $this->debet->addMethod("getDefault", fn() => 0);
         $this->debet->InputTextType = "text";
         $this->debet->Raw = true;
         $this->debet->DefaultErrorMessage = $Language->phrase("IncorrectFloat");
@@ -219,6 +220,7 @@ class Jurnald extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
+        $this->kredit->addMethod("getDefault", fn() => 0);
         $this->kredit->InputTextType = "text";
         $this->kredit->Raw = true;
         $this->kredit->DefaultErrorMessage = $Language->phrase("IncorrectFloat");
@@ -1558,14 +1560,13 @@ class Jurnald extends DbTable
     // Row Inserted event
     public function rowInserted($rsold, $rsnew)
     {
-        //Log("Row Inserted");
-        pre($rsnew);
+        // pre($rsnew);
         $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsnew["jurnal_id"]."");
-        $q = "UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."";
-        pre($q);
-        $rowAffected = ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."");
+        // $q = "UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."";
+        // pre($q);
+        ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."");
         $totalKredit = ExecuteScalar("SELECT SUM(kredit) FROM jurnald WHERE jurnal_id = ".$rsnew["jurnal_id"]."");
-        $rowAffected = ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rsnew["jurnal_id"]."");
+        ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rsnew["jurnal_id"]."");
     }
 
     // Row Updating event
