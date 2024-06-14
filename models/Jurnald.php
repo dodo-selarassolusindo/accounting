@@ -1561,6 +1561,8 @@ class Jurnald extends DbTable
         //Log("Row Inserted");
         $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsnew["jurnal_id"]."");
         ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."");
+        $totalKredit = ExecuteScalar("SELECT SUM(kredit) FROM jurnald WHERE jurnal_id = ".$rsnew["jurnal_id"]."");
+        ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rsnew["jurnal_id"]."");
     }
 
     // Row Updating event
@@ -1577,6 +1579,8 @@ class Jurnald extends DbTable
         //Log("Row Updated");
         $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsold["jurnal_id"]."");
         ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsold["jurnal_id"]."");
+        $totalKredit = ExecuteScalar("SELECT SUM(kredit) FROM jurnald WHERE jurnal_id = ".$rsold["jurnal_id"]."");
+        ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rsold["jurnal_id"]."");
     }
 
     // Row Update Conflict event
@@ -1631,8 +1635,11 @@ class Jurnald extends DbTable
         if ($recCountDetail > 0) {
             $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rs["jurnal_id"]."");
             ExecuteStatement("UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rs["jurnal_id"]."");
+            $totalKredit = ExecuteScalar("SELECT SUM(kredit) FROM jurnald WHERE jurnal_id = ".$rs["jurnal_id"]."");
+            ExecuteStatement("UPDATE jurnal SET kredit = ".$totalKredit." WHERE id = ".$rs["jurnal_id"]."");
         } else {
             ExecuteStatement("UPDATE jurnal SET debet = 0 WHERE id = ".$rs["jurnal_id"]."");
+            ExecuteStatement("UPDATE jurnal SET kredit = 0 WHERE id = ".$rs["jurnal_id"]."");
         }
     }
 
