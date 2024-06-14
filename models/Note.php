@@ -196,7 +196,7 @@ class Note extends DbTable
         $this->Status->Nullable = false; // NOT NULL field
         $this->Status->Required = true; // Required field
         $this->Status->Lookup = new Lookup($this->Status, 'note', false, '', ["","","",""], '', '', [], [], [], [], [], [], false, '', '', "");
-        $this->Status->OptionCount = 4;
+        $this->Status->OptionCount = 5;
         $this->Status->SearchOperators = ["=", "<>"];
         $this->Fields['Status'] = &$this->Status;
 

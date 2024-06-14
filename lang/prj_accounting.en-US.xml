@@ -356,6 +356,8 @@
         <phrase id="fldtagcaption3" value="Sedang Dikerjakan" />
         <phrase id="fldtagvalue4" value="Selesai" />
         <phrase id="fldtagcaption4" value="Selesai" />
+        <phrase id="fldtagvalue5" value="Tunda" />
+        <phrase id="fldtagcaption5" value="Tunda" />
       </field>
     </table>
     <table id="pajak">
