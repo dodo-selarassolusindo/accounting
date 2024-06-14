@@ -1559,6 +1559,7 @@ class Jurnald extends DbTable
     public function rowInserted($rsold, $rsnew)
     {
         //Log("Row Inserted");
+        pre($rsnew);
         $totalDebet = ExecuteScalar("SELECT SUM(debet) FROM jurnald WHERE jurnal_id = ".$rsnew["jurnal_id"]."");
         $q = "UPDATE jurnal SET debet = ".$totalDebet." WHERE id = ".$rsnew["jurnal_id"]."";
         pre($q);
