@@ -1099,18 +1099,6 @@ class JurnalView extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // debet
-            $this->debet->HrefValue = "";
-            $this->debet->TooltipValue = "";
-
-            // kredit
-            $this->kredit->HrefValue = "";
-            $this->kredit->TooltipValue = "";
-
-            // selisih
-            $this->selisih->HrefValue = "";
-            $this->selisih->TooltipValue = "";
         }
 
         // Call Row Rendered event

@@ -203,13 +203,13 @@
         <phrase id="fldcaption" value="person id" />
       </field>
       <field id="debet">
-        <phrase id="fldcaption" value="debet" />
+        <phrase id="fldcaption" value="Debet" />
       </field>
       <field id="kredit">
-        <phrase id="fldcaption" value="kredit" />
+        <phrase id="fldcaption" value="Kredit" />
       </field>
       <field id="selisih">
-        <phrase id="fldcaption" value="selisih" />
+        <phrase id="fldcaption" value="Selisih" />
       </field>
     </table>
     <table id="jurnald">

@@ -152,9 +152,9 @@ class JurnalList extends Jurnal
         $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
-        $this->debet->setVisibility();
-        $this->kredit->setVisibility();
-        $this->selisih->setVisibility();
+        $this->debet->Visible = false;
+        $this->kredit->Visible = false;
+        $this->selisih->Visible = false;
     }
 
     // Constructor
@@ -1279,9 +1279,6 @@ class JurnalList extends Jurnal
             $this->updateSort($this->createon, $ctrl); // createon
             $this->updateSort($this->nomer, $ctrl); // nomer
             $this->updateSort($this->keterangan, $ctrl); // keterangan
-            $this->updateSort($this->debet, $ctrl); // debet
-            $this->updateSort($this->kredit, $ctrl); // kredit
-            $this->updateSort($this->selisih, $ctrl); // selisih
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1692,9 +1689,6 @@ class JurnalList extends Jurnal
             $this->createColumnOption($option, "createon");
             $this->createColumnOption($option, "nomer");
             $this->createColumnOption($option, "keterangan");
-            $this->createColumnOption($option, "debet");
-            $this->createColumnOption($option, "kredit");
-            $this->createColumnOption($option, "selisih");
         }
 
         // Set up custom actions
@@ -2307,18 +2301,6 @@ class JurnalList extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // debet
-            $this->debet->HrefValue = "";
-            $this->debet->TooltipValue = "";
-
-            // kredit
-            $this->kredit->HrefValue = "";
-            $this->kredit->TooltipValue = "";
-
-            // selisih
-            $this->selisih->HrefValue = "";
-            $this->selisih->TooltipValue = "";
         }
 
         // Call Row Rendered event

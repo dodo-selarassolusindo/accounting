@@ -89,39 +89,6 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->debet->Visible) { // debet ?>
-    <tr id="r_debet"<?= $Page->debet->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_debet"><?= $Page->debet->caption() ?></span></td>
-        <td data-name="debet"<?= $Page->debet->cellAttributes() ?>>
-<span id="el_jurnal_debet">
-<span<?= $Page->debet->viewAttributes() ?>>
-<?= $Page->debet->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
-<?php if ($Page->kredit->Visible) { // kredit ?>
-    <tr id="r_kredit"<?= $Page->kredit->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_kredit"><?= $Page->kredit->caption() ?></span></td>
-        <td data-name="kredit"<?= $Page->kredit->cellAttributes() ?>>
-<span id="el_jurnal_kredit">
-<span<?= $Page->kredit->viewAttributes() ?>>
-<?= $Page->kredit->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
-<?php if ($Page->selisih->Visible) { // selisih ?>
-    <tr id="r_selisih"<?= $Page->selisih->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_jurnal_selisih"><?= $Page->selisih->caption() ?></span></td>
-        <td data-name="selisih"<?= $Page->selisih->cellAttributes() ?>>
-<span id="el_jurnal_selisih">
-<span<?= $Page->selisih->viewAttributes() ?>>
-<?= $Page->selisih->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 </table>
 <?php
     if (in_array("jurnald", explode(",", $Page->getCurrentDetailTable())) && $jurnald->DetailView) {

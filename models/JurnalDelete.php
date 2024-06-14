@@ -128,9 +128,9 @@ class JurnalDelete extends Jurnal
         $this->period_id->Visible = false;
         $this->keterangan->setVisibility();
         $this->person_id->Visible = false;
-        $this->debet->setVisibility();
-        $this->kredit->setVisibility();
-        $this->selisih->setVisibility();
+        $this->debet->Visible = false;
+        $this->kredit->Visible = false;
+        $this->selisih->Visible = false;
     }
 
     // Constructor
@@ -736,18 +736,6 @@ class JurnalDelete extends Jurnal
             // keterangan
             $this->keterangan->HrefValue = "";
             $this->keterangan->TooltipValue = "";
-
-            // debet
-            $this->debet->HrefValue = "";
-            $this->debet->TooltipValue = "";
-
-            // kredit
-            $this->kredit->HrefValue = "";
-            $this->kredit->TooltipValue = "";
-
-            // selisih
-            $this->selisih->HrefValue = "";
-            $this->selisih->TooltipValue = "";
         }
 
         // Call Row Rendered event

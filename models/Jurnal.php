@@ -1626,9 +1626,6 @@ class Jurnal extends DbTable
                     $doc->exportCaption($this->createon);
                     $doc->exportCaption($this->nomer);
                     $doc->exportCaption($this->keterangan);
-                    $doc->exportCaption($this->debet);
-                    $doc->exportCaption($this->kredit);
-                    $doc->exportCaption($this->selisih);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->createon);
@@ -1669,9 +1666,6 @@ class Jurnal extends DbTable
                         $doc->exportField($this->createon);
                         $doc->exportField($this->nomer);
                         $doc->exportField($this->keterangan);
-                        $doc->exportField($this->debet);
-                        $doc->exportField($this->kredit);
-                        $doc->exportField($this->selisih);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->createon);

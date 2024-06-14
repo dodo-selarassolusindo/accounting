@@ -59,15 +59,6 @@ $Page->showMessage();
 <?php if ($Page->keterangan->Visible) { // keterangan ?>
         <th class="<?= $Page->keterangan->headerCellClass() ?>"><span id="elh_jurnal_keterangan" class="jurnal_keterangan"><?= $Page->keterangan->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->debet->Visible) { // debet ?>
-        <th class="<?= $Page->debet->headerCellClass() ?>"><span id="elh_jurnal_debet" class="jurnal_debet"><?= $Page->debet->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->kredit->Visible) { // kredit ?>
-        <th class="<?= $Page->kredit->headerCellClass() ?>"><span id="elh_jurnal_kredit" class="jurnal_kredit"><?= $Page->kredit->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->selisih->Visible) { // selisih ?>
-        <th class="<?= $Page->selisih->headerCellClass() ?>"><span id="elh_jurnal_selisih" class="jurnal_selisih"><?= $Page->selisih->caption() ?></span></th>
-<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -110,30 +101,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->keterangan->viewAttributes() ?>>
 <?= $Page->keterangan->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->debet->Visible) { // debet ?>
-        <td<?= $Page->debet->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->debet->viewAttributes() ?>>
-<?= $Page->debet->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->kredit->Visible) { // kredit ?>
-        <td<?= $Page->kredit->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->kredit->viewAttributes() ?>>
-<?= $Page->kredit->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->selisih->Visible) { // selisih ?>
-        <td<?= $Page->selisih->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->selisih->viewAttributes() ?>>
-<?= $Page->selisih->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>
