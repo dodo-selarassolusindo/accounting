@@ -1367,6 +1367,9 @@ class JurnalAdd extends Jurnal
         //Log("Page Load");
         $this->period_id->DisplayValueSeparator = ' - ';
         $this->nomer->ReadOnly = true;
+        $this->debet->ReadOnly = true;
+        $this->kredit->ReadOnly = true;
+        $this->selisih->ReadOnly = true;
     }
 
     // Page Unload event
