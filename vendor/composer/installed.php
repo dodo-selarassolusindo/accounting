@@ -3,7 +3,7 @@
         'name' => 'hkvstore/phpmaker',
         'pretty_version' => '2024',
         'version' => '2024.0.0.0',
-        'reference' => null,
+        'reference' => NULL,
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -202,7 +202,7 @@
         'hkvstore/phpmaker' => array(
             'pretty_version' => '2024',
             'version' => '2024.0.0.0',
-            'reference' => null,
+            'reference' => NULL,
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
