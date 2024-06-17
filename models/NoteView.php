@@ -58,6 +58,14 @@ class NoteView extends Note
     public $MultiDeleteUrl;
     public $MultiUpdateUrl;
 
+    // Audit Trail
+    public $AuditTrailOnAdd = true;
+    public $AuditTrailOnEdit = true;
+    public $AuditTrailOnDelete = true;
+    public $AuditTrailOnView = false;
+    public $AuditTrailOnViewData = false;
+    public $AuditTrailOnSearch = false;
+
     // Page headings
     public $Heading = "";
     public $Subheading = "";
@@ -849,6 +857,9 @@ class NoteView extends Note
 
         // Call Row Selected event
         $this->rowSelected($row);
+        if ($this->AuditTrailOnView) {
+            $this->writeAuditTrailOnView($row);
+        }
         $this->NoteID->setDbValue($row['NoteID']);
         $this->Tanggal->setDbValue($row['Tanggal']);
         $this->Catatan->setDbValue($row['Catatan']);
